@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.03  allocator base
     0.02a added max and defer
     0.02  pointer types
     0.01b project restructure
@@ -250,13 +251,87 @@ Priv_Defer<F> defer_func(F f) {
 
 /* MEMORY */
 
+struct Allocator;
+
+using Allocator_Func = void* (*)(const Allocator& allocator, void* ptr, usize size);
+
+struct Allocator {
+    u8* data;
+    Allocator_Func func;
+
+    explicit operator bool() const;
+
+    void* alloc(usize size);
+    void* realloc(void* ptr, usize size);
+    void free(void* ptr);
+};
+
+Allocator get_heap_alloctor();
+
 namespace Memory {
     void copy(void* dest, const void* src, usize size);
     void set(void* ptr, usize size, u8 c);
     void zero(void* ptr, usize size);
+
+    void* alloc(usize size);
+    void* realloc(void* ptr, usize size);
+    void free(void* ptr);
 }
 
 /* IMPLEMENTATION */
+#ifdef CH_IMPLEMENTATION
+
+Allocator::operator bool() const {
+    return func != nullptr;
+}
+
+void* Allocator::alloc(usize size) {
+    return func(*this, nullptr, size);
+}
+
+void* Allocator::realloc(void* ptr, usize size) {
+    return func(*this, ptr, size);
+}
+
+void Allocator::free(void* ptr) {
+    func(*this, ptr, 0);
+}
+
+#if CH_PLATFORM_WINDOWS
+static void* heap_alloc(const Allocator& allocator, void* ptr, usize size) {
+    void* result = nullptr;
+    if (size) {
+        if (!ptr) {
+            result = HeapAlloc(GetProcessHeap(), 0, size);
+        } else {
+            result = HeapReAlloc(GetProcessHeap(), 0, ptr, size);
+        }   
+    } else if (ptr) {
+        HeapFree(GetProcessHeap(), 0, ptr);
+    }
+
+    return result;
+}
+#endif
+
+Allocator get_heap_allocator() {
+    Allocator result;
+    result.func = heap_alloc;
+    result.data = nullptr;
+    return result;
+}
+
+void* Memory::alloc(usize size) {
+    return get_heap_allocator().alloc(size);
+}
+
+void* Memory::realloc(void* ptr, usize size) {
+    return get_heap_allocator().realloc(ptr, size);
+}
+
+void Memory::free(void* ptr) {
+    get_heap_allocator().free(ptr);
+}
 
 void Memory::copy(void* dest, const void* src, usize size) {
     const u8* casted_src = (u8*)src;
@@ -278,5 +353,6 @@ void Memory::set(void* ptr, usize size, u8 c) {
 void Memory::zero(void* ptr, usize size) {
     Memory::set(ptr, size, 0);
 }
+#endif
 
 #endif /*CH_INCLUDE_H*/

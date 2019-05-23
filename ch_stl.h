@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.03a started on container and new stuff
     0.03  allocator base
     0.02a added max and defer
     0.02  pointer types
@@ -247,7 +248,8 @@ Priv_Defer<F> defer_func(F f) {
 
 /* ASSERT */
 
-#define assert(cond) if (!(cond)) (*(void*)0)
+// @TODO(CHall): Implement proper assert
+#define assert(cond)
 
 /* MEMORY */
 
@@ -278,9 +280,81 @@ namespace Memory {
     void free(void* ptr);
 }
 
+#define ch_new new
+#define ch_delete delete
+
+void* operator new(usize size);
+void* operator new[](usize size);
+
+void operator delete(void* ptr);
+void operator delete[](void* ptr);
+
+void* operator new(usize size, Allocator allocator);
+void* operator new[](usize size, Allocator allocator);
+
+void operator delete(void* ptr, Allocator allocator);
+void operator delete[](void* ptr, Allocator allocator);
+
+/* CONTAINERS */
+
+template <typename T>
+struct Array {
+    T* data = nullptr;
+    usize count = 0;
+    usize allocated = 0;
+    Allocator allocator;
+
+    T& operator[](usize index) {
+        assert(size < count);
+        return data[index];
+    }
+
+    const T& operator[](usize index) {
+        assert(size < count);
+        return data[index];
+    }
+
+    explicit operator bool() const { return data != nullptr && count > 0; }
+
+    Array() {
+        data = nullptr;
+        count = 0;
+        allocated = 0;
+        allocator = get_heap_allocator();
+    }
+
+    explicit Array(usize reserve) {
+        count = 0;
+        allocator = get_heap_allocator();
+        reserve(reserve);
+    }
+
+    T* begin() {
+        return data;
+    }
+
+    T* end() {
+        return data + count;
+    }
+
+    const T* cbegin() const {
+        return data;
+    }
+
+    const T* cend() const {
+        return data + count;
+    }
+
+    void reserve(usize amount);
+    size_t add(const T& t);
+    size_t add_zeroed();
+    size_t add_at_index(const T& t, usize index);
+};
+
 /* IMPLEMENTATION */
 #ifdef CH_IMPLEMENTATION
 
+/* MEMORY */
 Allocator::operator bool() const {
     return func != nullptr;
 }
@@ -353,6 +427,66 @@ void Memory::set(void* ptr, usize size, u8 c) {
 void Memory::zero(void* ptr, usize size) {
     Memory::set(ptr, size, 0);
 }
-#endif
 
+void* operator new(usize size) {
+    return Memory::alloc(size);
+}
+
+void* operator new[](usize size) {
+    return Memory::alloc(size);
+}
+
+void operator delete(void* ptr) {
+    Memory::free(ptr);
+}
+
+void operator delete[](void* ptr) {
+    Memory::free(ptr);
+}
+
+void* operator new(usize size, Allocator allocator) {
+    return allocator.alloc(size);
+}
+
+void* operator new[](usize size, Allocator allocator) {
+    return allocator.alloc(size);
+}
+
+void operator delete(void* ptr, Allocator allocator) {
+    return allocator.free(ptr);
+}
+
+void operator delete[](void* ptr, Allocator allocator) {
+    return allocator.free(ptr);
+}
+
+/* CONTAINERS */
+
+template <typename T>
+void Array<T>::reserve(usize amount) {
+    const usize new_size = allocated + amount;
+    while (allocated < new_size) {
+        allocated |= 15;
+        allocated <<= 1;
+    }
+
+
+}
+
+template <typename T>
+size_t Array<T>::add(const T& t) {
+
+}
+
+template <typename T>
+size_t Array<T>::add_zeroed() {
+
+}
+
+template <typename T>
+size_t Array<T>::add_at_index(const T& t, usize index) {
+
+}
+
+#endif /*CH_IMPLEMENTATION*/
 #endif /*CH_INCLUDE_H*/

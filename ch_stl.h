@@ -1,6 +1,7 @@
 /*
     Colby Hall's single header standard library
     Heavily inspired from gb lib and stb
+    This lib is under construction
     
 
 HOW TO
@@ -60,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.02  pointer types
     0.01b project restructure
     0.01a initial commit
 */
@@ -186,7 +188,19 @@ CH_TYPE_SIZE_LITERAL(u16, 2);
 CH_TYPE_SIZE_LITERAL(u32, 4);
 CH_TYPE_SIZE_LITERAL(u64, 8);
 
+#if CH_PLATFORM_64BIT
+using usize = u64;
+using ssize = s64;
+#else
+using usize = u32;
+using ssize = s32;
+#endif
 
+using f32 = float;
+using f64 = double;
+
+CH_TYPE_SIZE_LITERAL(f32, 4);
+CH_TYPE_SIZE_LITERAL(f64, 8);
 
 
 #endif /*CH_INCLUDE_H*/

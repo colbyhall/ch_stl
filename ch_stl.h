@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.02a added max and defer
     0.02  pointer types
     0.01b project restructure
     0.01a initial commit
@@ -105,20 +106,20 @@ VERSIONS
 	#error This operating system is not supported
 #endif
 
-#ifndef PLATFORM_WINDOWS
-    #define PLATFORM_WINDOWS 0
+#ifndef CH_PLATFORM_WINDOWS
+    #define CH_PLATFORM_WINDOWS 0
 #endif
-#ifndef PLATFORM_OSX
-    #define PLATFORM_OSX 0
+#ifndef CH_PLATFORM_OSX
+    #define CH_PLATFORM_OSX 0
 #endif
-#ifndef PLATFORM_UNIX
-    #define PLATFORM_UNIX 0
+#ifndef CH_PLATFORM_UNIX
+    #define CH_PLATFORM_UNIX 0
 #endif
-#ifndef PLATFORM_LINUX
-    #define PLATFORM_LINUX 0
+#ifndef CH_PLATFORM_LINUX
+    #define CH_PLATFORM_LINUX 0
 #endif
-#ifndef PLATFORM_FREEBSD
-    #define PLATFORM_FREEBSD 0
+#ifndef CH_PLATFORM_FREEBSD
+    #define CH_PLATFORM_FREEBSD 0
 #endif
 
 #if defined(_MSC_VER)
@@ -178,7 +179,7 @@ using s64 = signed long long;
 #define CH_TYPE_SIZE_COMPARE(a, b) static_assert(sizeof(a) == sizeof(b), CH_TYPE_SIZE_ERROR)
 #define CH_TYPE_SIZE_LITERAL(a, b) static_assert(sizeof(a) == b, CH_TYPE_SIZE_ERROR)
 
-CH_TYPE_SIZE_COMPARE(u8, s8);
+CH_TYPE_SIZE_COMPARE(u8,  s8);
 CH_TYPE_SIZE_COMPARE(u16, s16);
 CH_TYPE_SIZE_COMPARE(u32, s32);
 CH_TYPE_SIZE_COMPARE(u64, s64);
@@ -202,5 +203,80 @@ using f64 = double;
 CH_TYPE_SIZE_LITERAL(f32, 4);
 CH_TYPE_SIZE_LITERAL(f64, 8);
 
+#define U8_MIN 0u
+#define U8_MAX 0xffu
+#define U16_MIN 0u
+#define U16_MAX 0xffffu
+#define U32_MIN 0u
+#define U32_MAX 0xffffffffu
+#define U64_MIN 0ull
+#define U64_MAX 0xffffffffffffffffull
+
+#define S8_MIN (-0x7f - 1)
+#define S8_MAX 0x7f
+#define S16_MIN (-0x7fff - 1)
+#define S16_MAX 0x7fff
+#define S32_MIN (-0x7fffffff - 1)
+#define S32_MAX 0x7fffffff
+#define S64_MIN (-0x7fffffffffffffffll - 1)
+#define S64_MAX 0x7fffffffffffffffll
+
+#define F32_MIN 1.17549435e-38f
+#define F32_MAX 3.40282347e+38f
+
+#define F64_MIN 2.2250738585072014e-308
+#define F64_MAX 1.7976931348623157e+308
+
+template <typename F>
+struct Priv_Defer {
+    F f;
+    Priv_Defer(F f) : f(f) {}
+    ~Priv_Defer() { f(); }
+};
+
+template <typename F>
+Priv_Defer<F> defer_func(F f) {
+    return Priv_Defer<F>(f);
+}
+
+#define CH_DEFER_1(x, y)    x##y
+#define CH_DEFER_2(x, y)    CH_DEFER_1(x, y)
+#define CH_DEFER_3(x)       CH_DEFER_2(x, __COUNTER__)
+#define defer(code)         auto CH_DEFER_3(_defer_) = defer_func([&](){code;})
+
+/* ASSERT */
+
+#define assert(cond) if (!(cond)) (*(void*)0)
+
+/* MEMORY */
+
+namespace Memory {
+    void copy(void* dest, const void* src, usize size);
+    void set(void* ptr, usize size, u8 c);
+    void zero(void* ptr, usize size);
+}
+
+/* IMPLEMENTATION */
+
+void Memory::copy(void* dest, const void* src, usize size) {
+    const u8* casted_src = (u8*)src;
+    u8* casted_dest = (u8*)dest;
+    
+    for(usize i = 0; i < size; i++) {
+        casted_dest[i] = casted_src[i];
+    }
+}
+
+void Memory::set(void* ptr, usize size, u8 c) {
+    u8* casted_ptr = (u8*)ptr;
+    
+    for (usize i = 0; i < size; i++) {
+        casted_ptr[i] = c;
+    }
+}
+
+void Memory::zero(void* ptr, usize size) {
+    Memory::set(ptr, size, 0);
+}
 
 #endif /*CH_INCLUDE_H*/

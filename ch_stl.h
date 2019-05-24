@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.04  fixed issues with array and starting to setup testing
     0.03b finished more parts of the array struct
     0.03a started on container and new stuff
     0.03  allocator base
@@ -313,7 +314,7 @@ struct Array {
         return data[index];
     }
 
-    const T& operator[](usize index) {
+    const T& operator[](usize index) const {
         assert(size < count);
         return data[index];
     }
@@ -348,6 +349,8 @@ struct Array {
     const T* cend() const {
         return data + count;
     }
+
+    Array<T> copy() const;
 
     usize reserve(usize amount);
     usize add(const T& t);
@@ -483,6 +486,19 @@ void operator delete[](void* ptr, Allocator allocator) {
 /* CONTAINERS */
 
 template <typename T>
+Array<T> Array<T>::copy() const {
+    Array<T> result;
+    result.allocator = allocator;
+    result.allocated = allocated;
+    result.count     = count;
+
+    result.data = ch_new(allocator) T[allocated];
+    Memory::copy(result.data, data, count * sizeof(T));
+
+    return result;
+}
+
+template <typename T>
 usize Array<T>::reserve(usize amount) {
     const usize new_size = allocated + amount;
     while (allocated < new_size) {
@@ -493,7 +509,7 @@ usize Array<T>::reserve(usize amount) {
     if (data) {
         data = (T*)allocator.realloc(data, allocated * sizeof(T));
     } else {
-        data = (T*)allocator.alloc(allocated * sizeof(T));
+        data = ch_new(allocator) T[allocated];
     }
 
     return allocated;
@@ -522,7 +538,7 @@ usize Array<T>::add_at_index(const T& t, usize index) {
         Memory::move(data + index + 1, data + index, (count - index) * sizeof(T));
     }
 
-    data[index] = item;
+    data[index] = t;
     count += 1;
 
     return index;

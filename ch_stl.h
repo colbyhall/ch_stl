@@ -1,6 +1,6 @@
 /*
     Colby Hall's single header standard library
-    Heavily inspired from gb lib and stb
+    Heavily inspired from gb lib and stb libs
     This lib is under construction
     
 
@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.03b finished more parts of the array struct
     0.03a started on container and new stuff
     0.03  allocator base
     0.02a added max and defer
@@ -261,7 +262,9 @@ struct Allocator {
     u8* data;
     Allocator_Func func;
 
-    explicit operator bool() const;
+    explicit operator bool() const {
+        return func != nullptr;
+    }
 
     void* alloc(usize size);
     void* realloc(void* ptr, usize size);
@@ -274,6 +277,7 @@ namespace Memory {
     void copy(void* dest, const void* src, usize size);
     void set(void* ptr, usize size, u8 c);
     void zero(void* ptr, usize size);
+    void* move(void* dest, const void* src, usize size);
 
     void* alloc(usize size);
     void* realloc(void* ptr, usize size);
@@ -345,19 +349,16 @@ struct Array {
         return data + count;
     }
 
-    void reserve(usize amount);
-    size_t add(const T& t);
-    size_t add_zeroed();
-    size_t add_at_index(const T& t, usize index);
+    usize reserve(usize amount);
+    usize add(const T& t);
+    usize add_zeroed();
+    usize add_at_index(const T& t, usize index);
 };
 
 /* IMPLEMENTATION */
 #ifdef CH_IMPLEMENTATION
 
 /* MEMORY */
-Allocator::operator bool() const {
-    return func != nullptr;
-}
 
 void* Allocator::alloc(usize size) {
     return func(*this, nullptr, size);
@@ -428,6 +429,25 @@ void Memory::zero(void* ptr, usize size) {
     Memory::set(ptr, size, 0);
 }
 
+void* Memory::move(void* dest, const void* src, usize size) {
+    if (dest == src) return dest;
+
+    const u8* casted_src = (const u8*)src;
+    u8* casted_dest = (u8*)dest;
+
+    if (dest > src) {
+        for (usize i = size - 1; i != 0; i--) {
+            casted_dest[i] = casted_src[i];
+        }
+    } else {
+        for (usize i = 0; i < size; i++) {
+            casted_dest[i] = casted_src[i];
+        }
+    }
+
+    return dest;
+}
+
 void* operator new(usize size) {
     return Memory::alloc(size);
 }
@@ -463,29 +483,49 @@ void operator delete[](void* ptr, Allocator allocator) {
 /* CONTAINERS */
 
 template <typename T>
-void Array<T>::reserve(usize amount) {
+usize Array<T>::reserve(usize amount) {
     const usize new_size = allocated + amount;
     while (allocated < new_size) {
         allocated |= 15;
         allocated <<= 1;
     }
 
+    if (data) {
+        data = (T*)allocator.realloc(data, allocated * sizeof(T));
+    } else {
+        data = (T*)allocator.alloc(allocated * sizeof(T));
+    }
 
+    return allocated;
 }
 
 template <typename T>
-size_t Array<T>::add(const T& t) {
-
+usize Array<T>::add(const T& t) {
+    return add_at_index(t, count);
 }
 
 template <typename T>
-size_t Array<T>::add_zeroed() {
-
+usize Array<T>::add_zeroed() {
+    T result = { 0 };
+    return add_at_index(result, count);
 }
 
 template <typename T>
-size_t Array<T>::add_at_index(const T& t, usize index) {
+usize Array<T>::add_at_index(const T& t, usize index) {
+    assert(c <= count);
 
+    if (count == allocated) {
+        reserve(1);
+    }
+
+    if (index != count) {
+        Memory::move(data + index + 1, data + index, (count - index) * sizeof(T));
+    }
+
+    data[index] = item;
+    count += 1;
+
+    return index;
 }
 
 #endif /*CH_IMPLEMENTATION*/

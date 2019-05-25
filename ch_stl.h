@@ -46,7 +46,7 @@ TODO
     - file PLATFORM
     - containers
         - array
-        - static_array
+        - fixed_array
         - hash_map
         - set
     - multithreading
@@ -61,6 +61,7 @@ TODO
 
 
 VERSIONS
+    0.04b memory, array test finished
     0.04  fixed issues with array and starting to setup testing
     0.03b finished more parts of the array struct
     0.03a started on container and new stuff
@@ -334,6 +335,12 @@ struct Array {
         reserve(reserve);
     }
 
+    ~Array() {
+        if (data) {
+            operator ch_delete[](data, allocator);
+        }
+    }
+
     T* begin() {
         return data;
     }
@@ -356,6 +363,12 @@ struct Array {
     usize add(const T& t);
     usize add_zeroed();
     usize add_at_index(const T& t, usize index);
+
+    bool remove(const T& t);
+    void remove_index(usize index);
+
+    bool contains(const T& t);
+    ssize find(const T& t);
 };
 
 /* IMPLEMENTATION */
@@ -542,6 +555,36 @@ usize Array<T>::add_at_index(const T& t, usize index) {
     count += 1;
 
     return index;
+}
+template <typename T>
+bool Array<T>::remove(const T& t) {
+    const ssize item_index = find(t);
+    if (ssize == -1) return false;
+    remove_index((usize)item_index);
+    return true;
+}
+
+template <typename T>
+void Array<T>::remove_index(usize index) {
+    assert(index < count);
+	Memory::move(data + index, data + index + 1, (count - index) * sizeof(T));
+	count -= 1;
+}
+
+template <typename T>
+bool Array<T>::contains(const T& t) {
+    return find_item(t) != -1;
+}
+
+template <typename T>
+ssize Array<T>::find(const T& t) {
+    for (usize i = 0; i < count; i++) {
+        if (data[i] == t) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 #endif /*CH_IMPLEMENTATION*/

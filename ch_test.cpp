@@ -40,16 +40,25 @@ static void memory_test() {
 }
 
 static void array_test() {
-    Array<float> array;
-    array.add(-25.f);
-    if (array.count != 1 || array[0] != -25.f) {
-        TEST_FAIL("Array<float::add is failing");
+    {
+        Array<float> array;
+        array.add(-25.f);
+        if (array.count != 1 || array[0] != -25.f) {
+            TEST_FAIL("Array<float::add is failing");
+        }
+        array.add(45.f);
+        array.add(20.f);
+        array.remove_index(1);
+        if (array[1] != 20.f) {
+            TEST_FAIL("Array<float>::remove is failing to remove index 1");
+        }
     }
-    array.add(45.f);
-    array.add(20.f);
-    array.remove_index(1);
-    if (array[1] != 20.f) {
-        TEST_FAIL("Array<float>::remove is failing to remove index 1");
+
+    {
+        Array<float> array = { 120.f, 12.f, 5.f };
+        if (array[0] != 120.f || array[1] != 12.f || array[2] != 5.f) {
+            TEST_FAIL("Array<float> initializer list construction failed");
+        }
     }
 }
 

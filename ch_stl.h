@@ -61,7 +61,8 @@ TODO
 
 
 VERSIONS
-    0.04b memory, array test finished
+    0.04b array initializer list
+    0.04a memory, array test finished
     0.04  fixed issues with array and starting to setup testing
     0.03b finished more parts of the array struct
     0.03a started on container and new stuff
@@ -303,6 +304,8 @@ void operator delete[](void* ptr, Allocator allocator);
 
 /* CONTAINERS */
 
+#include <initializer_list>
+
 template <typename T>
 struct Array {
     T* data = nullptr;
@@ -333,6 +336,17 @@ struct Array {
         count = 0;
         allocator = get_heap_allocator();
         reserve(reserve);
+    }
+
+    Array(std::initializer_list<T> init_list) {
+        count = 0;
+        allocated = 0;
+        allocator = get_heap_allocator();
+        reserve(init_list.size());
+
+        for (const T& t : init_list) {
+            add(t);
+        }
     }
 
     ~Array() {
@@ -370,6 +384,8 @@ struct Array {
     bool contains(const T& t);
     ssize find(const T& t);
 };
+
+/* OTHER */
 
 /* IMPLEMENTATION */
 #ifdef CH_IMPLEMENTATION

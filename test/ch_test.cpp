@@ -2,12 +2,11 @@
  * ch_stl lib test
  * used to ensure code is working
  * currently under construction
-
-
 */
 
-#define CH_IMPLEMENTATION
-#include "ch_stl.h"
+#include <ch_allocator.h>
+#include <ch_memory.h>
+#include <ch_array.h>
 
 #include <stdio.h>
 
@@ -19,13 +18,13 @@ int test_failed = 0;
 static void memory_test() {
     const usize buffer_size = 255;
     u8* buffer = ch_new u8[buffer_size];
-    defer(ch_delete[] buffer);
+    // defer(ch_delete[] buffer);
 
     const u8 set_value = 0;
-    Memory::set(buffer, buffer_size, set_value);
+    ch::memset(buffer, buffer_size, set_value);
     for (usize i = 0; i < buffer_size; i++) {
         if (buffer[i] != set_value) {
-            TEST_FAIL("Memory::set did not set all values in buffer %i", set_value);
+            TEST_FAIL("ch::memset did not set all values in buffer %i", set_value);
             break;
         }
 
@@ -33,15 +32,15 @@ static void memory_test() {
     }
 
     // @NOTE(CHall): Is this a good test?
-    Memory::move(buffer, buffer + 5, 7);
+    ch::memmove(buffer, buffer + 5, 7);
     if (buffer[0] != 5) {
-        TEST_FAIL("Memory::move is broken");
+        TEST_FAIL("ch::memmove is broken");
     }
 }
 
 static void array_test() {
     {
-        Array<float> array;
+        ch::Array<float> array;
         array.add(-25.f);
         if (array.count != 1 || array[0] != -25.f) {
             TEST_FAIL("Array<float::add is failing");
@@ -55,7 +54,7 @@ static void array_test() {
     }
 
     {
-        Array<float> array = { 120.f, 12.f, 5.f };
+        ch::Array<float> array = { 120.f, 12.f, 5.f };
         if (array[0] != 120.f || array[1] != 12.f || array[2] != 5.f) {
             TEST_FAIL("Array<float> initializer list construction failed");
         }

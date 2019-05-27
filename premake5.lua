@@ -20,12 +20,13 @@ project "ch_stl"
     files
     {
         "src/*.h",
-        "src/*.cpp",
+		"src/*.cpp",
+		"include/*.h"
     }
 
     includedirs
     {
-        "src/**",
+        "include",
     }
 
     defines
@@ -34,21 +35,10 @@ project "ch_stl"
 	}
 
     filter "configurations:Debug"
-		defines 
-		{
-			"BUILD_DEBUG#1",
-			"BUILD_RELEASE#0"
-		}
 		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
-		defines 
-		{
-			"BUILD_RELEASE#1",
-			"BUILD_DEBUG#0",
-			"NDEBUG"
-		}
 		runtime "Release"
         optimize "On"
         
@@ -94,5 +84,5 @@ project "ch_test"
 
 	includedirs
 	{
-		"src"
+		"include"
 	}

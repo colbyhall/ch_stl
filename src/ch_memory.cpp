@@ -1,26 +1,5 @@
 #include "ch_memory.h"
 
-#if CH_PLATFORM_WINDOWS
-
-#define WIN32_MEAN_AND_LEAN
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-
-void* ch::malloc(usize size) {
-    return HeapAlloc(GetProcessHeap(), 0, size);
-}
-
-void* ch::realloc(void* ptr, usize size) {
-    return HeapReAlloc(GetProcessHeap(), 0, ptr, size);
-}
-
-void ch::free(void* ptr) {
-    HeapFree(GetProcessHeap(), 0, ptr);
-}
-
-#endif
-
 void ch::memcpy(void* dest, const void* src, usize size) {
     const u8* casted_src = (u8*)src;
     u8* casted_dest = (u8*)dest;

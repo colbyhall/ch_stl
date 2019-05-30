@@ -7,6 +7,7 @@
 #include <ch_allocator.h>
 #include <ch_memory.h>
 #include <ch_array.h>
+#include <ch_string.h>
 
 #include <stdio.h>
 
@@ -61,10 +62,18 @@ static void array_test() {
     }
 }
 
+static void string_test() {
+	ch::String foo = "Hello World";
+
+	ch::String bar = foo;
+
+}
+
 int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
+	string_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

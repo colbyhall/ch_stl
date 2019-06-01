@@ -18,6 +18,11 @@ namespace ch {
         void* alloc(usize size);
         void* realloc(void* ptr, usize size);
         void free(void* ptr);
+
+        template <typename T> 
+        T* get_header() const {
+            return (T*)data;
+        }
     };
 
     Allocator get_heap_allocator();

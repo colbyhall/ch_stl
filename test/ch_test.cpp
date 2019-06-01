@@ -8,6 +8,9 @@
 #include <ch_memory.h>
 #include <ch_array.h>
 #include <ch_string.h>
+#include <ch_templates.h>
+
+#include <utility>
 
 #include <stdio.h>
 
@@ -42,13 +45,13 @@ static void memory_test() {
 static void array_test() {
     {
         ch::Array<float> array;
-        array.add(-25.f);
+        array.push(-25.f);
         if (array.count != 1 || array[0] != -25.f) {
             TEST_FAIL("Array<float::add is failing");
         }
-        array.add(45.f);
-        array.add(20.f);
-        array.remove_index(1);
+        array.push(45.f);
+        array.push(20.f);
+        array.remove(1);
         if (array[1] != 20.f) {
             TEST_FAIL("Array<float>::remove is failing to remove index 1");
         }
@@ -60,12 +63,24 @@ static void array_test() {
             TEST_FAIL("Array<float> initializer list construction failed");
         }
     }
+
+    {
+        ch::Array<int> foo = { 123, 123, 123, 123 };
+        ch::Array<int> bar(ch::move(foo));
+
+        if (foo || !bar) {
+            TEST_FAIL("Array move constuctor is broken");
+        }
+
+        foo.reserve(1024);
+        bar = ch::move(foo);
+        if (foo || !bar) {
+            TEST_FAIL("Array move assignment is broken");
+        }
+    }
 }
 
 static void string_test() {
-	ch::String foo = "Hello World";
-
-	ch::String bar = foo;
 
 }
 

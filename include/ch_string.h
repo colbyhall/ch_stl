@@ -15,11 +15,22 @@
 #if !defined(CH_STRING_AUTO_MEMORY)
 #define CH_STRING_AUTO_MEMORY 0
 #else
+#undef CH_STRING_AUTO_MEMORY
 #define CH_STRING_AUTO_MEMORY 1
 #endif
 
+#define CH_EOF 0
+
 namespace ch {
     usize strlen(const char* c_str);
+
+    inline bool is_eol(u32 c) {
+        return c == '\n' || c == '\r' || c == CH_EOF;
+    }
+
+    inline bool is_whitespace(u32 c) {
+        return c >= '\t' && c <= '\r' || c == ' ';
+    }
 
     /**
      * Base String
@@ -47,7 +58,6 @@ namespace ch {
             data = ch_new(allocator) T[allocated];
             ch::memcpy(data, copy.data, count * sizeof(T));
         }
-#endif
 
         Base_String(Base_String<T>&& move)
             : data(move.data), count(move.count), allocated(move.allocated), allocator(move.allocator) {
@@ -56,7 +66,6 @@ namespace ch {
             move.allocated = 0;
         }
 
-#if CH_STRING_AUTO_MEMORY
         ~Base_String() {
             if (data) {
                 assert(allocated && allocator);
@@ -76,7 +85,6 @@ namespace ch {
             ch::memcpy(data, copy.data, count * sizeof(T));
             return *this;
         }
-#endif
         Base_String<T>& operator=(Base_String<T>&& move) {
             data = move.data;
             count = move.count;
@@ -88,6 +96,7 @@ namespace ch {
             move.allocated = 0;
             return *this;
         }
+#endif
 
         explicit operator bool() const { return data && count; }
 
@@ -132,6 +141,40 @@ namespace ch {
             count = 0;
             allocated = 0;
         }
+
+#if !CH_STRING_AUTO_MEMORY
+        void advance(usize amount) {
+            assert(amount < allocated);
+            data += amount;
+            count -= amount;
+            allocated -= amount;
+        }
+
+        void eat_whitespace() {
+            while (count > 0 && is_whitespace(data[0])) {
+                advance(1);
+            }
+        }
+
+        Base_String<T> eat_line() {
+            eat_whitespace();
+
+            Base_String<T> result;
+            for (usize i = 0; i < count; i++) {
+                if (ch::is_eol(data[i])) {
+                    result.data = data;
+                    result.count = i;
+                    result.allocated = i;
+                    result.allocator = allocator;
+                    advance(i + 1);
+
+                    return result;
+                }
+            }
+
+            return result;
+        }
+#endif
 	};
 
     struct String : public ch::Base_String<u8> {

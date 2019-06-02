@@ -4,6 +4,8 @@
  * currently under construction
 */
 
+#include "ch_test.h"
+
 #include <ch_allocator.h>
 #include <ch_memory.h>
 #include <ch_array.h>
@@ -11,14 +13,7 @@
 #include <ch_string.h>
 #include <ch_templates.h>
 
-#include <utility>
-
-#include <stdio.h>
-
 int test_failed = 0;
-
-// @HACK(CHall): I get it. This is bad
-#define TEST_FAIL(string, ...) printf("  %i: ch_test failed at line %i because ", test_failed + 1, __LINE__); printf(string, __VA_ARGS__); printf("\n"); test_failed += 1;
 
 static void memory_test() {
     const usize buffer_size = 255;
@@ -48,13 +43,17 @@ static void array_test() {
         ch::Array<float> array;
         array.push(-25.f);
         if (array.count != 1 || array[0] != -25.f) {
-            TEST_FAIL("Array<float::add is failing");
+            TEST_FAIL("Array<float>::add is failing");
+        } else {
+            TEST_PASS("Array<float>::add");
         }
         array.push(45.f);
         array.push(20.f);
         array.remove(1);
         if (array[1] != 20.f) {
             TEST_FAIL("Array<float>::remove is failing to remove index 1");
+        } else {
+            TEST_PASS("Array<float>::remove");
         }
     }
 
@@ -62,6 +61,8 @@ static void array_test() {
         ch::Array<float> array = { 120.f, 12.f, 5.f };
         if (array[0] != 120.f || array[1] != 12.f || array[2] != 5.f) {
             TEST_FAIL("Array<float> initializer list construction failed");
+        } else {
+            TEST_PASS("Array<float> initializer list");
         }
     }
 
@@ -71,12 +72,16 @@ static void array_test() {
 
         if (foo != bar) {
             TEST_FAIL("Array copy constuctor is broken");
+        } else {
+            TEST_PASS("Array copy constructor");
         }
 
         foo.reserve(1024);
         bar = foo;
         if (foo != bar) {
             TEST_FAIL("Array copy assignment is broken");
+        } else {
+            TEST_PASS("Array copy assignemnt");
         }
     }
 
@@ -86,17 +91,21 @@ static void array_test() {
 
         if (foo || !bar) {
             TEST_FAIL("Array move constuctor is broken");
+        } else {
+            TEST_PASS("Array move constructor");
         }
 
         foo.reserve(1024);
         bar = ch::move(foo);
         if (foo || !bar) {
             TEST_FAIL("Array move assignment is broken");
+        } else {
+            TEST_PASS("Array move assignment");
         }
     }
 }
 
-static void string_test() {
+static void auto_string_test() {
     ch::String foo = "hello world";
     ch::String bar(ch::move(foo));
 
@@ -105,13 +114,17 @@ static void string_test() {
         ch::String bar(foo);
 
         if (foo != bar) {
-            TEST_FAIL("Array copy constuctor is broken");
+            TEST_FAIL("String copy constuctor is broken");
+        } else {
+            TEST_PASS("String copy constructor");
         }
 
         foo = "what the fuck jerry";
         bar = foo;
         if (foo != bar) {
-            TEST_FAIL("Array copy assignment is broken");
+            TEST_FAIL("String copy assignment is broken");
+        } else {
+            TEST_PASS("String copy assignment");
         }
     }
 
@@ -120,13 +133,17 @@ static void string_test() {
         ch::String bar(ch::move(foo));
 
         if (foo || !bar) {
-            TEST_FAIL("Array move constuctor is broken");
+            TEST_FAIL("String move constuctor is broken");
+        } else {
+            TEST_PASS("String move constuctor");
         }
 
         foo = "what the fuck jerry";
         bar = ch::move(foo);
         if (foo || !bar) {
-            TEST_FAIL("Array move assignment is broken");
+            TEST_FAIL("String move assignment is broken");
+        } else {
+            TEST_PASS("String move assignment");
         }
     }
 }
@@ -135,7 +152,8 @@ int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
-	string_test();
+	auto_string_test();
+    manual_string_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

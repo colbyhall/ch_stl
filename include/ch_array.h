@@ -12,9 +12,9 @@ namespace ch {
         T* data;
         usize count;
         usize allocated;
-        Allocator allocator;
+        ch::Allocator allocator;
 
-        Array(const Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
+        Array(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
 
         Array(std::initializer_list<T> init_list, const Allocator& in_alloc = ch::get_heap_allocator()) 
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
@@ -25,7 +25,7 @@ namespace ch {
             }
         }
 
-        Array(usize amount, const Allocator& in_alloc = ch::get_heap_allocator())
+        Array(usize amount, const ch::Allocator& in_alloc = ch::get_heap_allocator())
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
             reserve(amount);
         }

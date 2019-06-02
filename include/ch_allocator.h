@@ -3,11 +3,15 @@
 #include "ch_types.h"
 
 namespace ch {
-    struct Allocator;
-
-    using Allocator_Func = void* (*)(const Allocator& allocator, void* ptr, usize size);
-
+    /**
+     * Allocator concept
+     * 
+     * All actual allocator data is stored inside the allocators data as a header
+     * We can throw this around anyway we like and it should always work
+     */
     struct Allocator {
+        using Allocator_Func = void* (*)(const Allocator& allocator, void* ptr, usize size);
+        
         u8* data;
         Allocator_Func func;
 
@@ -25,7 +29,7 @@ namespace ch {
         }
     };
 
-    Allocator get_heap_allocator();
+    ch::Allocator get_heap_allocator();
 }
 
 #define ch_new new

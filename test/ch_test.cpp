@@ -7,6 +7,7 @@
 #include <ch_allocator.h>
 #include <ch_memory.h>
 #include <ch_array.h>
+#define CH_STRING_AUTO_MEMORY
 #include <ch_string.h>
 #include <ch_templates.h>
 
@@ -17,7 +18,7 @@
 int test_failed = 0;
 
 // @HACK(CHall): I get it. This is bad
-#define TEST_FAIL(string, ...) printf("ch_test failed at line %i because ", __LINE__); printf(string, __VA_ARGS__); printf("\n"); test_failed += 1;
+#define TEST_FAIL(string, ...) printf("  %i: ch_test failed at line %i because ", test_failed + 1, __LINE__); printf(string, __VA_ARGS__); printf("\n"); test_failed += 1;
 
 static void memory_test() {
     const usize buffer_size = 255;
@@ -66,6 +67,21 @@ static void array_test() {
 
     {
         ch::Array<int> foo = { 123, 123, 123, 123 };
+        ch::Array<int> bar(foo);
+
+        if (foo != bar) {
+            TEST_FAIL("Array copy constuctor is broken");
+        }
+
+        foo.reserve(1024);
+        bar = foo;
+        if (foo != bar) {
+            TEST_FAIL("Array copy assignment is broken");
+        }
+    }
+
+    {
+        ch::Array<int> foo = { 123, 123, 123, 123 };
         ch::Array<int> bar(ch::move(foo));
 
         if (foo || !bar) {
@@ -81,7 +97,38 @@ static void array_test() {
 }
 
 static void string_test() {
+    ch::String foo = "hello world";
+    ch::String bar(ch::move(foo));
 
+    {
+        ch::String foo = "hello world";
+        ch::String bar(foo);
+
+        if (foo != bar) {
+            TEST_FAIL("Array copy constuctor is broken");
+        }
+
+        foo = "what the fuck jerry";
+        bar = foo;
+        if (foo != bar) {
+            TEST_FAIL("Array copy assignment is broken");
+        }
+    }
+
+    {
+        ch::String foo = "hello world";
+        ch::String bar(ch::move(foo));
+
+        if (foo || !bar) {
+            TEST_FAIL("Array move constuctor is broken");
+        }
+
+        foo = "what the fuck jerry";
+        bar = ch::move(foo);
+        if (foo || !bar) {
+            TEST_FAIL("Array move assignment is broken");
+        }
+    }
 }
 
 int main() {
@@ -94,4 +141,6 @@ int main() {
     if (test_failed) {
         printf("%i test failed\n\nPlease report to author(s)\n", test_failed);
     } 
+
+    for(;;) {}
 }

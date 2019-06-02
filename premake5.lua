@@ -47,14 +47,6 @@ project "ch_stl"
 		systemversion "latest"
 		architecture "x64"
 
-		links
-		{
-			"opengl32",
-			"user32",
-			"kernel32",
-			"shlwapi"
-		}
-
 		files 
 		{
 			"src/win32/**.h",

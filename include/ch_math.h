@@ -13,12 +13,18 @@
 
 namespace ch {
 
+
+
 	struct Vector2 {
 		union {
 			struct { f32 x, y; };
 			struct { f32 u, v; };
 			struct { s32 ix, iy; };
 		};
+
+		Vector2() : x(0.f), y(0.f) {}
+		Vector2(f32 xy) : x(xy), y(xy) {}
+		Vector2(s32 ixy) : ix(ixy), iy(ixy) {}
 	};
 
 }

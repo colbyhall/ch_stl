@@ -12,6 +12,7 @@
 #define CH_STRING_AUTO_MEMORY
 #include <ch_string.h>
 #include <ch_templates.h>
+#include <ch_filesystem.h>
 
 int test_failed = 0;
 
@@ -158,7 +159,7 @@ int main() {
 
     if (test_failed) {
         printf("%i test failed\n\nPlease report to author(s)\n", test_failed);
-    } 
+    }
 
     for(;;) {}
 }

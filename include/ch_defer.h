@@ -2,8 +2,11 @@
 
 #include "ch_stl.h"
 
-// @TODO(CHall): Find out who created this and give credit
-
+/**
+ * This defer was created by Iganico Castano
+ * 
+ * http://the-witness.net/news/2012/11/scopeexit-in-c11/
+ */
 template <typename F>
 struct Priv_Defer {
     F f;

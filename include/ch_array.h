@@ -29,54 +29,25 @@ namespace ch {
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
             reserve(amount);
         }
-        
-        Array(const Array<T>& copy) 
-            : data(nullptr), count(copy.count), allocated(0), allocator(copy.allocator) {
-            reserve(copy.allocated);
-            ch::memcpy(data, copy.data, count * sizeof(T));
+
+        Array<T> copy(const ch::Allocator& in_alloc = ch::get_heap_allocator()) const {
+            Array<T> result;
+            result.count = count;
+            result.allocator = in_alloc;
+            result.allocated = allocated; 
+            result.data = ch_new(result.allocated) T[allocated];
+            ch::memcpy(result.data, data, count * sizeof(T));
+            return result;
         }
 
-        Array(Array<T>&& move)
-            : data(move.data), count(move.count), allocated(move.allocated), allocator(move.allocator) {
-            move.data = nullptr;
-            move.count = 0;
-            move.allocated = 0;
-        }
-
-        Array<T>& operator=(const Array<T>& copy) {
+        void destroy() {
             if (data) {
                 assert(allocator && allocated);
                 operator ch_delete[](data, allocator);
                 data = nullptr;
             }
+            count = 0;
             allocated = 0;
-            count = copy.count;
-            reserve(count);
-            ch::memcpy(data, copy.data, count * sizeof(T));
-            return *this;
-        }
-
-        Array<T>& operator=(Array<T>&& move) {
-            if (data) {
-                assert(allocator && allocated);
-                operator ch_delete[](data, allocator);
-            }
-            allocator = move.allocator;
-            allocated = move.allocated;
-            count = move.count;
-            data = move.data;
-
-            move.data = nullptr;
-            move.count = 0;
-            move.allocated = 0;
-            return *this;
-        }
-
-        ~Array() {
-            assert(allocator);
-            if (data) {
-                operator ch_delete[](data, allocator);
-            }
         }
 
         T* begin() {

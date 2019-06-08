@@ -47,57 +47,6 @@ namespace ch {
 
         Base_String(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
 
-#if CH_STRING_AUTO_MEMORY
-        Base_String(const Base_String<T>& copy) 
-            : count(copy.count), allocated(copy.allocated), allocator(copy.allocator) {
-            if (!allocated) {
-                data = nullptr;
-                return;
-            }
-
-            data = ch_new(allocator) T[allocated];
-            ch::memcpy(data, copy.data, count * sizeof(T));
-        }
-
-        Base_String(Base_String<T>&& move)
-            : data(move.data), count(move.count), allocated(move.allocated), allocator(move.allocator) {
-            move.data = nullptr;
-            move.count = 0;
-            move.allocated = 0;
-        }
-
-        ~Base_String() {
-            if (data) {
-                assert(allocated && allocator);
-                operator ch_delete[](data, allocator);
-            }
-        }
-
-        Base_String<T>& operator=(const Base_String<T>& copy) {
-            if (data) {
-                assert(allocated && allocator);
-                operator ch_delete[](data, allocator);
-            }
-            count = copy.count;
-            allocated = copy.allocated;
-            allocator = copy.allocator;
-            data = ch_new(allocator) T[allocated];
-            ch::memcpy(data, copy.data, count * sizeof(T));
-            return *this;
-        }
-        Base_String<T>& operator=(Base_String<T>&& move) {
-            data = move.data;
-            count = move.count;
-            allocated = move.allocated;
-            allocator = move.allocator;
-
-            move.data = nullptr;
-            move.count = 0;
-            move.allocated = 0;
-            return *this;
-        }
-#endif
-
         explicit operator bool() const { return data && count; }
 
         operator const T*() const {
@@ -132,7 +81,17 @@ namespace ch {
             return !(*this == right);
         }
         
-        bool destroy() {
+        Base_String<T> copy(const ch::Allocator& in_alloc = ch::get_heap_allocator()) const {
+            Base_String<T> result;
+            result.count = count;
+            result.allocator = in_alloc;
+            result.allocated = allocated;
+            result.data = ch_new(result.allocated) T[allocated];
+            ch::memcpy(result.data, data, count * sizeof(T));
+            return result;
+        }
+
+        void destroy() {
             if (data) {
                 assert(allocated && allocator);
                 operator ch_delete[](data, allocator);
@@ -142,7 +101,6 @@ namespace ch {
             allocated = 0;
         }
 
-#if !CH_STRING_AUTO_MEMORY
         void advance(usize amount) {
             assert(amount < allocated);
             data += amount;
@@ -174,7 +132,6 @@ namespace ch {
 
             return result;
         }
-#endif
 	};
 
     struct String : public ch::Base_String<u8> {

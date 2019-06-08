@@ -9,7 +9,6 @@
 #include <ch_allocator.h>
 #include <ch_memory.h>
 #include <ch_array.h>
-#define CH_STRING_AUTO_MEMORY
 #include <ch_string.h>
 #include <ch_templates.h>
 #include <ch_filesystem.h>
@@ -66,86 +65,16 @@ static void array_test() {
             TEST_PASS("Array<float> initializer list");
         }
     }
-
-    {
-        ch::Array<int> foo = { 123, 123, 123, 123 };
-        ch::Array<int> bar(foo);
-
-        if (foo != bar) {
-            TEST_FAIL("Array copy constuctor is broken");
-        } else {
-            TEST_PASS("Array copy constructor");
-        }
-
-        foo.reserve(1024);
-        bar = foo;
-        if (foo != bar) {
-            TEST_FAIL("Array copy assignment is broken");
-        } else {
-            TEST_PASS("Array copy assignemnt");
-        }
-    }
-
-    {
-        ch::Array<int> foo = { 123, 123, 123, 123 };
-        ch::Array<int> bar(ch::move(foo));
-
-        if (foo || !bar) {
-            TEST_FAIL("Array move constuctor is broken");
-        } else {
-            TEST_PASS("Array move constructor");
-        }
-
-        foo.reserve(1024);
-        bar = ch::move(foo);
-        if (foo || !bar) {
-            TEST_FAIL("Array move assignment is broken");
-        } else {
-            TEST_PASS("Array move assignment");
-        }
-    }
 }
 
-static void auto_string_test() {
+static void string_test() {
     ch::String foo = "hello world";
-    ch::String bar(ch::move(foo));
+    ch::String bar = foo;
 
-    {
-        ch::String foo = "hello world";
-        ch::String bar(foo);
-
-        if (foo != bar) {
-            TEST_FAIL("String copy constuctor is broken");
-        } else {
-            TEST_PASS("String copy constructor");
-        }
-
-        foo = "what the fuck jerry";
-        bar = foo;
-        if (foo != bar) {
-            TEST_FAIL("String copy assignment is broken");
-        } else {
-            TEST_PASS("String copy assignment");
-        }
-    }
-
-    {
-        ch::String foo = "hello world";
-        ch::String bar(ch::move(foo));
-
-        if (foo || !bar) {
-            TEST_FAIL("String move constuctor is broken");
-        } else {
-            TEST_PASS("String move constuctor");
-        }
-
-        foo = "what the fuck jerry";
-        bar = ch::move(foo);
-        if (foo || !bar) {
-            TEST_FAIL("String move assignment is broken");
-        } else {
-            TEST_PASS("String move assignment");
-        }
+    if (foo.data != bar.data) {
+        TEST_FAIL("String has a reallocation");
+    } else {
+        TEST_PASS("String copy")
     }
 }
 
@@ -153,8 +82,7 @@ int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
-	auto_string_test();
-    manual_string_test();
+	string_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

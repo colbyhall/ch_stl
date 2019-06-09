@@ -22,12 +22,18 @@ project "ch_stl"
         "src/*.h",
 		"src/*.cpp",
 		"include/*.h"
+		"include/gl/*.h"
     }
 
     includedirs
     {
         "include",
     }
+
+	links
+	{
+		"opengl32"
+	}
 
     defines
 	{
@@ -50,7 +56,8 @@ project "ch_stl"
 		files 
 		{
 			"src/win32/**.h",
-			"src/win32/**.cpp"
+			"src/win32/**.cpp",
+			"include/win32/**.h"
 		}
 
 project "ch_test"
@@ -71,7 +78,8 @@ project "ch_test"
 
 	links
 	{
-		"bin/ch_stl.lib"
+		"bin/ch_stl.lib",
+		
 	}
 
 	includedirs

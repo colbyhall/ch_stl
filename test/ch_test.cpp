@@ -13,7 +13,7 @@
 #include <ch_templates.h>
 #include <ch_filesystem.h>
 #include <ch_math.h>
-#include <ch_window.h>
+#include <ch_opengl.h>
 
 int test_failed = 0;
 
@@ -94,18 +94,6 @@ bool exit_requested = false;
 
 static void window_test() {
     ch::Window window;
-    ch::create_window(TEXT("whbat the fuck"), 512, 512, 0, &window);
-    window.set_visibility(true);
-
-    auto exit_request = [](const ch::Window& window) {
-        exit_requested = true;
-    };
-
-    window.on_exit_requested = exit_request;
-
-    while(!exit_requested) {
-        ch::poll_events();
-    }
 }
 
 int main() {

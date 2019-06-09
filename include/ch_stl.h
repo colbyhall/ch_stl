@@ -137,3 +137,7 @@ VERSIONS
 #ifndef CH_COMPILER_CLANG
     #define CH_COMPILER_CLANG 0
 #endif
+
+#if CH_COMPILER_MSVC
+#define FORCEINLINE __forceinline
+#endif

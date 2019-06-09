@@ -12,6 +12,7 @@
 #include <ch_string.h>
 #include <ch_templates.h>
 #include <ch_filesystem.h>
+#include <ch_math.h>
 
 int test_failed = 0;
 
@@ -78,11 +79,22 @@ static void string_test() {
     }
 }
 
+static void math_test() {
+    ch::Vector2 vec = 5.f;
+    ch::Vector2 vec_n = vec.get_normalized();
+    if (!vec_n.is_normalized()) {
+        TEST_FAIL("Vec2 normalized failed");
+    } else {
+        TEST_PASS("Vec2 nomalized");
+    }
+}
+
 int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
 	string_test();
+    math_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

@@ -8,6 +8,7 @@ namespace ch {
 	using Stream_Handle = void*;
 	using File_Handle = Stream_Handle;
 
+    // @TODO(CHall): Add in more write functions
 	struct OS_Stream {
 		Stream_Handle os_handle;
 
@@ -22,5 +23,9 @@ namespace ch {
 
 	extern OS_Stream std_out;
 	extern OS_Stream std_err;
+
+    struct File : public OS_Stream {
+        
+    };
 
 }

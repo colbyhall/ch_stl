@@ -13,6 +13,7 @@
 #include <ch_templates.h>
 #include <ch_filesystem.h>
 #include <ch_math.h>
+#include <ch_window.h>
 
 int test_failed = 0;
 
@@ -69,7 +70,7 @@ static void array_test() {
 }
 
 static void string_test() {
-    ch::String foo = "hello world";
+    ch::String foo = TEXT("hello world");
     ch::String bar = foo;
 
     if (foo.data != bar.data) {
@@ -89,12 +90,31 @@ static void math_test() {
     }
 }
 
+bool exit_requested = false;
+
+static void window_test() {
+    ch::Window window;
+    ch::create_window(TEXT("whbat the fuck"), 512, 512, 0, &window);
+    window.set_visibility(true);
+
+    auto exit_request = [](const ch::Window& window) {
+        exit_requested = true;
+    };
+
+    window.on_exit_requested = exit_request;
+
+    while(!exit_requested) {
+        ch::poll_events();
+    }
+}
+
 int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
 	string_test();
     math_test();
+    window_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

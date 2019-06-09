@@ -15,7 +15,7 @@ workspace "ch_stl"
 project "ch_stl"
     kind "StaticLib"
     language "C++"
-    characterset ("ASCII")
+    characterset ("Unicode")
 
     files
     {
@@ -56,7 +56,7 @@ project "ch_stl"
 project "ch_test"
 	kind "ConsoleApp"
     language "C++"
-    characterset ("ASCII")
+    characterset ("Unicode")
 
 	dependson 
 	{

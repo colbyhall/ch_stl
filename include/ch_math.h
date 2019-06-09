@@ -46,96 +46,96 @@ namespace ch {
             return !(*this == right);
         }
 
-        FORCEINLINE Vector2 operator+(const Vector2& right) const {
+        CH_FORCEINLINE Vector2 operator+(const Vector2& right) const {
             return Vector2(x + right.x, y + right.y);
         }
 
-        FORCEINLINE void operator+=(const Vector2& right) {
+        CH_FORCEINLINE void operator+=(const Vector2& right) {
             *this = *this + right;
         }
 
-        FORCEINLINE Vector2 operator+(f32 s) const {
+        CH_FORCEINLINE Vector2 operator+(f32 s) const {
             return Vector2(x + s, y + s);
         }
 
-        FORCEINLINE void operator+=(f32 s) {
+        CH_FORCEINLINE void operator+=(f32 s) {
             *this = *this + s;
         }
 
-        FORCEINLINE Vector2 operator-(const Vector2& right) const {
+        CH_FORCEINLINE Vector2 operator-(const Vector2& right) const {
             return Vector2(x - right.x, y - right.y);
         }
 
-        FORCEINLINE void operator-=(const Vector2& right) {
+        CH_FORCEINLINE void operator-=(const Vector2& right) {
             *this = *this - right;
         }
 
-        FORCEINLINE Vector2 operator-(f32 s) const {
+        CH_FORCEINLINE Vector2 operator-(f32 s) const {
             return Vector2(x - s, y - s);
         }
 
-        FORCEINLINE void operator-=(f32 s) {
+        CH_FORCEINLINE void operator-=(f32 s) {
             *this = *this - s;
         }
 
-        FORCEINLINE Vector2 operator*(const Vector2& right) const {
+        CH_FORCEINLINE Vector2 operator*(const Vector2& right) const {
             return Vector2(x * right.x, y * right.y);
         }
 
-        FORCEINLINE void operator*=(const Vector2& right) {
+        CH_FORCEINLINE void operator*=(const Vector2& right) {
             *this = *this * right;
         }
 
-        FORCEINLINE Vector2 operator*(f32 s) const {
+        CH_FORCEINLINE Vector2 operator*(f32 s) const {
             return Vector2(x * s, y * s);
         }
 
-        FORCEINLINE void operator*=(f32 s) {
+        CH_FORCEINLINE void operator*=(f32 s) {
             *this = *this * s;
         }
 
-        FORCEINLINE Vector2 operator/(const Vector2& right) const {
+        CH_FORCEINLINE Vector2 operator/(const Vector2& right) const {
             return Vector2(x / right.x, y / right.y);
         }
 
-        FORCEINLINE void operator/=(const Vector2& right) {
+        CH_FORCEINLINE void operator/=(const Vector2& right) {
             *this = *this / right;
         }
 
-        FORCEINLINE Vector2 operator/(f32 s) const{
+        CH_FORCEINLINE Vector2 operator/(f32 s) const{
             return Vector2(x / s, y / s);
         }
 
-        FORCEINLINE void operator/=(f32 s) {
+        CH_FORCEINLINE void operator/=(f32 s) {
             *this = *this / s;
         }
 
-        FORCEINLINE f32 length_squared() const {
+        CH_FORCEINLINE f32 length_squared() const {
             return x * x + y * y;
         }
 
-        FORCEINLINE f32 length() const {
+        CH_FORCEINLINE f32 length() const {
             return ch::sqrt(length_squared());
         }
 
-        FORCEINLINE void normalize() {
+        CH_FORCEINLINE void normalize() {
             const f32 l = length();
             if (l > 0.f) {
                 *this /= l;
             }
         }
         
-        FORCEINLINE Vector2 get_normalized() const {
+        CH_FORCEINLINE Vector2 get_normalized() const {
             Vector2 result = *this;
             result.normalize();
             return result;
         }
 
-        FORCEINLINE bool is_normalized() const {
+        CH_FORCEINLINE bool is_normalized() const {
             return get_normalized().length() == 1.f;
         }
 
-        FORCEINLINE f32 dot(const Vector2& other) const {
+        CH_FORCEINLINE f32 dot(const Vector2& other) const {
             return x * other.x + y * other.y;
         }
 	};
@@ -166,100 +166,100 @@ namespace ch {
             return !(*this == right);
         }
 
-        FORCEINLINE Vector3 operator+(const Vector3& right) const {
+        CH_FORCEINLINE Vector3 operator+(const Vector3& right) const {
             return Vector3(x + right.x, y + right.y, z + right.z);
         }
 
-        FORCEINLINE void operator+=(const Vector3& right) {
+        CH_FORCEINLINE void operator+=(const Vector3& right) {
             *this = *this + right;
         }
 
-        FORCEINLINE Vector3 operator+(f32 s) const {
+        CH_FORCEINLINE Vector3 operator+(f32 s) const {
             return Vector3(x + s, y + s, z + s);
         }
 
-        FORCEINLINE void operator+=(f32 s) {
+        CH_FORCEINLINE void operator+=(f32 s) {
             *this = *this + s;
         }
 
-        FORCEINLINE Vector3 operator-(const Vector3& right) const {
+        CH_FORCEINLINE Vector3 operator-(const Vector3& right) const {
             return Vector3(x - right.x, y - right.y, z - right.z);
         }
 
-        FORCEINLINE void operator-=(const Vector3& right) {
+        CH_FORCEINLINE void operator-=(const Vector3& right) {
             *this = *this - right;
         }
 
-        FORCEINLINE Vector3 operator-(f32 s) const {
+        CH_FORCEINLINE Vector3 operator-(f32 s) const {
             return Vector3(x - s, y - s, z - s);
         }
 
-        FORCEINLINE void operator-=(f32 s) {
+        CH_FORCEINLINE void operator-=(f32 s) {
             *this = *this - s;
         }
 
-        FORCEINLINE Vector3 operator*(const Vector3& right) const {
+        CH_FORCEINLINE Vector3 operator*(const Vector3& right) const {
             return Vector3(x * right.x, y * right.y, z * right.z);
         }
 
-        FORCEINLINE void operator*=(const Vector3& right) {
+        CH_FORCEINLINE void operator*=(const Vector3& right) {
             *this = *this * right;
         }
 
-        FORCEINLINE Vector3 operator*(f32 s) const {
+        CH_FORCEINLINE Vector3 operator*(f32 s) const {
             return Vector3(x * s, y * s, z * s);
         }
 
-        FORCEINLINE void operator*=(f32 s) {
+        CH_FORCEINLINE void operator*=(f32 s) {
             *this = *this * s;
         }
 
-        FORCEINLINE Vector3 operator/(const Vector3& right) const {
+        CH_FORCEINLINE Vector3 operator/(const Vector3& right) const {
             return Vector3(x / right.x, y / right.y, z / right.z);
         }
 
-        FORCEINLINE void operator/=(const Vector3& right) {
+        CH_FORCEINLINE void operator/=(const Vector3& right) {
             *this = *this / right;
         }
 
-        FORCEINLINE Vector3 operator/(f32 s) const {
+        CH_FORCEINLINE Vector3 operator/(f32 s) const {
             return Vector3(x / s, y / s, z / s);
         }
 
-        FORCEINLINE void operator/=(f32 s) {
+        CH_FORCEINLINE void operator/=(f32 s) {
             *this = *this / s;
         }
 
-        FORCEINLINE f32 length_squared() const {
+        CH_FORCEINLINE f32 length_squared() const {
             return x * x + y * y + z * z;
         }
 
-        FORCEINLINE f32 length() const {
+        CH_FORCEINLINE f32 length() const {
             return ch::sqrt(length_squared());
         }
 
-        FORCEINLINE void normalize() {
+        CH_FORCEINLINE void normalize() {
             const f32 l = length();
             if (l > 0.f) {
                 *this /= l;
             }
         }
 
-        FORCEINLINE Vector3 get_normalized() const {
+        CH_FORCEINLINE Vector3 get_normalized() const {
             Vector3 result = *this;
             result.normalize();
             return result;
         }
 
-        FORCEINLINE bool is_normalized() const {
+        CH_FORCEINLINE bool is_normalized() const {
             return get_normalized().length() == 1.f;
         }
 
-        FORCEINLINE f32 dot(const Vector3& other) const {
+        CH_FORCEINLINE f32 dot(const Vector3& other) const {
             return x * other.x + y * other.y + z * other.z;
         }
 
-        FORCEINLINE Vector3 cross(const Vector3& other) const {
+        CH_FORCEINLINE Vector3 cross(const Vector3& other) const {
             Vector3 result;
             result.x = y * other.z - z * other.y;
             result.y = z * other.x - x * other.z;

@@ -22,7 +22,7 @@
 #define CH_EOF 0
 
 namespace ch {
-    usize strlen(const char* c_str);
+    usize strlen(const tchar* c_str);
 
     inline bool is_eol(u32 c) {
         return c == '\n' || c == '\r' || c == CH_EOF;
@@ -134,17 +134,19 @@ namespace ch {
         }
 	};
 
-    struct String : public ch::Base_String<u8> {
-        String(const char* c_str, const ch::Allocator& in_alloc = ch::get_heap_allocator()) {
+    struct String : public ch::Base_String<tchar> {
+        String(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : Base_String<tchar>(in_alloc) { }
+
+        String(const tchar* c_str, const ch::Allocator& in_alloc = ch::get_heap_allocator()) {
             count = ch::strlen(c_str);
             allocated = count + 1;
             allocator = in_alloc;
-            data = ch_new(allocator) u8[allocated];
+            data = ch_new(allocator) tchar[allocated];
             ch::memcpy(data, c_str, count);
             data[count] = 0;
         }
 
-        String& operator=(const char* c_str) {
+        String& operator=(const tchar* c_str) {
             const usize c_str_count = ch::strlen(c_str);
             if (c_str_count + 1 > allocated) {
                 if (data) {
@@ -152,7 +154,7 @@ namespace ch {
                     operator ch_delete[](data, allocator);
                 }
                 allocated = c_str_count + 1;
-                data = ch_new(allocator) u8[allocated];
+                data = ch_new(allocator) tchar[allocated];
             }
 
             count = c_str_count;
@@ -160,15 +162,15 @@ namespace ch {
             return *this;
         }
 
-        operator const char*() const {
-            return (char*)data;
+        operator const tchar*() const {
+            return (tchar*)data;
         }
 
-        operator char*() const {
-            return (char*)data;
+        operator tchar*() const {
+            return (tchar*)data;
         }
 
-        bool operator==(const char* c_str) const {
+        bool operator==(const tchar* c_str) const {
             const usize c_count = ch::strlen(c_str);
             if (count != c_count) return false;
 
@@ -179,8 +181,18 @@ namespace ch {
             return true;
         }
 
-        bool operator!=(const char* c_str) const {
+        bool operator!=(const tchar* c_str) const {
             return !(*this == c_str);
+        }
+
+        String copy(const ch::Allocator& in_alloc = ch::get_heap_allocator()) const {
+            String result;
+            result.count = count;
+            result.allocator = in_alloc;
+            result.allocated = allocated;
+            result.data = ch_new(in_alloc) tchar[allocated];
+            ch::memcpy(result.data, data, count);
+            return result;
         }
     };
 }

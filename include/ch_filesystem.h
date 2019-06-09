@@ -18,7 +18,7 @@ namespace ch {
 		OS_Stream(Stream_Handle handle) : os_handle(handle) {}
 
 		OS_Stream& write_raw(const void* ptr, usize size);
-		OS_Stream& operator<<(const char* c_str);
+		OS_Stream& operator<<(const tchar* c_str);
 	};
 
 	extern OS_Stream std_out;

@@ -139,5 +139,25 @@ VERSIONS
 #endif
 
 #if CH_COMPILER_MSVC
-#define FORCEINLINE __forceinline
+#define CH_FORCEINLINE __forceinline
+#endif
+
+#ifndef CH_FORCEINLINE
+#define CH_FORCEINLINE inline
+#endif
+
+#ifdef UNICODE
+#define CH_UNICODE 1
+#endif
+
+#ifndef CH_UNICODE
+#define CH_UNICODE 0
+#endif
+
+#undef TEXT
+
+#if CH_UNICODE
+#define TEXT(str) L##str
+#else
+#define TEXT(str) str
 #endif

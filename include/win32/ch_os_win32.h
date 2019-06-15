@@ -7,4 +7,6 @@
 
 namespace ch {
     using OS_Window_Handle = HWND;
+    using OS_Stream_Handle = HANDLE;
+    using OS_File_Handle = OS_Stream_Handle;
 }

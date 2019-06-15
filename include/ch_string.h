@@ -19,13 +19,15 @@
 #define CH_STRING_AUTO_MEMORY 1
 #endif
 
-#define CH_EOF 0
-
 namespace ch {
     usize strlen(const tchar* c_str);
 
+    const tchar endl = '\n';
+    const tchar eol = '\n';
+    const tchar eof = 0;
+
     inline bool is_eol(u32 c) {
-        return c == '\n' || c == '\r' || c == CH_EOF;
+        return c == '\n' || c == '\r' || c == ch::eof;
     }
 
     inline bool is_whitespace(u32 c) {
@@ -81,14 +83,16 @@ namespace ch {
             return !(*this == right);
         }
         
-        Base_String<T> copy(const ch::Allocator& in_alloc = ch::get_heap_allocator()) const {
-            Base_String<T> result;
-            result.count = count;
-            result.allocator = in_alloc;
-            result.allocated = allocated;
-            result.data = ch_new(result.allocated) T[allocated];
-            ch::memcpy(result.data, data, count * sizeof(T));
-            return result;
+        void reserve(usize amount) {
+            assert(allocator);
+
+            allocated += amount;
+
+            if (data) {
+                data = (T*)ch::realloc(data, allocated * sizeof(T));
+            } else {
+                data = ch_new(allocator) T[allocated];
+            }
         }
 
         void destroy() {

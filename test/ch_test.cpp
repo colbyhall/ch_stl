@@ -157,6 +157,17 @@ static void gl_test() {
     TEST_PASS("Swap window buffer");
 }
 
+static void fs_test() {
+    ch::String current_path = ch::get_current_path();
+    if (!current_path) {
+        TEST_FAIL("failed to get current path");
+    } else {
+        TEST_PASS("get current path");
+        ch::std_out << current_path << ch::endl;
+    }
+    defer(current_path.destroy());
+}
+
 int main() {
     printf("-------Beginning c_stl Test-------\n");
     memory_test();
@@ -165,6 +176,7 @@ int main() {
     math_test();
     window_test();
     gl_test();
+    fs_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

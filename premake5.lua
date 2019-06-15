@@ -21,7 +21,7 @@ project "ch_stl"
     {
         "src/*.h",
 		"src/*.cpp",
-		"include/*.h"
+		"include/*.h",
 		"include/gl/*.h"
     }
 

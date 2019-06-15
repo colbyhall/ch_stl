@@ -14,6 +14,7 @@
 #include <ch_filesystem.h>
 #include <ch_math.h>
 #include <ch_opengl.h>
+#include <ch_defer.h>
 
 int test_failed = 0;
 
@@ -90,10 +91,70 @@ static void math_test() {
     }
 }
 
-bool exit_requested = false;
-
 static void window_test() {
     ch::Window window;
+    if (!ch::create_window(CH_TEXT("test window"), 512, 512, 0, &window)) {
+        TEST_FAIL("Failed to create window");
+        return;
+    } else {
+        TEST_PASS("Create Window");
+    }
+    defer(window.destroy());
+
+    window.set_visibility(true);
+
+    if (!window.is_visible) {
+        TEST_FAIL("Failed to set window visibility");
+    } else {
+        TEST_PASS("Setting visibility");
+    }
+}
+
+static bool exit_requested = false;
+
+static void gl_test() {
+    if (!ch::load_gl()) {
+        TEST_FAIL("Failed to load opengl");
+        return;
+    } else {
+        TEST_PASS("Loading opengl");
+    }
+
+    ch::Window window;
+    if (!ch::create_gl_window(CH_TEXT("opengl test window"), 512, 512, 0, &window)) {
+        TEST_FAIL("Failed to open a gl window");
+        return;
+    } else {
+        TEST_PASS("Create GL Window");
+    }
+    defer(window.destroy());
+
+    window.set_visibility(true);
+
+    if (!ch::make_current(window)) {
+        TEST_FAIL("Failed to set current gl window");
+    } else {
+        TEST_PASS("Set current gl window");
+    }
+
+    auto exit_request = [](const ch::Window& window) {
+        exit_requested = true;
+    };
+
+    window.on_exit_requested = exit_request;
+
+    while (!exit_requested) {
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(0.f, 1.f, 1.f, 1.f);
+
+        if (!ch::swap_buffers(window)) {
+            TEST_FAIL("failed to swap window buffer");
+            break;
+        }
+        ch::poll_events();
+    }
+
+    TEST_PASS("Swap window buffer");
 }
 
 int main() {
@@ -103,6 +164,7 @@ int main() {
 	string_test();
     math_test();
     window_test();
+    gl_test();
     printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {

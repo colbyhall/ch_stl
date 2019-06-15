@@ -1,5 +1,4 @@
 #include <ch_opengl.h>
-
 #include <ch_defer.h>
 
 WGL_Create_Context_Attribs_ARB wglCreateContextAttribsARB = nullptr;
@@ -95,8 +94,7 @@ bool ch::is_gl_loaded() {
     return result;
 }
 
-bool ch::swap_buffers(const ch::Window& window) {
-    HWND window_handle = (HWND)window.os_handle;
+bool ch::swap_buffers(OS_Window_Handle window_handle) {
     HDC window_context = GetDC(window_handle);
     defer(ReleaseDC(window_handle, window_context));
     return SwapBuffers(window_context);
@@ -134,8 +132,8 @@ bool ch::create_gl_window(const tchar* title, u32 width, u32 height, u32 style, 
     return false;
 }
 
-bool ch::make_current(const ch::Window& window) {
-    HDC window_context = GetDC((HWND)window.os_handle);
+bool ch::make_current(OS_Window_Handle window_handle) {
+    HDC window_context = GetDC(window_handle);
 
     if (wglCreateContextAttribsARB) {
         HGLRC glrc = wglCreateContextAttribsARB(window_context, 0, win32_opengl_attribs);

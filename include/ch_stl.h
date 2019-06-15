@@ -154,10 +154,8 @@ VERSIONS
 #define CH_UNICODE 0
 #endif
 
-#undef TEXT
-
 #if CH_UNICODE
-#define TEXT(str) L##str
+#define CH_TEXT(str) L##str
 #else
-#define TEXT(str) str
+#define CH_TEXT(str) str
 #endif

@@ -9,18 +9,6 @@ void ch::memcpy(void* dest, const void* src, usize size) {
     }
 }
 
-void ch::memset(void* ptr, usize size, u8 c) {
-    u8* casted_ptr = (u8*)ptr;
-
-    for (usize i = 0; i < size; i++) {
-        casted_ptr[i] = c;
-    }
-}
-
-void ch::memzero(void* ptr, usize size) {
-    ch::memset(ptr, size, 0);
-}
-
 void* ch::memmove(void* dest, const void* src, usize size) {
     if (dest == src) return dest;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ch_string.h"
+#include "ch_os.h"
 
 namespace ch {
 
@@ -12,7 +13,7 @@ namespace ch {
     };
 
     struct Window {
-        void* os_handle;
+        OS_Window_Handle os_handle;
 
         ch::String title;
         u32 width, height;
@@ -20,8 +21,10 @@ namespace ch {
         u32 style;
 
         explicit operator bool() const { return os_handle; }
+        operator OS_Window_Handle() const { return os_handle; }
+        operator OS_Window_Handle() { return os_handle; }
 
-        bool set_visibility(bool visibility);
+        void set_visibility(bool visibility);
         void destroy();
 
         using On_Exit_Requested = void(*)(const Window& window);

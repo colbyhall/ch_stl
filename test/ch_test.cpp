@@ -39,6 +39,42 @@ static void memory_test() {
     if (buffer[0] != 5) {
         TEST_FAIL("ch::memmove is broken");
     }
+
+
+    ch::Allocator arena = ch::make_arena_allocator(1024);
+    defer(ch::destroy_arena_allocator(&arena));
+    {
+        u8* foo = (u8*)arena.alloc(256);
+        u8* bar = (u8*)arena.alloc(256);
+        ch::Arena_Allocator_Header* header = arena.get_header<ch::Arena_Allocator_Header>();
+        if (header->current != 512) {
+            TEST_FAIL("Arean allocator book keeping is off");
+        } else {
+            TEST_PASS("Arena allocator book keeping");
+        }
+
+        const usize distance = bar - foo;
+        if (distance != 256) {
+            TEST_FAIL("Arean allocator allocation distance makes no sense");
+        } else {
+            TEST_PASS("Arena allocator allocation");
+        }
+
+        ch::reset_arena_allocator(&arena);
+        bar = (u8*)arena.alloc(256);
+        if (header->current != 256) {
+            TEST_FAIL("Arean allocator book keeping after reset is broken");
+        }
+        else {
+            TEST_PASS("Arena allocator book keeping after reset");
+        }
+
+        if (bar != foo) {
+            TEST_FAIL("Arena allocation after reset is not correct");
+        } else {
+            TEST_PASS("Arena allocation after reset");
+        }
+    }
 }
 
 static void array_test() {

@@ -30,6 +30,16 @@ namespace ch {
     };
 
     ch::Allocator get_heap_allocator();
+
+    struct Arena_Allocator_Header {
+        usize allocated;
+        usize current;
+        void* data;
+    };
+
+    ch::Allocator make_arena_allocator(usize size);
+    void destroy_arena_allocator(ch::Allocator* allocator);
+    void reset_arena_allocator(ch::Allocator* allocator);
 }
 
 #define ch_new new

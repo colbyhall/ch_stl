@@ -48,11 +48,9 @@ static void* arena_alloc(const ch::Allocator& allocator, void* ptr, usize size) 
         void* result = (u8*)header->data + header->current;
         header->current += size;
         return result;
-    }
-    else {
-        header->current = 0;
-        return nullptr;
-    }
+    } 
+
+	return nullptr;
 }
 
 ch::Allocator ch::make_arena_allocator(usize size) {

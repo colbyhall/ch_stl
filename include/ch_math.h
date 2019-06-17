@@ -3,11 +3,11 @@
 #include "ch_types.h"
 
 // @TODO(CHall): Finish math lib
+// Scalar Math
 // Vector4
 // Quaternion
 // Plane
 // Matrix4x4
-// Scalar Math
 
 namespace ch {
 
@@ -21,6 +21,19 @@ namespace ch {
     f32 tan(f32 s);
     f32 atan(f32 s);
     f32 atan2(f32 x, f32 y);
+
+	const f32 pi = 3.1415f;
+	const f32 tau = (pi * 2.f);
+
+	const f32 to_rad = pi / 180.f;
+	const f32 to_deg = 180.f / pi;
+
+	template <typename T>
+	T clamp(T value, T min, T max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
 
 	struct Vector2 {
 		union {
@@ -267,5 +280,23 @@ namespace ch {
             return result;
         }
     };
+
+	// @TODO(CHall): Finish
+	struct Vector4 {
+		union {
+			struct { f32 x, y, z, w; };
+			struct { f32 r, g, b, a; };
+			struct { s32 ix, iy, iz, iw; };
+			struct { ch::Vector2 xy; ch::Vector2 zw; };
+			struct { ch::Vector3 xyz; f32 w; };
+			f32 xyzw[4];
+			f32 rgba[4];
+		};
+	};
+
+	struct Quaternion {
+		f32 x, y, z, w;
+	};
+
 
 }

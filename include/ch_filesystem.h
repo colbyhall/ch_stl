@@ -22,8 +22,20 @@ namespace ch {
 	extern OS_Stream std_out;
 	extern OS_Stream std_err;
 
+	enum File_Open_Flags {
+		FO_Read,
+		FO_Write,
+		FO_Binary,
+		FO_Lock
+	};
+
+	// @TODO(CHall): Finish this
     struct File : public OS_Stream {
-        
+		u32 flags;
+		bool is_open;
+
+		bool open(const tchar* path, u32 open_flags) {}
+		bool close() {}
     };
 
     ch::String get_current_path();

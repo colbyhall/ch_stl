@@ -127,9 +127,12 @@ static void math_test() {
     }
 }
 
+const u32 width = 1280;
+const u32 height = (u32)((f32)width * (9.f / 16.f));
+
 static void window_test() {
     ch::Window window;
-    if (!ch::create_window(CH_TEXT("test window"), 512, 512, 0, &window)) {
+    if (!ch::create_window(CH_TEXT("test window"), width, height, 0, &window)) {
         TEST_FAIL("Failed to create window");
         return;
     } else {
@@ -157,7 +160,7 @@ static void gl_test() {
     }
 
     ch::Window window;
-    if (!ch::create_gl_window(CH_TEXT("opengl test window"), 512, 512, 0, &window)) {
+    if (!ch::create_gl_window(CH_TEXT("opengl test window"), width, height, 0, &window)) {
         TEST_FAIL("Failed to open a gl window");
         return;
     } else {

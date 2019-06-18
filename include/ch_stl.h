@@ -37,7 +37,6 @@ TODO
     - hash functions
     - file PLATFORM
     - containers
-        - array
         - fixed_array
         - hash_map
         - set
@@ -46,7 +45,6 @@ TODO
         - mutex
         - semaphore
     - allocators
-        - arena
         - pool
         - stack
         - free list

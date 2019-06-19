@@ -85,7 +85,7 @@ void ch::poll_events() {
 }
 
 void ch::Window::set_visibility(bool visibility) {
-    ShowWindow(os_handle, (visibility ? SW_SHOW : SW_HIDE));
+    ShowWindow((HWND)os_handle, (visibility ? SW_SHOW : SW_HIDE));
     is_visible = visibility;
 }
 
@@ -95,7 +95,7 @@ void ch::Window::destroy() {
     }
 
     if (os_handle) {
-        DestroyWindow(os_handle);
+        DestroyWindow((HWND)os_handle);
         os_handle = nullptr;
     }
 }

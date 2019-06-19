@@ -4,6 +4,11 @@
 #error This should not be compiling on this platform
 #endif
 
+#define WIN32_MEAN_AND_LEAN
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+
 ch::OS_Stream ch::std_out = GetStdHandle(STD_OUTPUT_HANDLE);
 ch::OS_Stream ch::std_err = GetStdHandle(STD_ERROR_HANDLE);
 

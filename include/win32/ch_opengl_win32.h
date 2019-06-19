@@ -6,7 +6,10 @@
 #error This should not be compiling on this platform
 #endif
 
-#include "ch_os_win32.h"
+#define WIN32_MEAN_AND_LEAN
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
 #include <gl/GL.h>
 
 #define WGL_CONTEXT_MAJOR_VERSION_ARB             0x2091

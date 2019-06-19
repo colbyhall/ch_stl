@@ -95,8 +95,8 @@ bool ch::is_gl_loaded() {
 }
 
 bool ch::swap_buffers(OS_Window_Handle window_handle) {
-    HDC window_context = GetDC(window_handle);
-    defer(ReleaseDC(window_handle, window_context));
+    HDC window_context = GetDC((HWND)window_handle);
+    defer(ReleaseDC((HWND)window_handle, window_context));
     return SwapBuffers(window_context);
 }
 
@@ -133,7 +133,7 @@ bool ch::create_gl_window(const tchar* title, u32 width, u32 height, u32 style, 
 }
 
 bool ch::make_current(OS_Window_Handle window_handle) {
-    HDC window_context = GetDC(window_handle);
+    HDC window_context = GetDC((HWND)window_handle);
 
     if (wglCreateContextAttribsARB) {
         HGLRC glrc = wglCreateContextAttribsARB(window_context, 0, win32_opengl_attribs);

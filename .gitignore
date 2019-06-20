@@ -1,6 +1,9 @@
 /.vscode
 /.vs
+test/.vs
+test/.vscode
 /bin
+
 *.vcxproj
 *.user
 *.filters

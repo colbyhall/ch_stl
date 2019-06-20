@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ch_types.h>
+#include "../ch_types.h"
 
 #if !CH_PLATFORM_WINDOWS
 #error This should not be compiling on this platform

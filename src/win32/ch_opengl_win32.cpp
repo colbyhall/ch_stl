@@ -1,5 +1,5 @@
-#include <ch_opengl.h>
-#include <ch_defer.h>
+#include "../ch_opengl.h"
+#include "../ch_defer.h"
 
 WGL_Create_Context_Attribs_ARB wglCreateContextAttribsARB = nullptr;
 WGL_Choose_Pixel_Format_ARB wglChoosePixelFormatARB = nullptr;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../ch_types.h"
+
 namespace ch {
 	using OS_Handle = void*;
     using OS_Window_Handle = OS_Handle;

@@ -1,33 +1,12 @@
-workspace "ch_stl"
-    architecture "x64"
-    startproject "ch_test"
-
-    configurations
-    {
-        "Debug",
-        "Release"
-    }
-
-	targetdir ("bin")
-	objdir ("bin")
-	debugdir ("bin")
-
 project "ch_stl"
     kind "StaticLib"
     language "C++"
-    characterset ("ascii")
 
     files
     {
         "src/*.h",
 		"src/*.cpp",
-		"include/*.h",
-		"include/gl/*.h"
-    }
-
-    includedirs
-    {
-        "include",
+		"src/gl/*.h"
     }
 
 	links
@@ -51,38 +30,9 @@ project "ch_stl"
     filter "system:windows"
         cppdialect "C++17"
 		systemversion "latest"
-		architecture "x64"
 
 		files 
 		{
 			"src/win32/**.h",
 			"src/win32/**.cpp",
-			"include/win32/**.h"
 		}
-
-project "ch_test"
-	kind "ConsoleApp"
-    language "C++"
-    characterset ("ascii")
-
-	dependson 
-	{
-		"ch_stl"
-	}
-
-	files 
-	{
-		"test/*.h",
-		"test/*.cpp"
-	}
-
-	links
-	{
-		"bin/ch_stl.lib",
-		
-	}
-
-	includedirs
-	{
-		"include"
-	}

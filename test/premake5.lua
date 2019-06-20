@@ -38,5 +38,5 @@ project "ch_test"
 
 	includedirs
 	{
-		"../src"
+		".."
 	}

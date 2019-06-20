@@ -4,9 +4,9 @@ project "ch_stl"
 
     files
     {
-        "src/*.h",
-		"src/*.cpp",
-		"src/gl/*.h"
+        "*.h",
+		"*.cpp",
+		"thirdparty/*.h"
     }
 
 	links
@@ -33,6 +33,6 @@ project "ch_stl"
 
 		files 
 		{
-			"src/win32/**.h",
-			"src/win32/**.cpp",
+			"win32/**.h",
+			"win32/**.cpp",
 		}

@@ -7,7 +7,7 @@
 #include "win32/ch_opengl_win32.h"
 #endif
 
-#include "gl/glext.h"
+#include "thirdparty/glext.h"
 
 #define GL_BINDINGS(macro) \
 macro(PFNGLBINDSAMPLERPROC,glBindSampler) \

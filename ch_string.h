@@ -146,7 +146,7 @@ namespace ch {
             allocated = count + 1;
             allocator = in_alloc;
             data = ch_new(allocator) tchar[allocated];
-            ch::memcpy(data, c_str, count);
+            ch::memcpy(data, c_str, count * sizeof(tchar));
             data[count] = 0;
         }
 
@@ -162,7 +162,7 @@ namespace ch {
             }
 
             count = c_str_count;
-            ch::memcpy(data, c_str, count);
+            ch::memcpy(data, c_str, count * sizeof(tchar));
             return *this;
         }
 

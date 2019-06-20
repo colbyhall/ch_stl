@@ -107,7 +107,7 @@ static void array_test() {
 }
 
 static void string_test() {
-    ch::String foo = TEXT("hello world");
+	ch::String foo = ch::String(CH_TEXT("hello world"));
     ch::String bar = foo;
 
     if (foo.data != bar.data) {

@@ -32,6 +32,30 @@ namespace ch {
 
         using On_Resize = void(*)(const Window& window, u32 old_width, u32 old_height);
         On_Resize on_resize;
+
+		using On_Sizing = void(*)(const Window& window);
+		On_Sizing on_sizing;
+
+		using On_Focus_Gained = void(*)(const Window& window);
+		On_Focus_Gained on_focus_gained;
+
+		using On_Focus_Lost = void(*)(const Window& window);
+		On_Focus_Lost on_focus_lost;
+
+		using On_Mouse_Down = void(*)(const Window& window, u8 mouse_button);
+		On_Mouse_Down on_mouse_down;
+
+		using On_Mouse_Up = void(*)(const Window& window, u8 mouse_button);
+		On_Mouse_Up on_mouse_up;
+
+		using On_Key_Pressed = void(*)(const Window& window, u8 key);
+		On_Key_Pressed on_key_pressed;
+
+		using On_Key_Released = void(*)(const Window& window, u8 key);
+		On_Key_Released on_key_released;
+
+		using On_Char_Entered = void(*)(const Window& window, u32 c);
+		On_Char_Entered on_char_entered;
     };
 
     bool create_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window);

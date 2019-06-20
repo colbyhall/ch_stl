@@ -9,16 +9,17 @@
 #define NOMINMAX
 #include <windows.h>
 
+
+#define CALL_WINDOW_EVENT(event, ...) if (window->event) window->event(*window, __VA_ARGS__)
 static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_param) {
     ch::Window* window = (ch::Window*)GetWindowLongPtr(handle, GWLP_USERDATA);
 
+	// @TODO(CHall): I still need to do mouse events. and char entered
     switch (message) {
     case WM_DESTROY:
-        if (window->on_exit_requested) {
-            window->on_exit_requested(*window);
-        }
+		CALL_WINDOW_EVENT(on_exit_requested);
         break;
-    case WM_SIZE: 
+	case WM_SIZE: {
         RECT rect;
         GetClientRect(handle, &rect);
 
@@ -27,14 +28,29 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 
         window->width = rect.right - rect.left;
         window->height = rect.bottom - rect.top;
-        if (window->on_resize) {
-            window->on_resize(*window, old_width, old_height);
-        }
-        break;
-    }
+		CALL_WINDOW_EVENT(on_resize, old_width, old_height);
+	} break;
+	case WM_SIZING:
+		CALL_WINDOW_EVENT(on_sizing);
+		break;
+	case WM_SETFOCUS:
+		CALL_WINDOW_EVENT(on_focus_gained);
+		break;
+	case WM_KILLFOCUS:
+		CALL_WINDOW_EVENT(on_focus_lost);
+		break;
+	case WM_KEYDOWN:
+		CALL_WINDOW_EVENT(on_key_pressed, (u8)w_param);
+		break;
+	case WM_KEYUP:
+		CALL_WINDOW_EVENT(on_key_released, (u8)w_param);
+		break;
+	} 
+
 
     return DefWindowProc(handle, message, w_param, l_param);
 }
+#undef CALL_WINDOW_EVENT
 
 bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Window* out_window) {
     assert(out_window);

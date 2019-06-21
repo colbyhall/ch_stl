@@ -108,6 +108,7 @@ static void array_test() {
 
 static void string_test() {
 	ch::String foo = ch::String(CH_TEXT("hello world"));
+	defer(foo.destroy());
     ch::String bar = foo;
 
     if (foo.data != bar.data) {
@@ -115,6 +116,54 @@ static void string_test() {
     } else {
         TEST_PASS("String copy")
     }
+
+	if (!foo.starts_with(CH_TEXT("hello"))) {
+		TEST_FAIL("String starts with is broken");
+	} else {
+		TEST_PASS("String starts with");
+	}
+
+	if (!foo.starts_with(CH_TEXT("hello world"))) {
+		TEST_FAIL("String starts with is broken");
+	} else {
+		TEST_PASS("String starts with");
+	}
+
+	if (foo.starts_with(CH_TEXT("Hello"), true)) {
+		TEST_FAIL("String starts with is broken");
+	} else {
+		TEST_PASS("String starts with");
+	}
+
+	if (foo.starts_with(CH_TEXT("Hello world"), true)) {
+		TEST_FAIL("String starts with is broken");
+	} else {
+		TEST_PASS("String starts with");
+	}
+
+	if (!foo.ends_with(CH_TEXT("world"))) {
+		TEST_FAIL("String ends with is broken");
+	} else {
+		TEST_PASS("String ends with");
+	}
+
+	if (!foo.ends_with(CH_TEXT("hello world"))) {
+		TEST_FAIL("String ends with is broken");
+	} else {
+		TEST_PASS("String ends with");
+	}
+
+	if (foo.ends_with(CH_TEXT("World"), true)) {
+		TEST_FAIL("String ends with is broken");
+	} else {
+		TEST_PASS("String ends with");
+	}
+
+	if (foo.ends_with(CH_TEXT("Hello world"), true)) {
+		TEST_FAIL("String ends with is broken");
+	} else {
+		TEST_PASS("String ends with");
+	}
 }
 
 static void math_test() {
@@ -202,7 +251,7 @@ static void fs_test() {
         TEST_FAIL("failed to get current path");
     } else {
         TEST_PASS("get current path");
-        ch::std_out << current_path << ch::endl;
+        ch::std_out << current_path << ch::eol;
     }
     defer(current_path.destroy());
 }

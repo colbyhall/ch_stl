@@ -7,7 +7,6 @@
 /* TODO *
  * String pool allocator instead of general heap allocator
  * UTF 8 decoder and encoder
- * u32 String
  */
 
 namespace ch {
@@ -22,23 +21,64 @@ namespace ch {
 		return 0;
 	}
 
-    const tchar endl = '\n';
-    const tchar eol = ch::endl;
-    const tchar eof = 0;
+    const tchar eol = '\n';
+    const tchar eos = 0;
 
-    inline bool is_eol(u32 c) {
-        return c == ch::endl || c == '\r' || c == ch::eof;
-    }
-
-    inline bool is_whitespace(u32 c) {
+    CH_FORCEINLINE bool is_whitespace(u32 c) {
         return c >= '\t' && c <= '\r' || c == ' ';
     }
 
-    /**
-     * Base String
-     *
-     * No copy constructor for a reason
-     */
+	CH_FORCEINLINE bool is_letter(u32 c) {
+		c |= 0x20;
+		return c >= 'a' && c <= 'z';
+	}
+
+	CH_FORCEINLINE bool is_digit(u32 c) {
+		return c >= '0' && c <= '9';
+	}
+
+	CH_FORCEINLINE bool is_oct_digit(u32 c) {
+		return c >= '0' && c <= '7';
+	}
+
+	CH_FORCEINLINE bool is_hex_digit(u32 c) {
+		if (c >= '0' && c <= '9') return true;
+		if (ch::is_letter(c)) return true;
+
+		return false;
+	}
+
+	CH_FORCEINLINE bool is_symbol(u32 c) {
+		if (c >= '!' && c <= '/') return true;
+		if (c >= ':' && c <= '?') return true;
+		c |= 0x20;
+		if (c >= '{' && c <= '~') return true;
+
+		return false;
+	}
+
+	CH_FORCEINLINE bool is_lowercase(u32 c) {
+		return c >= 'a' && c <= 'z';
+	}
+
+	CH_FORCEINLINE bool is_uppercase(u32 c) {
+		return c >= 'A' && c <= 'Z';
+	}
+
+	CH_FORCEINLINE u32 to_lowercase(u32 c) {
+		u32 d = c | 0x20;
+		if (d >= 'a' && d <= 'z') return d;
+
+		return c;
+	}
+
+	CH_FORCEINLINE u32 to_uppercase(u32 c) {
+		u32 d = c & ~0x20;
+		if (d >= 'A' && d <= 'Z') return d;
+
+		return c;
+	}
+
 	template <typename T>
 	struct Base_String {
         T* data;
@@ -48,7 +88,7 @@ namespace ch {
 
         Base_String(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
 		explicit Base_String(const T* in_str, const ch::Allocator& in_alloc = ch::get_heap_allocator()) {
-			count = ch::strlen<T>(in_str);
+			count = ch::strlen(in_str);
 			allocated = count + 1;
 			allocator = in_alloc;
 			data = ch_new(allocator) T[allocated];
@@ -57,7 +97,7 @@ namespace ch {
 		}
 
 		Base_String<T>& operator=(const T* c_str) {
-			const usize c_str_count = ch::strlen<T>(c_str);
+			const usize c_str_count = ch::strlen(c_str);
 			if (c_str_count + 1 > allocated) {
 				if (data) {
 					assert(allocator);
@@ -107,7 +147,7 @@ namespace ch {
         }
 
 		bool operator==(const T* c_str) const {
-			const usize c_count = ch::strlen<T>(c_str);
+			const usize c_count = ch::strlen(c_str);
 			if (count != c_count) return false;
 
 			for (usize i = 0; i < count; i++) {
@@ -174,6 +214,43 @@ namespace ch {
 
             return result;
         }
+
+		bool starts_with(const T* c_str, bool case_matters = false) {
+			if (!count) return false;
+
+			for (usize i = 0; i < count; i++) {
+				T a = data[i];
+				T b = c_str[i];
+
+				if (b == ch::eos) return true;
+
+				if (!case_matters && (ch::is_letter(a) && ch::is_letter(b))) {
+					a = ch::to_lowercase(a);
+					b = ch::to_lowercase(b);
+					if (a != b) return false;
+				} else if (a != b) return false;
+			}
+
+			return ch::strlen(c_str) == count;
+		}
+
+		bool ends_with(const T* c_str, bool case_matters = false) {
+			const usize c_str_count = ch::strlen(c_str);
+			if (count < c_str_count) return false;
+
+			for (usize i = 0; i < c_str_count; i++) {
+				T a = data[count - 1 - i];
+				T b = c_str[c_str_count - 1 - i];
+
+				if (!case_matters && (ch::is_letter(a) && ch::is_letter(b))) {
+					a = ch::to_lowercase(a);
+					b = ch::to_lowercase(b);
+					if (a != b) return false;
+				} else if (a != b) return false;
+			}
+
+			return true;
+		}
 	};
 
 	using String   = ch::Base_String<tchar>;

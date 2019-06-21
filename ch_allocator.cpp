@@ -19,12 +19,10 @@ static void* heap_alloc(const ch::Allocator& allocator, void* ptr, usize size) {
     if (size) {
         if (!ptr) {
             result = ch::malloc(size);
-        }
-        else {
+        } else {
             result = ch::realloc(ptr, size);
         }
-    }
-    else if (ptr) {
+    } else if (ptr) {
         ch::free(ptr);
     }
 

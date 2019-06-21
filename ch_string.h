@@ -2,7 +2,6 @@
 
 #include "ch_allocator.h"
 #include "ch_memory.h"
-#include "ch_assert.h"
 
 /* TODO *
  * String pool allocator instead of general heap allocator

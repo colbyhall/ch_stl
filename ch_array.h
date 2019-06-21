@@ -3,7 +3,6 @@
 #include "ch_allocator.h"
 #include "ch_memory.h"
 #include "ch_templates.h"
-#include "ch_assert.h"
 #include <initializer_list>
 
 namespace ch {

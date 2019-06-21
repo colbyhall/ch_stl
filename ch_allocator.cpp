@@ -1,6 +1,5 @@
 #include "ch_allocator.h"
 #include "ch_memory.h"
-#include "ch_assert.h"
 
 void* ch::Allocator::alloc(usize size) {
     return func(*this, nullptr, size);

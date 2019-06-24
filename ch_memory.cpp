@@ -1,6 +1,6 @@
 #include "ch_memory.h"
 
-void ch::memcpy(void* dest, const void* src, usize size) {
+void ch::mem_copy(void* dest, const void* src, usize size) {
     const u8* casted_src = (u8*)src;
     u8* casted_dest = (u8*)dest;
 
@@ -9,7 +9,7 @@ void ch::memcpy(void* dest, const void* src, usize size) {
     }
 }
 
-void* ch::memmove(void* dest, const void* src, usize size) {
+void* ch::mem_move(void* dest, const void* src, usize size) {
     if (dest == src) return dest;
 
     const u8* casted_src = (const u8*)src;

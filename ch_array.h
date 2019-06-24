@@ -35,7 +35,7 @@ namespace ch {
             result.allocator = in_alloc;
             result.allocated = allocated; 
             result.data = ch_new(result.allocated) T[allocated];
-            ch::memcpy(result.data, data, count * sizeof(T));
+            ch::mem_copy(result.data, data, count * sizeof(T));
             return result;
         }
 
@@ -129,7 +129,7 @@ namespace ch {
 
         void remove(usize index) {
             assert(index < count);
-            ch::memmove(data + index, data + index + 1, (count - index) * sizeof(T));
+            ch::mem_move(data + index, data + index + 1, (count - index) * sizeof(T));
             count -= 1;
         }
 
@@ -139,7 +139,7 @@ namespace ch {
             }
 
             if (index != count) {
-                ch::memmove(data + index + 1, data + index, (count - index) * sizeof(T));
+                ch::mem_move(data + index + 1, data + index, (count - index) * sizeof(T));
             }
 
             data[index] = t;

@@ -91,7 +91,7 @@ namespace ch {
 			allocated = count + 1;
 			allocator = in_alloc;
 			data = ch_new(allocator) T[allocated];
-			ch::memcpy(data, in_str, count * sizeof(T));
+			ch::mem_copy(data, in_str, count * sizeof(T));
 			data[count] = 0;
 		}
 
@@ -107,7 +107,7 @@ namespace ch {
 			}
 
 			count = c_str_count;
-			ch::memcpy(data, c_str, count * sizeof(tchar));
+			ch::mem_copy(data, c_str, count * sizeof(tchar));
 			return *this;
 		}
 
@@ -123,12 +123,12 @@ namespace ch {
 
         T& operator[](usize index) {
             assert(index < count);
-            return data[count];
+            return data[index];
         }
 
         const T& operator[](usize index) const {
             assert(index < count);
-            return data[count]
+            return data[index];
         }
 
         bool operator==(const Base_String<T>& right) const {

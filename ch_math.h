@@ -35,6 +35,18 @@ namespace ch {
 		return value;
 	}
 
+	template <typename T>
+	T min(T a, T b) {
+		if (a < b) return a;
+		return b;
+	}
+
+	template <typename T>
+	T max(T a, T b) {
+		if (a > b) return a;
+		return b;
+	}
+
 	struct Vector2 {
 		union {
 			struct { f32 x, y; };
@@ -168,6 +180,7 @@ namespace ch {
         Vector3(f32 xyz) : x(xyz), y(xyz), z(xyz) {}
         Vector3(s32 ixyz) : ix(ixyz), iy(ixyz), iz(ixyz) {}
         Vector3(f32 _x, f32 _y, f32 _z) : x(_x), y(_y), z(_z) {}
+		Vector3(ch::Vector2 xy, f32 z = 0.f) : x(xy.x), y(xy.y), z(z) {}
 
         explicit operator bool() const { return x != 0.f || y != 0.f || z != 0.f; }
 
@@ -298,5 +311,37 @@ namespace ch {
 		f32 x, y, z, w;
 	};
 
+	struct Matrix4 {
+		union {
+			f32 elems[4 * 4];
+			f32 row_col[4][4];
+		};
+
+		f32 operator[](usize index) const {
+			assert(index < 4 * 4);
+			return elems[index]; 
+		}
+
+		f32& operator[](usize index) {
+			assert(index < 4 * 4);
+			return elems[index];
+		}
+
+		ch::Matrix4 operator*(const Matrix4& right) const;
+		void operator*=(const Matrix4& right);
+
+		operator const f32*() const { return elems; }
+		operator f32*() { return elems; }
+
+		ch::Matrix4 inverse();
+	};
+
+	ch::Matrix4 identity();
+
+	ch::Matrix4 ortho(f32 left, f32 right, f32 top, f32 bottom, f32 far, f32 near);
+	ch::Matrix4 ortho(f32 size, f32 aspect_ratio, f32 far, f32 near);
+	ch::Matrix4 perspective(f32 fov, f32 aspect_ratio, f32 far, f32 near);
+	ch::Matrix4 translate(const Vector3& pos);
+	ch::Matrix4 scale(const Vector3& scale);
 
 }

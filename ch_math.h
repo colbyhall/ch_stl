@@ -28,6 +28,10 @@ namespace ch {
 	const f32 to_rad = pi / 180.f;
 	const f32 to_deg = 180.f / pi;
 
+	const f32 small_number = 1.e-8f;
+	const f32 kinda_small_number = 1.e-4f;
+	const f32 big_number = 3.4e+38f;
+
 	template <typename T>
 	T clamp(T value, T min, T max) {
 		if (value < min) return min;
@@ -45,6 +49,23 @@ namespace ch {
 	T max(T a, T b) {
 		if (a > b) return a;
 		return b;
+	}
+
+	template <typename T>
+	bool in_range(T value, T min, T max) {
+		return value == ch::clamp(value, min, max);
+	}
+
+	CH_FORCEINLINE f32 interp_to(f32 current, f32 target, f32 delta_time, f32 speed) {
+		if (speed <= 0.f) return target;
+
+		const f32 distance = target - current;
+		if (distance * distance < ch::small_number) {
+			return target;
+		}
+
+		const f32 delta_move = distance * ch::clamp(delta_time * speed, 0.f, 1.f);
+		return current + delta_move;
 	}
 
 	struct Vector2 {

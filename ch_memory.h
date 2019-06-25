@@ -7,10 +7,10 @@ namespace ch {
     void* realloc(void* ptr, usize size);
     void free(void* ptr);
 
-    void memcpy(void* dest, const void* src, usize size);
-    void* memmove(void* dest, const void* src, usize size);
+    void mem_copy(void* dest, const void* src, usize size);
+    void* mem_move(void* dest, const void* src, usize size);
     
-    CH_FORCEINLINE void memset(void* ptr, usize size, u8 c) {
+    CH_FORCEINLINE void mem_set(void* ptr, usize size, u8 c) {
         u8* casted_ptr = (u8*)ptr;
 
         for (usize i = 0; i < size; i++) {
@@ -18,7 +18,7 @@ namespace ch {
         }
     }
 
-    CH_FORCEINLINE void memzero(void* ptr, usize size) {
-        memset(ptr, size, 0);
+    CH_FORCEINLINE void mem_zero(void* ptr, usize size) {
+        mem_set(ptr, size, 0);
     }
 }

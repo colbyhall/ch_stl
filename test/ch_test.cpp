@@ -24,7 +24,7 @@ static void memory_test() {
     // defer(ch_delete[] buffer);
 
     const u8 set_value = 0;
-    ch::memset(buffer, buffer_size, set_value);
+    ch::mem_set(buffer, buffer_size, set_value);
     for (usize i = 0; i < buffer_size; i++) {
         if (buffer[i] != set_value) {
             TEST_FAIL("ch::memset did not set all values in buffer %i", set_value);
@@ -35,7 +35,7 @@ static void memory_test() {
     }
 
     // @NOTE(CHall): Is this a good test?
-    ch::memmove(buffer, buffer + 5, 7);
+    ch::mem_move(buffer, buffer + 5, 7);
     if (buffer[0] != 5) {
         TEST_FAIL("ch::memmove is broken");
     }

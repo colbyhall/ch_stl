@@ -219,7 +219,8 @@ macro(PFNGLGETQUERYOBJECTUI64VPROC, glGetQueryObjectui64v)\
 macro(PFNGLFENCESYNCPROC, glFenceSync)\
 macro(PFNGLGETSYNCIVPROC, glGetSynciv)\
 macro(PFNGLCLIENTWAITSYNCPROC, glClientWaitSync)\
-macro(PFNGLBINDBUFFERRANGEPROC, glBindBufferRange)
+macro(PFNGLBINDBUFFERRANGEPROC, glBindBufferRange)\
+macro(PFNGLDEBUGMESSAGECALLBACKPROC, glDebugMessageCallback)
 
 #define DECLARE_GL_FUNCTIONS(type, func) extern type func;
 GL_BINDINGS(DECLARE_GL_FUNCTIONS);

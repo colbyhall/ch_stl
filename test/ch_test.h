@@ -7,5 +7,3 @@
 #define TEST_PASS(string, ...) printf("  "); printf(string, __VA_ARGS__); printf(" passed\n");
 
 extern int test_failed;
-
-void manual_string_test();

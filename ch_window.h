@@ -2,6 +2,7 @@
 
 #include "ch_string.h"
 #include "ch_os.h"
+#include "ch_math.h"
 
 namespace ch {
 
@@ -14,15 +15,17 @@ namespace ch {
 
     struct Window {
         OS_Window_Handle os_handle;
-
-        ch::String title;
-        u32 width, height;
-        bool is_visible;
-        u32 style;
+		u32 style;
 
         explicit operator bool() const { return os_handle; }
         operator OS_Window_Handle() const { return os_handle; }
         operator OS_Window_Handle() { return os_handle; }
+
+		bool get_mouse_position(ch::Vector2* out_pos) const;
+		ch::Vector2 get_size() const;
+		ch::Vector2 get_viewport_size() const;
+		bool is_visible() const;
+		bool has_focus() const;
 
         void set_visibility(bool visibility);
         void destroy();
@@ -30,7 +33,7 @@ namespace ch {
         using On_Exit_Requested = void(*)(const Window& window);
         On_Exit_Requested on_exit_requested;
 
-        using On_Resize = void(*)(const Window& window, u32 old_width, u32 old_height);
+        using On_Resize = void(*)(const Window& window);
         On_Resize on_resize;
 
 		using On_Sizing = void(*)(const Window& window);

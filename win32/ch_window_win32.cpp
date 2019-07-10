@@ -20,15 +20,7 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 		CALL_WINDOW_EVENT(on_exit_requested);
         break;
 	case WM_SIZE: {
-        RECT rect;
-        GetClientRect(handle, &rect);
-
-        const u32 old_width = window->width;
-        const u32 old_height = window->height;
-
-        window->width = rect.right - rect.left;
-        window->height = rect.bottom - rect.top;
-		CALL_WINDOW_EVENT(on_resize, old_width, old_height);
+		CALL_WINDOW_EVENT(on_resize);
 	} break;
 	case WM_SIZING:
 		CALL_WINDOW_EVENT(on_sizing);
@@ -82,12 +74,8 @@ bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Win
 
     SetWindowLongPtr(window_handle, GWLP_USERDATA, (LONG_PTR)out_window);
 
-    out_window->title = title;
-    out_window->width = width;
-    out_window->height = height;
     out_window->style = style;
     out_window->os_handle = window_handle;
-    out_window->is_visible = false;
 
     return true;
 }
@@ -100,16 +88,57 @@ void ch::poll_events() {
     }
 }
 
+bool ch::Window::get_mouse_position(ch::Vector2* out_pos) const {
+	POINT p;
+	if (GetCursorPos(&p)) {
+		if (ScreenToClient((HWND)os_handle, &p)) {
+			out_pos->ux = (u32)p.x;
+			out_pos->uy = (u32)p.y;
+
+			const ch::Vector2 client_size = get_viewport_size();
+
+			return p.x >= 0 && p.y >= 0 && (u32)p.x < client_size.ux && (u32)p.y < client_size.uy;
+		}
+	}
+
+	return false;
+}
+
+ch::Vector2 ch::Window::get_size() const {
+	RECT rect;
+	GetWindowRect((HWND)os_handle, &rect);
+
+	ch::Vector2 result;
+	result.ux = rect.right - rect.left;
+	result.uy = rect.bottom - rect.top;
+
+	return result;
+}
+
+ch::Vector2 ch::Window::get_viewport_size() const {
+	RECT rect;
+	GetClientRect((HWND)os_handle, &rect);
+
+	ch::Vector2 result;
+	result.ux = rect.right - rect.left;
+	result.uy = rect.bottom - rect.top;
+
+	return result;
+}
+
+bool ch::Window::is_visible() const {
+	return IsWindowVisible((HWND)os_handle);
+}
+
+bool ch::Window::has_focus() const {
+	return GetFocus() == os_handle;
+}
+
 void ch::Window::set_visibility(bool visibility) {
     ShowWindow((HWND)os_handle, (visibility ? SW_SHOW : SW_HIDE));
-    is_visible = visibility;
 }
 
 void ch::Window::destroy() {
-    if (title) {
-        title.destroy();
-    }
-
     if (os_handle) {
         DestroyWindow((HWND)os_handle);
         os_handle = nullptr;

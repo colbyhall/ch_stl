@@ -14,7 +14,6 @@
 #include <ch_filesystem.h>
 #include <ch_math.h>
 #include <ch_opengl.h>
-#include <ch_defer.h>
 
 int test_failed = 0;
 
@@ -174,6 +173,9 @@ static void math_test() {
     } else {
         TEST_PASS("Vec2 nomalized");
     }
+
+	ch::Color color = 0xFF00FFFF;
+	const s32 color_out = (s32)color;
 }
 
 const u32 width = 1280;
@@ -191,7 +193,7 @@ static void window_test() {
 
     window.set_visibility(true);
 
-    if (!window.is_visible) {
+    if (!window.is_visible()) {
         TEST_FAIL("Failed to set window visibility");
     } else {
         TEST_PASS("Setting visibility");

@@ -1,6 +1,5 @@
 #include "ch_memory.h"
 #include "ch_allocator.h"
-#include "ch_defer.h"
 
 void ch::mem_copy(void* dest, const void* src, usize size) {
     const u8* casted_src = (u8*)src;

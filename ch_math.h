@@ -73,6 +73,7 @@ namespace ch {
 			struct { f32 x, y; };
 			struct { f32 u, v; };
 			struct { s32 ix, iy; };
+			struct { u32 ux, uy; };
             f32 xy[2];
             f32 uv[2];
 		};
@@ -326,7 +327,74 @@ namespace ch {
 			f32 xyzw[4];
 			f32 rgba[4];
 		};
+
+		Vector4() : x(0.f), y(0.f), z(0.f), w(0.f) {}
+		Vector4(f32 xyzw) : x(xyzw), y(xyzw), z(xyzw), w(xyzw) {}
+		Vector4(s32 ixyzw) : ix(ixyzw), iy(ixyzw), iz(ixyzw), iw(ixyzw) {}
+		Vector4(f32 _x, f32 _y, f32 _z, f32 _w) : x(_x), y(_y), z(_z), w(_w) {}
 	};
+
+	struct Color {
+		f32 r, g, b, a;
+
+		Color() : r(0.f), g(0.f), b(0.f), a(0.f) {}
+		Color(f32 _r, f32 _g, f32 _b, f32 _a) : r(_r), g(_g), b(_b), a(_a) {}
+		Color(const ch::Vector3& rgb, f32 _a = 1.f) : r(rgb.r), g(rgb.g), b(rgb.b), a(_a) {}
+		Color(const ch::Vector4& rgba) : r(rgba.r), g(rgba.g), b(rgba.b), a(rgba.a) {}
+		CH_FORCEINLINE Color(s32 in_color) {
+			const u8 red = (in_color & 0xFF000000) >> 24;
+			const u8 green = (in_color & 0x00FF0000) >> 16;
+			const u8 blue = (in_color & 0x0000FF00) >> 8;
+			const u8 alpha = (in_color & 0x000000FF);
+
+			r = (f32)red / (f32)0xFF;
+			g = (f32)green / (f32)0xFF;
+			b = (f32)blue / (f32)0xFF;
+			a = (f32)alpha / (f32)0xFF;
+		}
+
+		CH_FORCEINLINE explicit operator s32() const {
+			const u8 red   = ((u8)r * 0xFF);
+			const u8 green = ((u8)g * 0xFF);
+			const u8 blue  = ((u8)b * 0xFF);
+			const u8 alpha = ((u8)a * 0xFF);
+
+			// @NOTE(CHall): This feels bad
+			s32 result = 0;
+			result |= (s32)red   << 24;
+			result |= (s32)green << 16;
+			result |= (s32)blue  << 8;
+			result |= (s32)alpha;
+			
+			return result;
+		}
+
+		CH_FORCEINLINE explicit operator ch::Vector3() const {
+			return ch::Vector3(r, g, b);
+		}
+
+		CH_FORCEINLINE explicit operator ch::Vector4() const {
+			return ch::Vector4(r, g, b, a);
+		}
+
+		CH_FORCEINLINE ch::Color operator|(const ch::Color& right) const {
+			// @SPEED(CHall): I'm lazy
+			return (s32)*this | (s32)right;
+		}
+
+		CH_FORCEINLINE void operator|=(const ch::Color& right) {
+			*this = *this | right;
+		}
+	};
+
+	const ch::Color red     = 0xFF0000FF;
+	const ch::Color green   = 0x00FF00FF;
+	const ch::Color blue    = 0x0000FFFF;
+	const ch::Color white   = 0x000000FF;
+	const ch::Color black   = 0xFFFFFFFF;
+	const ch::Color cyan    = green | blue;
+	const ch::Color yellow  = red | green;
+	const ch::Color magenta = blue | red;
 
 	struct Quaternion {
 		f32 x, y, z, w;

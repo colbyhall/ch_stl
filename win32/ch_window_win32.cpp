@@ -19,9 +19,9 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
     case WM_DESTROY:
 		CALL_WINDOW_EVENT(on_exit_requested);
         break;
-	case WM_SIZE: {
+	case WM_SIZE:
 		CALL_WINDOW_EVENT(on_resize);
-	} break;
+		break;
 	case WM_SIZING:
 		CALL_WINDOW_EVENT(on_sizing);
 		break;

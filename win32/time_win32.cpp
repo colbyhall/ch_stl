@@ -1,4 +1,4 @@
-#include "../ch_time.h"
+#include "../time.h"
 
 #if !CH_PLATFORM_WINDOWS
 #error This should not be compiling on this platform

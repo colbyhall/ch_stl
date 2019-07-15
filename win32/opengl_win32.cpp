@@ -1,4 +1,4 @@
-#include "../ch_opengl.h"
+#include "../opengl.h"
 
 WGL_Create_Context_Attribs_ARB wglCreateContextAttribsARB = nullptr;
 WGL_Choose_Pixel_Format_ARB wglChoosePixelFormatARB = nullptr;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ch_string.h"
-#include "ch_os.h"
-#include "ch_math.h"
+#include "string.h"
+#include "os.h"
+#include "math.h"
 
 namespace ch {
 

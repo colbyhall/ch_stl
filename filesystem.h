@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ch_string.h"
-#include "ch_os.h"
-#include "ch_types.h"
+#include "string.h"
+#include "os.h"
+#include "types.h"
 
 namespace ch {
     // @TODO(CHall): Add in more write functions

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ch_allocator.h"
-#include "ch_memory.h"
-#include "ch_templates.h"
+#include "allocator.h"
+#include "memory.h"
+#include "templates.h"
 #include <initializer_list>
 
 namespace ch {

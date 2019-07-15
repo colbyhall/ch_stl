@@ -1,4 +1,4 @@
-#include "../ch_memory.h"
+#include "../memory.h"
 
 #if !CH_PLATFORM_WINDOWS
 #error This should not be compiling on this platform

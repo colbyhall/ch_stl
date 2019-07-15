@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ch_allocator.h"
-#include "ch_memory.h"
+#include "allocator.h"
+#include "memory.h"
 
 /* TODO *
  * String pool allocator instead of general heap allocator

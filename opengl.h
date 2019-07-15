@@ -1,10 +1,10 @@
 #pragma once
 
 
-#include "ch_window.h"
+#include "window.h"
 
 #if CH_PLATFORM_WINDOWS
-#include "win32/ch_opengl_win32.h"
+#include "win32/opengl_win32.h"
 #endif
 
 #include "thirdparty/glext.h"

@@ -6,14 +6,14 @@
 
 #include "ch_test.h"
 
-#include <ch_allocator.h>
-#include <ch_memory.h>
-#include <ch_array.h>
-#include <ch_string.h>
-#include <ch_templates.h>
-#include <ch_filesystem.h>
-#include <ch_math.h>
-#include <ch_opengl.h>
+#include <allocator.h>
+#include <array.h>
+#include <templates.h>
+#include <filesystem.h>
+#include <opengl.h>
+#include "../string.h"
+#include "../memory.h"
+#include "../math.h"
 
 int test_failed = 0;
 
@@ -259,7 +259,7 @@ static void fs_test() {
 }
 
 int main() {
-    printf("-------Beginning c_stl Test-------\n");
+    // printf("-------Beginning c_stl Test-------\n");
     memory_test();
     array_test();
 	string_test();
@@ -267,10 +267,10 @@ int main() {
     window_test();
     gl_test();
     fs_test();
-    printf("-------c_stl Test Finished-------\n");
+    // printf("-------c_stl Test Finished-------\n");
 
     if (test_failed) {
-        printf("%i test failed\n\nPlease report to author(s)\n", test_failed);
+        // printf("%i test failed\n\nPlease report to author(s)\n", test_failed);
     }
 
     for(;;) {}

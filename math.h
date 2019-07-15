@@ -390,8 +390,8 @@ namespace ch {
 	const ch::Color red     = 0xFF0000FF;
 	const ch::Color green   = 0x00FF00FF;
 	const ch::Color blue    = 0x0000FFFF;
-	const ch::Color white   = 0x000000FF;
-	const ch::Color black   = 0xFFFFFFFF;
+	const ch::Color white   = 0xFFFFFFFF;
+	const ch::Color black   = 0x000000FF;
 	const ch::Color cyan    = green | blue;
 	const ch::Color yellow  = red | green;
 	const ch::Color magenta = blue | red;

@@ -1,7 +1,7 @@
 #pragma once
 
-
 #include "window.h"
+#include "math.h"
 
 #if CH_PLATFORM_WINDOWS
 #include "win32/opengl_win32.h"
@@ -234,4 +234,8 @@ namespace ch {
     bool swap_buffers(OS_Window_Handle window_handle);
     bool create_gl_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window);
     bool make_current(OS_Window_Handle window_handle);
+}
+
+CH_FORCEINLINE void glClearColor(const ch::Color& color) {
+	glClearColor(color.r, color.g, color.b, color.a);
 }

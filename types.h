@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ch_stl.h"
+#include "core.h"
 
 using u8  = unsigned char;
 using u16 = unsigned short;

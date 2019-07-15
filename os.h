@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ch_stl.h"
+#include "core.h"
 
 #if CH_PLATFORM_WINDOWS
 #include "win32/os_win32.h"

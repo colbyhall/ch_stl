@@ -21,8 +21,11 @@ namespace ch {
         operator OS_Window_Handle() const { return os_handle; }
         operator OS_Window_Handle() { return os_handle; }
 
+		// @TODO(CHall): Using vector2 here has been shown to be confusing
 		bool get_mouse_position(ch::Vector2* out_pos) const;
+		// @TODO(CHall): Using vector2 here has been shown to be confusing
 		ch::Vector2 get_size() const;
+		// @TODO(CHall): Using vector2 here has been shown to be confusing
 		ch::Vector2 get_viewport_size() const;
 		bool is_visible() const;
 		bool has_focus() const;

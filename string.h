@@ -214,12 +214,30 @@ namespace ch {
             return result;
         }
 
-		bool starts_with(const T* c_str, bool case_matters = false) {
-			if (!count) return false;
+		CH_FORCEINLINE bool starts_with(const T* c_str, bool case_matters = false) {
+			ch::Base_String<T> string;
+			string.data = (T*)c_str;
+			string.count = ch::strlen(c_str);
+			string.allocated = string.count;
 
-			for (usize i = 0; i < count; i++) {
+			return starts_with(string, case_matters);
+		}
+
+		CH_FORCEINLINE bool ends_with(const T* c_str, bool case_matters = false) {
+			ch::Base_String<T> string;
+			string.data = (T*)c_str;
+			string.count = ch::strlen(c_str);
+			string.allocated = string.count;
+
+			return ends_with(string, case_matters);
+		}
+
+		bool starts_with(const Base_String<T>& in_str, bool case_matters = false) {
+			if (!count || !in_str) return false;
+
+			for (usize i = 0; i < in_str.count; i++) {
 				T a = data[i];
-				T b = c_str[i];
+				T b = in_str[i];
 
 				if (b == ch::eos) return true;
 
@@ -227,28 +245,29 @@ namespace ch {
 					a = ch::to_lowercase(a);
 					b = ch::to_lowercase(b);
 					if (a != b) return false;
-				} else if (a != b) return false;
+				}
+				else if (a != b) return false;
 			}
 
-			return ch::strlen(c_str) == count;
+			return true;
 		}
 
-		bool ends_with(const T* c_str, bool case_matters = false) {
-			const usize c_str_count = ch::strlen(c_str);
-			if (count < c_str_count) return false;
+		bool ends_with(const Base_String<T>& in_str, bool case_matters = false) {
+			if (count < in_str.count) return false;
 
-			for (usize i = 0; i < c_str_count; i++) {
+			for (usize i = 0; i < in_str.count; i++) {
 				T a = data[count - 1 - i];
-				T b = c_str[c_str_count - 1 - i];
+				T b = in_str[in_str.count - 1 - i];
 
 				if (!case_matters && (ch::is_letter(a) && ch::is_letter(b))) {
 					a = ch::to_lowercase(a);
 					b = ch::to_lowercase(b);
 					if (a != b) return false;
-				} else if (a != b) return false;
+				}
+				else if (a != b) return false;
 			}
 
-			return true;
+			return true;			
 		}
 	};
 

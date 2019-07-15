@@ -171,6 +171,8 @@ VERSIONS
 // @TODO(CHall): Finish this
 #define assert(cond) if (!(cond)) ch_debug_trap
 
+#define invalid_code_path ch_debug_trap;
+
 /**
  * This defer was created by Iganico Castano
  *

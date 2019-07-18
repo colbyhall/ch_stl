@@ -17,6 +17,7 @@ namespace ch {
         Stream& write_raw(const void* ptr, usize size);
         Stream& operator<<(const tchar* c_str);
         Stream& operator<<(const tchar c);
+		Stream& operator<<(f32 f);
 	};
 
     extern Stream std_out;

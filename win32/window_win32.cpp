@@ -37,6 +37,9 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 	case WM_KEYUP:
 		CALL_WINDOW_EVENT(on_key_released, (u8)w_param);
 		break;
+	case WM_MOUSEWHEEL:
+		CALL_WINDOW_EVENT(on_mouse_wheel_scrolled, GET_WHEEL_DELTA_WPARAM(w_param));
+		break;
 	} 
 
 

@@ -62,6 +62,9 @@ namespace ch {
 
 		using On_Char_Entered = void(*)(const Window& window, u32 c);
 		On_Char_Entered on_char_entered;
+
+		using On_Mouse_Wheel_Scrolled = void(*)(const Window& window, f32 delta);
+		On_Mouse_Wheel_Scrolled on_mouse_wheel_scrolled;
     };
 
     bool create_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window);

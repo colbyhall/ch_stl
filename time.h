@@ -4,6 +4,6 @@
 
 namespace ch {
 
-	u64 get_ms_time();
+	f64 get_ms_time();
 
 }

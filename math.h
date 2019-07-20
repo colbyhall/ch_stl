@@ -157,6 +157,10 @@ namespace ch {
             *this = *this / s;
         }
 
+		CH_FORCEINLINE ch::Vector2 operator-() const {
+			return ch::Vector2(-x, -y);
+		}
+
         CH_FORCEINLINE f32 length_squared() const {
             return x * x + y * y;
         }

@@ -44,120 +44,140 @@ ch::Matrix4 ch::Matrix4::operator*(const Matrix4& right) const {
 	return result;
 }
 
+// @NOTE(Chall): I wrote this in HS idk if its bad. its late
+ch::Vector4 ch::Matrix4::operator*(const ch::Vector4& right) const {
+	return ch::Vector4(
+		rows[0].x * right.x + rows[0].y * right.y + rows[0].z * right.z + rows[0].w * right.w,
+		rows[1].x * right.x + rows[1].y * right.y + rows[1].z * right.z + rows[1].w * right.w,
+		rows[2].x * right.x + rows[2].y * right.y + rows[2].z * right.z + rows[2].w * right.w,
+		rows[3].x * right.x + rows[3].y * right.y + rows[3].z * right.z + rows[3].w * right.w
+	);
+}
+
 // @NOTE(CHall): How bad is this
 ch::Matrix4 ch::Matrix4::inverse() {
-	ch::Matrix4 result;
-	result.elems[0] = elems[5] * elems[10] * elems[15] -
-		elems[5] * elems[11] * elems[14] -
-		elems[9] * elems[6] * elems[15] +
-		elems[9] * elems[7] * elems[14] +
-		elems[13] * elems[6] * elems[11] -
-		elems[13] * elems[7] * elems[10];
+	ch::Matrix4 result = *this;
 
-	result.elems[4] = -elems[4] * elems[10] * elems[15] +
-		elems[4] * elems[11] * elems[14] +
-		elems[8] * elems[6] * elems[15] -
-		elems[8] * elems[7] * elems[14] -
-		elems[12] * elems[6] * elems[11] +
-		elems[12] * elems[7] * elems[10];
+	f32 temp[16];
 
-	result.elems[8] = elems[4] * elems[9] * elems[15] -
-		elems[4] * elems[11] * elems[13] -
-		elems[8] * elems[5] * elems[15] +
-		elems[8] * elems[7] * elems[13] +
-		elems[12] * elems[5] * elems[11] -
-		elems[12] * elems[7] * elems[9];
+	temp[0] = result.elems[5] * result.elems[10] * result.elems[15] -
+		result.elems[5] * result.elems[11] * result.elems[14] -
+		result.elems[9] * result.elems[6] * result.elems[15] +
+		result.elems[9] * result.elems[7] * result.elems[14] +
+		result.elems[13] * result.elems[6] * result.elems[11] -
+		result.elems[13] * result.elems[7] * result.elems[10];
 
-	result.elems[12] = -elems[4] * elems[9] * elems[14] +
-		elems[4] * elems[10] * elems[13] +
-		elems[8] * elems[5] * elems[14] -
-		elems[8] * elems[6] * elems[13] -
-		elems[12] * elems[5] * elems[10] +
-		elems[12] * elems[6] * elems[9];
+	temp[4] = -result.elems[4] * result.elems[10] * result.elems[15] +
+		result.elems[4] * result.elems[11] * result.elems[14] +
+		result.elems[8] * result.elems[6] * result.elems[15] -
+		result.elems[8] * result.elems[7] * result.elems[14] -
+		result.elems[12] * result.elems[6] * result.elems[11] +
+		result.elems[12] * result.elems[7] * result.elems[10];
 
-	result.elems[1] = -elems[1] * elems[10] * elems[15] +
-		elems[1] * elems[11] * elems[14] +
-		elems[9] * elems[2] * elems[15] -
-		elems[9] * elems[3] * elems[14] -
-		elems[13] * elems[2] * elems[11] +
-		elems[13] * elems[3] * elems[10];
+	temp[8] = result.elems[4] * result.elems[9] * result.elems[15] -
+		result.elems[4] * result.elems[11] * result.elems[13] -
+		result.elems[8] * result.elems[5] * result.elems[15] +
+		result.elems[8] * result.elems[7] * result.elems[13] +
+		result.elems[12] * result.elems[5] * result.elems[11] -
+		result.elems[12] * result.elems[7] * result.elems[9];
 
-	result.elems[5] = elems[0] * elems[10] * elems[15] -
-		elems[0] * elems[11] * elems[14] -
-		elems[8] * elems[2] * elems[15] +
-		elems[8] * elems[3] * elems[14] +
-		elems[12] * elems[2] * elems[11] -
-		elems[12] * elems[3] * elems[10];
+	temp[12] = -result.elems[4] * result.elems[9] * result.elems[14] +
+		result.elems[4] * result.elems[10] * result.elems[13] +
+		result.elems[8] * result.elems[5] * result.elems[14] -
+		result.elems[8] * result.elems[6] * result.elems[13] -
+		result.elems[12] * result.elems[5] * result.elems[10] +
+		result.elems[12] * result.elems[6] * result.elems[9];
 
-	result.elems[9] = -elems[0] * elems[9] * elems[15] +
-		elems[0] * elems[11] * elems[13] +
-		elems[8] * elems[1] * elems[15] -
-		elems[8] * elems[3] * elems[13] -
-		elems[12] * elems[1] * elems[11] +
-		elems[12] * elems[3] * elems[9];
+	temp[1] = -result.elems[1] * result.elems[10] * result.elems[15] +
+		result.elems[1] * result.elems[11] * result.elems[14] +
+		result.elems[9] * result.elems[2] * result.elems[15] -
+		result.elems[9] * result.elems[3] * result.elems[14] -
+		result.elems[13] * result.elems[2] * result.elems[11] +
+		result.elems[13] * result.elems[3] * result.elems[10];
 
-	result.elems[13] = elems[0] * elems[9] * elems[14] -
-		elems[0] * elems[10] * elems[13] -
-		elems[8] * elems[1] * elems[14] +
-		elems[8] * elems[2] * elems[13] +
-		elems[12] * elems[1] * elems[10] -
-		elems[12] * elems[2] * elems[9];
+	temp[5] = result.elems[0] * result.elems[10] * result.elems[15] -
+		result.elems[0] * result.elems[11] * result.elems[14] -
+		result.elems[8] * result.elems[2] * result.elems[15] +
+		result.elems[8] * result.elems[3] * result.elems[14] +
+		result.elems[12] * result.elems[2] * result.elems[11] -
+		result.elems[12] * result.elems[3] * result.elems[10];
 
-	result.elems[2] = elems[1] * elems[6] * elems[15] -
-		elems[1] * elems[7] * elems[14] -
-		elems[5] * elems[2] * elems[15] +
-		elems[5] * elems[3] * elems[14] +
-		elems[13] * elems[2] * elems[7] -
-		elems[13] * elems[3] * elems[6];
+	temp[9] = -result.elems[0] * result.elems[9] * result.elems[15] +
+		result.elems[0] * result.elems[11] * result.elems[13] +
+		result.elems[8] * result.elems[1] * result.elems[15] -
+		result.elems[8] * result.elems[3] * result.elems[13] -
+		result.elems[12] * result.elems[1] * result.elems[11] +
+		result.elems[12] * result.elems[3] * result.elems[9];
 
-	result.elems[6] = -elems[0] * elems[6] * elems[15] +
-		elems[0] * elems[7] * elems[14] +
-		elems[4] * elems[2] * elems[15] -
-		elems[4] * elems[3] * elems[14] -
-		elems[12] * elems[2] * elems[7] +
-		elems[12] * elems[3] * elems[6];
+	temp[13] = result.elems[0] * result.elems[9] * result.elems[14] -
+		result.elems[0] * result.elems[10] * result.elems[13] -
+		result.elems[8] * result.elems[1] * result.elems[14] +
+		result.elems[8] * result.elems[2] * result.elems[13] +
+		result.elems[12] * result.elems[1] * result.elems[10] -
+		result.elems[12] * result.elems[2] * result.elems[9];
 
-	result.elems[10] = elems[0] * elems[5] * elems[15] -
-		elems[0] * elems[7] * elems[13] -
-		elems[4] * elems[1] * elems[15] +
-		elems[4] * elems[3] * elems[13] +
-		elems[12] * elems[1] * elems[7] -
-		elems[12] * elems[3] * elems[5];
+	temp[2] = result.elems[1] * result.elems[6] * result.elems[15] -
+		result.elems[1] * result.elems[7] * result.elems[14] -
+		result.elems[5] * result.elems[2] * result.elems[15] +
+		result.elems[5] * result.elems[3] * result.elems[14] +
+		result.elems[13] * result.elems[2] * result.elems[7] -
+		result.elems[13] * result.elems[3] * result.elems[6];
 
-	result.elems[14] = -elems[0] * elems[5] * elems[14] +
-		elems[0] * elems[6] * elems[13] +
-		elems[4] * elems[1] * elems[14] -
-		elems[4] * elems[2] * elems[13] -
-		elems[12] * elems[1] * elems[6] +
-		elems[12] * elems[2] * elems[5];
+	temp[6] = -result.elems[0] * result.elems[6] * result.elems[15] +
+		result.elems[0] * result.elems[7] * result.elems[14] +
+		result.elems[4] * result.elems[2] * result.elems[15] -
+		result.elems[4] * result.elems[3] * result.elems[14] -
+		result.elems[12] * result.elems[2] * result.elems[7] +
+		result.elems[12] * result.elems[3] * result.elems[6];
 
-	result.elems[3] = -elems[1] * elems[6] * elems[11] +
-		elems[1] * elems[7] * elems[10] +
-		elems[5] * elems[2] * elems[11] -
-		elems[5] * elems[3] * elems[10] -
-		elems[9] * elems[2] * elems[7] +
-		elems[9] * elems[3] * elems[6];
+	temp[10] = result.elems[0] * result.elems[5] * result.elems[15] -
+		result.elems[0] * result.elems[7] * result.elems[13] -
+		result.elems[4] * result.elems[1] * result.elems[15] +
+		result.elems[4] * result.elems[3] * result.elems[13] +
+		result.elems[12] * result.elems[1] * result.elems[7] -
+		result.elems[12] * result.elems[3] * result.elems[5];
 
-	result.elems[7] = elems[0] * elems[6] * elems[11] -
-		elems[0] * elems[7] * elems[10] -
-		elems[4] * elems[2] * elems[11] +
-		elems[4] * elems[3] * elems[10] +
-		elems[8] * elems[2] * elems[7] -
-		elems[8] * elems[3] * elems[6];
+	temp[14] = -result.elems[0] * result.elems[5] * result.elems[14] +
+		result.elems[0] * result.elems[6] * result.elems[13] +
+		result.elems[4] * result.elems[1] * result.elems[14] -
+		result.elems[4] * result.elems[2] * result.elems[13] -
+		result.elems[12] * result.elems[1] * result.elems[6] +
+		result.elems[12] * result.elems[2] * result.elems[5];
 
-	result.elems[11] = -elems[0] * elems[5] * elems[11] +
-		elems[0] * elems[7] * elems[9] +
-		elems[4] * elems[1] * elems[11] -
-		elems[4] * elems[3] * elems[9] -
-		elems[8] * elems[1] * elems[7] +
-		elems[8] * elems[3] * elems[5];
+	temp[3] = -result.elems[1] * result.elems[6] * result.elems[11] +
+		result.elems[1] * result.elems[7] * result.elems[10] +
+		result.elems[5] * result.elems[2] * result.elems[11] -
+		result.elems[5] * result.elems[3] * result.elems[10] -
+		result.elems[9] * result.elems[2] * result.elems[7] +
+		result.elems[9] * result.elems[3] * result.elems[6];
 
-	result.elems[15] = elems[0] * elems[5] * elems[10] -
-		elems[0] * elems[6] * elems[9] -
-		elems[4] * elems[1] * elems[10] +
-		elems[4] * elems[2] * elems[9] +
-		elems[8] * elems[1] * elems[6] -
-		elems[8] * elems[2] * elems[5];
+	temp[7] = result.elems[0] * result.elems[6] * result.elems[11] -
+		result.elems[0] * result.elems[7] * result.elems[10] -
+		result.elems[4] * result.elems[2] * result.elems[11] +
+		result.elems[4] * result.elems[3] * result.elems[10] +
+		result.elems[8] * result.elems[2] * result.elems[7] -
+		result.elems[8] * result.elems[3] * result.elems[6];
+
+	temp[11] = -result.elems[0] * result.elems[5] * result.elems[11] +
+		result.elems[0] * result.elems[7] * result.elems[9] +
+		result.elems[4] * result.elems[1] * result.elems[11] -
+		result.elems[4] * result.elems[3] * result.elems[9] -
+		result.elems[8] * result.elems[1] * result.elems[7] +
+		result.elems[8] * result.elems[3] * result.elems[5];
+
+	temp[15] = result.elems[0] * result.elems[5] * result.elems[10] -
+		result.elems[0] * result.elems[6] * result.elems[9] -
+		result.elems[4] * result.elems[1] * result.elems[10] +
+		result.elems[4] * result.elems[2] * result.elems[9] +
+		result.elems[8] * result.elems[1] * result.elems[6] -
+		result.elems[8] * result.elems[2] * result.elems[5];
+
+	f32 determinant = result.elems[0] * temp[0] + result.elems[1] * temp[4] + result.elems[2] * temp[8] + result.elems[3] * temp[12];
+	determinant = 1.0f / determinant;
+
+	for (u8 i = 0; i < 4 * 4; i++) {
+		result.elems[i] = temp[i] * determinant;
+	}
 
 	return result;
 }

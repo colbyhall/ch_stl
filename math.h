@@ -1,6 +1,6 @@
 #pragma once
 
-#include "types.h"
+#include "filesystem.h"
 
 // @TODO(CHall): Finish math lib
 // Scalar Math
@@ -197,6 +197,11 @@ namespace ch {
         }
 	};
 
+	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, ch::Vector2 vec) {
+		stream << (tchar)'{' << vec.x << CH_TEXT(", ") << vec.y << CH_TEXT("}\n");
+		return stream;
+	}
+
     struct Vector3 {
         union {
             struct { f32 x, y, z; };
@@ -342,6 +347,7 @@ namespace ch {
 		Vector4(f32 xyzw) : x(xyzw), y(xyzw), z(xyzw), w(xyzw) {}
 		Vector4(s32 ixyzw) : ix(ixyzw), iy(ixyzw), iz(ixyzw), iw(ixyzw) {}
 		Vector4(f32 _x, f32 _y, f32 _z, f32 _w) : x(_x), y(_y), z(_z), w(_w) {}
+		Vector4(ch::Vector2 xy, f32 _z = 0.f, f32 _w = 0.f) : x(xy.x), y(xy.y), z(_z), w(_w) {}
 	};
 
 	struct Color {
@@ -414,7 +420,10 @@ namespace ch {
 		union {
 			f32 elems[4 * 4];
 			f32 row_col[4][4];
+			ch::Vector4 rows[4];
 		};
+
+		Matrix4() { ch::mem_zero(elems, sizeof(elems)); }
 
 		f32 operator[](usize index) const {
 			assert(index < 4 * 4);
@@ -428,6 +437,8 @@ namespace ch {
 
 		ch::Matrix4 operator*(const Matrix4& right) const;
 		void operator*=(const Matrix4& right);
+
+		ch::Vector4 operator*(const ch::Vector4& right) const;
 
 		operator const f32*() const { return elems; }
 		operator f32*() { return elems; }

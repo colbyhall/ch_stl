@@ -22,6 +22,12 @@ namespace ch {
     f32 atan(f32 s);
     f32 atan2(f32 x, f32 y);
 
+	template <typename T>
+	CH_FORCEINLINE T abs(const T& t) {
+		if (t < 0) return -t;
+		return t;
+	}
+
 	const f32 pi = 3.1415f;
 	const f32 tau = (pi * 2.f);
 

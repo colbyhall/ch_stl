@@ -22,12 +22,6 @@ namespace ch {
     f32 atan(f32 s);
     f32 atan2(f32 x, f32 y);
 
-	template <typename T>
-	CH_FORCEINLINE T abs(const T& t) {
-		if (t < 0) return -t;
-		return t;
-	}
-
 	const f32 pi = 3.1415f;
 	const f32 tau = (pi * 2.f);
 
@@ -55,6 +49,12 @@ namespace ch {
 	T max(T a, T b) {
 		if (a > b) return a;
 		return b;
+	}
+
+	template <typename T>
+	T abs(const T& t) {
+		if (t < 0) return -t;
+		return t;
 	}
 
 	template <typename T>
@@ -196,6 +196,14 @@ namespace ch {
             return x * other.x + y * other.y;
         }
 	};
+
+	template<>
+	CH_FORCEINLINE ch::Vector2 ch::abs<ch::Vector2>(const ch::Vector2& t) {
+		ch::Vector2 result = t;
+		if (t.x < 0.f) result.x = -t.x;
+		if (t.y < 0.f) result.y = -t.y;
+		return result;
+	}
 
 	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, ch::Vector2 vec) {
 		stream << (tchar)'{' << vec.x << CH_TEXT(", ") << vec.y << CH_TEXT("}\n");

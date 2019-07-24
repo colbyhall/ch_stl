@@ -48,11 +48,11 @@ namespace ch {
 		using On_Focus_Lost = void(*)(const Window& window);
 		On_Focus_Lost on_focus_lost;
 
-		using On_Mouse_Down = void(*)(const Window& window, u8 mouse_button);
-		On_Mouse_Down on_mouse_down;
+		using On_Mouse_Button_Down = void(*)(const Window& window, u8 mouse_button);
+		On_Mouse_Button_Down on_mouse_button_down;
 
-		using On_Mouse_Up = void(*)(const Window& window, u8 mouse_button);
-		On_Mouse_Up on_mouse_up;
+		using On_Mouse_Button_Up = void(*)(const Window& window, u8 mouse_button);
+		On_Mouse_Button_Up on_mouse_button_up;
 
 		using On_Key_Pressed = void(*)(const Window& window, u8 key);
 		On_Key_Pressed on_key_pressed;

@@ -1,4 +1,5 @@
 #include "../window.h"
+#include "../input.h"
 
 #if !CH_PLATFORM_WINDOWS
 #error This should not be compiling on this platform
@@ -39,6 +40,30 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 		break;
 	case WM_MOUSEWHEEL:
 		CALL_WINDOW_EVENT(on_mouse_wheel_scrolled, GET_WHEEL_DELTA_WPARAM(w_param));
+		break;
+	case WM_LBUTTONDOWN:
+		SetCapture((HWND)window->os_handle);
+		CALL_WINDOW_EVENT(on_mouse_button_down, CH_MOUSE_LEFT);
+		break;
+	case WM_LBUTTONUP:
+		ReleaseCapture();
+		CALL_WINDOW_EVENT(on_mouse_button_up, CH_MOUSE_LEFT);
+		break;
+	case WM_MBUTTONDOWN:
+		SetCapture((HWND)window->os_handle);
+		CALL_WINDOW_EVENT(on_mouse_button_down, CH_MOUSE_MIDDLE);
+		break;
+	case WM_MBUTTONUP:
+		ReleaseCapture();
+		CALL_WINDOW_EVENT(on_mouse_button_up, CH_MOUSE_MIDDLE);
+		break;
+	case WM_RBUTTONDOWN:
+		SetCapture((HWND)window->os_handle);
+		CALL_WINDOW_EVENT(on_mouse_button_down, CH_MOUSE_RIGHT);
+		break;
+	case WM_RBUTTONUP:
+		ReleaseCapture();
+		CALL_WINDOW_EVENT(on_mouse_button_up, CH_MOUSE_RIGHT);
 		break;
 	} 
 

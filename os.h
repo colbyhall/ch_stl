@@ -7,3 +7,7 @@
 #else
 #error Platform not supported
 #endif
+
+namespace ch {
+
+}

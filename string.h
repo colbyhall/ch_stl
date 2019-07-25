@@ -269,6 +269,17 @@ namespace ch {
 
 			return true;			
 		}
+
+		void append(const tchar* ap) {
+			const usize ap_size = ch::strlen(ap);
+			if (count + ap_size > allocated) {
+				reserve(count + ap_size - allocated);
+			}
+			for (usize i = 0; i < ap_size; i++) {
+				data[i + count] = ap[i];
+			}
+			count += ap_size;
+		}
 	};
 
 	using String   = ch::Base_String<tchar>;

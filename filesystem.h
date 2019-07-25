@@ -49,5 +49,6 @@ namespace ch {
 
     ch::String get_current_path();
     bool set_current_path(const ch::String& path);
+	ch::String get_os_font_path();
 
 }

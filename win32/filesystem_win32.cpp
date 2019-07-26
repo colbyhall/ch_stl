@@ -107,6 +107,7 @@ ch::String ch::get_os_font_path() {
 
 	// @NOTE(CHall): Has to null terminate
 	result.append(CH_TEXT("\\Fonts\0"));
+	result.data[result.count] = 0;
 
 	return result;
 }

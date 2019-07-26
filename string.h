@@ -85,8 +85,8 @@ namespace ch {
         usize allocated;
         ch::Allocator allocator;
 
-        Base_String(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
-		explicit Base_String(const T* in_str, const ch::Allocator& in_alloc = ch::get_heap_allocator()) {
+        Base_String(const ch::Allocator& in_alloc = ch::context_allocator) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
+		explicit Base_String(const T* in_str, const ch::Allocator& in_alloc = ch::context_allocator) {
 			count = ch::strlen(in_str);
 			allocated = count + 1;
 			allocator = in_alloc;

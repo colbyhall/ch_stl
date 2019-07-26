@@ -13,9 +13,9 @@ namespace ch {
         usize allocated;
         ch::Allocator allocator;
 
-        Array(const ch::Allocator& in_alloc = ch::get_heap_allocator()) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
+        Array(const ch::Allocator& in_alloc = ch::context_allocator) : data(nullptr), count(0), allocated(0), allocator(in_alloc) {}
 
-        Array(std::initializer_list<T> init_list, const Allocator& in_alloc = ch::get_heap_allocator()) 
+        Array(std::initializer_list<T> init_list, const Allocator& in_alloc = ch::context_allocator)
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
             reserve(init_list.size());
             for (const T& item : init_list) {
@@ -24,12 +24,12 @@ namespace ch {
             }
         }
 
-        Array(usize amount, const ch::Allocator& in_alloc = ch::get_heap_allocator())
+        Array(usize amount, const ch::Allocator& in_alloc = ch::context_allocator)
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
             reserve(amount);
         }
 
-        Array<T> copy(const ch::Allocator& in_alloc = ch::get_heap_allocator()) const {
+        Array<T> copy(const ch::Allocator& in_alloc = ch::context_allocator) const {
             Array<T> result;
             result.count = count;
             result.allocator = in_alloc;

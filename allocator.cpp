@@ -1,6 +1,8 @@
 #include "allocator.h"
 #include "memory.h"
 
+ch::Allocator ch::context_allocator = ch::get_heap_allocator();
+
 void* ch::Allocator::alloc(usize size) {
     return func(*this, nullptr, size);
 }
@@ -42,7 +44,12 @@ static void* arena_alloc(const ch::Allocator& allocator, void* ptr, usize size) 
         // @NOTE(Colby): this will assert if we're trying to free with a nullptr
         assert(size > 0);
         assert(header->current + size <= header->allocated);
-        void* result = (u8*)header->data + header->current;
+        u8* result = (u8*)header->data + header->current;
+
+		if (ptr) {
+			ch::mem_copy(result, ptr, size);
+		}
+
         header->current += size;
         return result;
     } 

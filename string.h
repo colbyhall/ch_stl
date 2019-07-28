@@ -172,7 +172,7 @@ namespace ch {
             }
         }
 
-        void destroy() {
+        void free() {
             if (data) {
                 assert(allocated && allocator);
                 operator ch_delete[](data, allocator);

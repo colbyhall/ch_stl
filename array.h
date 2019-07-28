@@ -39,7 +39,7 @@ namespace ch {
             return result;
         }
 
-        void destroy() {
+        void free() {
             if (data) {
                 assert(allocator && allocated);
                 operator ch_delete[](data, allocator);

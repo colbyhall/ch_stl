@@ -47,6 +47,16 @@ namespace ch {
         usize size() const;
     };
 
+	struct File_Data {
+		u8* data = nullptr;
+		usize size = 0;
+		ch::Allocator allocator;
+
+		void free();
+	};
+
+	bool load_file_into_memory(const tchar* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);
+
     ch::String get_current_path();
     bool set_current_path(const ch::String& path);
 	ch::String get_os_font_path();

@@ -94,8 +94,8 @@ ch::String ch::get_current_path() {
     return result;
 }
 
-bool ch::set_current_path(const ch::String& path) {
-    return SetCurrentDirectory(path);
+bool ch::set_current_path(const tchar* path) {
+	return SetCurrentDirectory(path);
 }
 
 ch::String ch::get_os_font_path() {
@@ -108,6 +108,15 @@ ch::String ch::get_os_font_path() {
 	// @NOTE(CHall): Has to null terminate
 	result.append(CH_TEXT("\\Fonts\0"));
 	result.data[result.count] = 0;
+
+	return result;
+}
+
+ch::String ch::get_app_path() {
+	ch::String result;
+	result.reserve(MAX_PATH);
+	GetModuleFileName(NULL, result.data, MAX_PATH);
+	result.count = ch::strlen(result.data);
 
 	return result;
 }

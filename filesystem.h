@@ -58,7 +58,8 @@ namespace ch {
 	bool load_file_into_memory(const tchar* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);
 
     ch::String get_current_path();
-    bool set_current_path(const ch::String& path);
+	bool set_current_path(const tchar* path);
 	ch::String get_os_font_path();
+	ch::String get_app_path();
 
 }

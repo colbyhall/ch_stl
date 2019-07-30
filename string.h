@@ -280,6 +280,16 @@ namespace ch {
 			}
 			count += ap_size;
 		}
+
+		ssize find_from_right(tchar c) const {
+			for (usize i = count - 1; i >= 0; i--) {
+				if (data[i] == c) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
 	};
 
 	using String   = ch::Base_String<tchar>;

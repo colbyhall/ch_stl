@@ -10,6 +10,8 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
+#undef near
+#undef far
 #include <gl/GL.h>
 
 #define WGL_CONTEXT_MAJOR_VERSION_ARB             0x2091

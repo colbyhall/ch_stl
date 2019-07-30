@@ -4,6 +4,10 @@
 #include "os.h"
 #include "types.h"
 
+#if CH_PLATFORM_WINDOWS
+#include "win32/filesystem_win32.h"
+#endif
+
 namespace ch {
     // @TODO(CHall): Add in more write functions
 	struct Stream {
@@ -17,7 +21,17 @@ namespace ch {
         Stream& write_raw(const void* ptr, usize size);
         Stream& operator<<(const tchar* c_str);
         Stream& operator<<(const tchar c);
+		Stream& operator<<(bool b);
+		Stream& operator<<(u8 b);
+		Stream& operator<<(s8 b);
+		Stream& operator<<(u16 s);
+		Stream& operator<<(s16 s);
+		Stream& operator<<(u32 uint);
+		Stream& operator<<(s32 i);
+		Stream& operator<<(u64 ulong);
+		Stream& operator<<(s64 slong);
 		Stream& operator<<(f32 f);
+		Stream& operator<<(f64 d);
 	};
 
     extern Stream std_out;
@@ -61,5 +75,31 @@ namespace ch {
 	bool set_current_path(const tchar* path);
 	ch::String get_os_font_path();
 	ch::String get_app_path();
+
+	enum Directory_Result_Type {
+		DRT_Directory,
+		DRT_File,
+		DRT_Other,
+	};
+
+	struct Directory_Result {
+		Directory_Result_Type type;
+		
+		u64 creation_time;
+		u64 last_access_time;
+		u64 last_write_time;
+
+		tchar file_name[max_path];
+		usize file_size;
+	};
+
+	struct Base_Directory_Iterator {
+		Base_Directory_Iterator() {}
+
+		void advance() {}
+		bool can_advance() const {}
+		CH_FORCEINLINE void operator++() { advance(); }
+		Directory_Result get() {}
+	};
 
 }

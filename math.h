@@ -22,6 +22,8 @@ namespace ch {
     f32 atan(f32 s);
     f32 atan2(f32 x, f32 y);
 
+	f32 round(f32 s);
+
 	const f32 pi = 3.1415f;
 	const f32 tau = (pi * 2.f);
 

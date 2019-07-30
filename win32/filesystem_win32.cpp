@@ -4,11 +4,6 @@
 #error This should not be compiling on this platform
 #endif
 
-#define WIN32_MEAN_AND_LEAN
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-
 ch::Stream ch::std_out = GetStdHandle(STD_OUTPUT_HANDLE);
 ch::Stream ch::std_err = GetStdHandle(STD_ERROR_HANDLE);
 
@@ -117,6 +112,50 @@ ch::String ch::get_app_path() {
 	result.reserve(MAX_PATH);
 	GetModuleFileName(NULL, result.data, MAX_PATH);
 	result.count = ch::strlen(result.data);
+
+	return result;
+}
+
+ch::Win32_Directory_Iterator::Win32_Directory_Iterator() {
+	file = FindFirstFile(CH_TEXT("*"), &find_data);
+}
+
+bool ch::Win32_Directory_Iterator::can_advance() const {
+	return file != INVALID_HANDLE_VALUE;
+}
+
+void ch::Win32_Directory_Iterator::advance() {
+	if (!FindNextFile(file, &find_data)) {
+		file = INVALID_HANDLE_VALUE;
+	}
+}
+
+ch::Directory_Result ch::Win32_Directory_Iterator::get() const {
+	assert(can_advance());
+
+	ch::Directory_Result result;
+	result.type = DRT_Other;
+	if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) result.type = DRT_Directory;
+	if (find_data.dwFileAttributes & FILE_ATTRIBUTE_NORMAL) result.type = DRT_File;
+
+	if (result.type == DRT_File) {
+		LARGE_INTEGER file_size;
+		file_size.LowPart = find_data.nFileSizeLow;
+		file_size.HighPart = find_data.nFileSizeHigh;
+		result.file_size = file_size.QuadPart;
+	}
+
+	auto FILETIME_to_u64 = [](FILETIME ft) -> u64 {
+		ULARGE_INTEGER uli;
+		uli.LowPart = ft.dwLowDateTime;
+		uli.HighPart = ft.dwHighDateTime;
+		return uli.QuadPart;
+	};
+	
+	ch::mem_copy(result.file_name, find_data.cFileName, ch::max_path);
+	result.creation_time = FILETIME_to_u64(find_data.ftCreationTime);
+	result.last_access_time = FILETIME_to_u64(find_data.ftLastAccessTime);
+	result.last_write_time = FILETIME_to_u64(find_data.ftLastWriteTime);
 
 	return result;
 }

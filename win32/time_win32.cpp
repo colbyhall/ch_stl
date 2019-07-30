@@ -20,3 +20,41 @@ f64 ch::get_ms_time() {
 		return now.QuadPart * freq;
 	} else return GetTickCount();
 }
+
+static ch::Date_Time dt_from_win32dt(const SYSTEMTIME& st) {
+	ch::Date_Time result;
+	result.year = st.wYear;
+	result.month = st.wMonth;
+	result.day_of_week = st.wDayOfWeek;
+	result.day_of_month = st.wDay;
+	result.hour = st.wHour;
+	result.minute = st.wMinute;
+	result.second = st.wSecond;
+	result.milliseconds = st.wMilliseconds;
+	
+	return result;
+}
+
+bool ch::date_time_from_file_time(u64 file_time, Date_Time* out_time) {
+	SYSTEMTIME st;
+	ULARGE_INTEGER uli;
+	uli.QuadPart = file_time;
+	FILETIME ft = {uli.LowPart, uli.HighPart};
+	if (!FileTimeToSystemTime(&ft, &st)) return false;
+
+	*out_time = dt_from_win32dt(st);
+
+	return true;
+}
+
+ch::Date_Time ch::get_system_time() {
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	return dt_from_win32dt(st);
+}
+
+ch::Date_Time ch::get_local_time() {
+	SYSTEMTIME st;
+	GetLocalTime(&st);
+	return dt_from_win32dt(st);
+}

@@ -9,15 +9,15 @@
 #define NOMINMAX
 #include <windows.h>
 
-f64 ch::get_ms_time() {
+f64 ch::get_time_in_seconds() {
 	static LARGE_INTEGER qpc_freq;
 	static BOOL use_qpc = QueryPerformanceFrequency(&qpc_freq);
-	static f64 freq = 1.0 / qpc_freq.QuadPart;
+	static f64 freq = (f64)qpc_freq.QuadPart;
 
 	if (use_qpc) {
 		LARGE_INTEGER now;
 		QueryPerformanceCounter(&now);
-		return now.QuadPart * freq;
+		return now.QuadPart / freq;
 	} else return GetTickCount();
 }
 

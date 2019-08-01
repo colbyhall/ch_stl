@@ -89,13 +89,7 @@ bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Win
         return false;
     }
 
-    const u32 monitor_width = GetSystemMetrics(SM_CXSCREEN);
-    const u32 monitor_height = GetSystemMetrics(SM_CYSCREEN);
-
-    const u32 pos_x = monitor_width / 2 - width / 2;
-    const u32 pos_y = monitor_height / 2 - height / 2;
-
-    HWND window_handle = CreateWindow(window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, pos_x, pos_y, width, height, NULL, NULL, window_class.hInstance, NULL);
+    HWND window_handle = CreateWindow(window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, NULL, NULL, window_class.hInstance, NULL);
     if (!window_handle) {
         return false;
     }
@@ -104,6 +98,12 @@ bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Win
 
     out_window->style = style;
     out_window->os_handle = window_handle;
+
+	const ch::Vector2 size = out_window->get_size();
+	const ch::Vector2 viewport_size = out_window->get_viewport_size();
+	SetWindowPos((HWND)out_window->os_handle, 0, 0, 0, size.ux, (size.uy - viewport_size.uy) + size.uy, SWP_NOMOVE | SWP_NOZORDER);
+
+	out_window->center_in_monitor();
 
     return true;
 }
@@ -164,6 +164,18 @@ bool ch::Window::has_focus() const {
 
 void ch::Window::set_visibility(bool visibility) {
     ShowWindow((HWND)os_handle, (visibility ? SW_SHOW : SW_HIDE));
+}
+
+void ch::Window::center_in_monitor() {
+	const u32 monitor_width = GetSystemMetrics(SM_CXSCREEN);
+	const u32 monitor_height = GetSystemMetrics(SM_CYSCREEN);
+
+	const ch::Vector2 size = get_size();
+
+	const u32 pos_x = monitor_width / 2 - size.ux / 2;
+	const u32 pos_y = monitor_height / 2 - size.uy / 2;
+
+	SetWindowPos((HWND)os_handle, 0, pos_x, pos_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
 void ch::Window::destroy() {

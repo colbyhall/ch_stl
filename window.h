@@ -31,6 +31,7 @@ namespace ch {
 		bool has_focus() const;
 
         void set_visibility(bool visibility);
+		void center_in_monitor();
         void destroy();
 
         using On_Exit_Requested = void(*)(const Window& window);

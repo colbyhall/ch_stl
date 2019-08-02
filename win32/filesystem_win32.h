@@ -15,6 +15,7 @@ namespace ch {
 		HANDLE file;
 
 		Win32_Directory_Iterator();
+		Win32_Directory_Iterator(const tchar* path);
 
 		bool can_advance() const;
 		void advance();

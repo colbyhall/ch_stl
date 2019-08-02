@@ -3,12 +3,39 @@
 #include "string.h"
 #include "os.h"
 #include "types.h"
+#include "array.h"
 
 #if CH_PLATFORM_WINDOWS
 #include "win32/filesystem_win32.h"
 #endif
 
 namespace ch {
+
+	struct Path {
+		tchar data[ch::max_path + 1];
+		usize count = 0;
+		const usize allocated = ch::max_path + 1;
+
+		Path() = default;
+		Path(const tchar* in_path);
+
+		CH_FORCEINLINE operator const tchar* const() { return data; }
+		CH_FORCEINLINE tchar& operator[](usize index) {
+			assert(index < count);
+			return data[index];
+		}
+		CH_FORCEINLINE tchar operator[](usize index) const {
+			assert(index < count);
+			return data[index];
+		}
+
+		void append(const tchar* ap) {}
+
+		bool is_relative() const;
+		CH_FORCEINLINE bool is_absolute() const { return !is_relative(); }
+
+
+	};
     // @TODO(CHall): Add in more write functions
 	struct Stream {
         OS_Stream_Handle os_handle;
@@ -71,10 +98,10 @@ namespace ch {
 
 	bool load_file_into_memory(const tchar* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);
 
-    ch::String get_current_path();
+    ch::Path get_current_path();
 	bool set_current_path(const tchar* path);
-	ch::String get_os_font_path();
-	ch::String get_app_path();
+	ch::Path get_os_font_path();
+	ch::Path get_app_path();
 
 	enum Directory_Result_Type {
 		DRT_Directory,
@@ -98,8 +125,23 @@ namespace ch {
 
 		void advance() {}
 		bool can_advance() const {}
-		CH_FORCEINLINE void operator++() { advance(); }
+
 		Directory_Result get() {}
 	};
+
+#if 0
+	struct Recursive_Directory_Iterator {
+		ch::Array<ch::Directory_Iterator> iterators;
+		ssize current_iterator;
+
+		Recursive_Directory_Iterator() : Recursive_Directory_Iterator(CH_TEXT(".")) {}
+		Recursive_Directory_Iterator(const tchar* path);
+		~Recursive_Directory_Iterator();
+		void advance();
+		bool can_advance() const;
+
+		Directory_Result get();
+	};
+#endif
 
 }

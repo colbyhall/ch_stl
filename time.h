@@ -108,4 +108,18 @@ namespace ch {
 
 	f64 get_time_in_seconds();
 
+	struct Scoped_Timer {
+		const f64 start;
+		const tchar* name;
+		Scoped_Timer(const tchar* _name) : start(ch::get_time_in_seconds()), name(_name) {}
+		~Scoped_Timer() {
+			const f64 end = ch::get_time_in_seconds();
+			const f64 gap = end - start;
+
+			// ch::std_out << name << CH_TEXT(": ") << gap << ch::eol;
+		}
+	};
+
+#define CH_SCOPED_TIMER(name) ch::Scoped_Timer name(#name);
+
 }

@@ -4,6 +4,12 @@
 #define _CRT_NON_CONFORMING_SWPRINTFS
 #include <stdio.h>
 
+ch::Path::Path(const tchar* in_path) : count(ch::strlen(in_path)) {
+	assert(ch::strlen(in_path) < ch::max_path);
+	ch::mem_copy(data, in_path, count * sizeof(tchar));
+	data[count] = 0;
+}
+
 ch::Stream& ch::Stream::operator<<(bool b) {
 	*this << (b ? CH_TEXT("true") : CH_TEXT("false"));
 	return *this;

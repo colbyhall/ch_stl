@@ -123,7 +123,6 @@ ch::Path ch::get_app_path() {
 	return result;
 }
 
-ch::Win32_Directory_Iterator::Win32_Directory_Iterator() : ch::Win32_Directory_Iterator(CH_TEXT(".")) {}
 
 ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
 
@@ -136,6 +135,8 @@ ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
 	// advance();
 	// advance();
 }
+
+ch::Win32_Directory_Iterator::Win32_Directory_Iterator() : ch::Win32_Directory_Iterator(ch::get_current_path()) {}
 
 bool ch::Win32_Directory_Iterator::can_advance() const {
 	return file != INVALID_HANDLE_VALUE;
@@ -152,15 +153,23 @@ ch::Directory_Result ch::Win32_Directory_Iterator::get() const {
 
 	ch::Directory_Result result;
 	result.type = DRT_Other;
-	if (find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) result.type = DRT_Directory;
-	if (find_data.dwFileAttributes & FILE_ATTRIBUTE_NORMAL) result.type = DRT_File;
 
-	if (result.type == DRT_File) {
-		LARGE_INTEGER file_size;
-		file_size.LowPart = find_data.nFileSizeLow;
-		file_size.HighPart = find_data.nFileSizeHigh;
-		result.file_size = file_size.QuadPart;
+	switch (find_data.dwFileAttributes) {
+	case FILE_ATTRIBUTE_DIRECTORY:
+		result.type = DRT_Directory;
+		break;
+	case FILE_ATTRIBUTE_NORMAL:
+		result.type = DRT_File;
+		break;
+	case FILE_ATTRIBUTE_ARCHIVE:
+		result.type = DRT_File;
+		break;
 	}
+
+	LARGE_INTEGER file_size;
+	file_size.LowPart = find_data.nFileSizeLow;
+	file_size.HighPart = find_data.nFileSizeHigh;
+	result.file_size = file_size.QuadPart;
 
 	auto FILETIME_to_u64 = [](FILETIME ft) -> u64 {
 		ULARGE_INTEGER uli;
@@ -170,7 +179,6 @@ ch::Directory_Result ch::Win32_Directory_Iterator::get() const {
 	};
 	
 	ch::mem_copy(result.file_name, find_data.cFileName, ch::max_path);
-
 	result.creation_time = FILETIME_to_u64(find_data.ftCreationTime);
 	result.last_access_time = FILETIME_to_u64(find_data.ftLastAccessTime);
 	result.last_write_time = FILETIME_to_u64(find_data.ftLastWriteTime);

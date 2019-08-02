@@ -207,7 +207,7 @@ void ch::File_Data::free() {
 ch::Recursive_Directory_Iterator::Recursive_Directory_Iterator(const ch::Path& path) {
 	current_path = path;
 	Directory_Iterator iter(path);
-	current_iterator = iterators.push(iter);
+	iterators.push(iter);
 }
 
 ch::Recursive_Directory_Iterator::~Recursive_Directory_Iterator() {
@@ -215,19 +215,12 @@ ch::Recursive_Directory_Iterator::~Recursive_Directory_Iterator() {
 }
 
 void ch::Recursive_Directory_Iterator::advance() {
-	if (current_iterator + 1 < iterators.count) {
-		current_iterator += 1;
-		return;
-	}
-
-	ch::Directory_Iterator& current = iterators[current_iterator];
+	ch::Directory_Iterator& current = iterators.back();
 	current.advance();
 
-	while (!current.can_advance()) {
-		if (current_iterator == 0) break;
-		current_iterator -= 1;
+	while (iterators.count > 1 && !current.can_advance()) {
 		iterators.pop();
-		current = iterators[current_iterator];
+		current = iterators.back();
 		current_path.remove_until_directory();
 		current.advance();
 	}
@@ -246,11 +239,9 @@ void ch::Recursive_Directory_Iterator::advance() {
 bool ch::Recursive_Directory_Iterator::can_advance() const {
 	if (!iterators) return false;
 
-	return iterators[current_iterator].can_advance();
-
-	return false;
+	return iterators.back().can_advance();
 }
 
 ch::Directory_Result ch::Recursive_Directory_Iterator::get() {
-	return iterators[current_iterator].get();
+	return iterators.back().get();
 }

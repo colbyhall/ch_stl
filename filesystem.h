@@ -155,7 +155,7 @@ namespace ch {
 		usize current_iterator;
 		ch::Path current_path;
 
-		Recursive_Directory_Iterator() : Recursive_Directory_Iterator(CH_TEXT(".")) {}
+		Recursive_Directory_Iterator() : Recursive_Directory_Iterator(ch::get_current_path()) {}
 		Recursive_Directory_Iterator(const ch::Path& path);
 		~Recursive_Directory_Iterator();
 		void advance();

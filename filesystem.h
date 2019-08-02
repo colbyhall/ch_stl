@@ -14,7 +14,7 @@ namespace ch {
 	struct Path {
 		tchar data[ch::max_path + 1];
 		usize count = 0;
-		const usize allocated = ch::max_path + 1;
+		usize allocated = ch::max_path + 1;
 
 		Path() = default;
 		Path(const tchar* in_path);
@@ -29,12 +29,33 @@ namespace ch {
 			return data[index];
 		}
 
-		void append(const tchar* ap) {}
+		CH_FORCEINLINE operator bool() const { return count > 0; }
+
+		CH_FORCEINLINE bool operator==(const ch::Path& right) const {
+			if (count != right.count) return false;
+
+			for (usize i = 0; i < count; i++) {
+				if (right[i] != data[i]) return false;
+			}
+
+			return true;
+		}
+
+		CH_FORCEINLINE bool operator!=(const ch::Path& right) const {
+			return !(*this == right);
+		}
+
+		CH_FORCEINLINE void clear() {
+			count = 0;
+			data[0] = 0;
+		}
+
+		void append(const tchar* ap);
+		void remove_until_directory();
+		ch::String get_extension();
 
 		bool is_relative() const;
 		CH_FORCEINLINE bool is_absolute() const { return !is_relative(); }
-
-
 	};
     // @TODO(CHall): Add in more write functions
 	struct Stream {
@@ -129,19 +150,18 @@ namespace ch {
 		Directory_Result get() {}
 	};
 
-#if 0
 	struct Recursive_Directory_Iterator {
 		ch::Array<ch::Directory_Iterator> iterators;
-		ssize current_iterator;
+		usize current_iterator;
+		ch::Path current_path;
 
 		Recursive_Directory_Iterator() : Recursive_Directory_Iterator(CH_TEXT(".")) {}
-		Recursive_Directory_Iterator(const tchar* path);
+		Recursive_Directory_Iterator(const ch::Path& path);
 		~Recursive_Directory_Iterator();
 		void advance();
 		bool can_advance() const;
 
 		Directory_Result get();
 	};
-#endif
 
 }

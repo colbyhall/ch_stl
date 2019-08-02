@@ -10,12 +10,14 @@
 namespace ch {
 	const usize max_path = MAX_PATH;
 
+	struct Path;
+
 	struct Win32_Directory_Iterator {
 		WIN32_FIND_DATA find_data;
 		HANDLE file;
 
 		Win32_Directory_Iterator();
-		Win32_Directory_Iterator(const tchar* path);
+		Win32_Directory_Iterator(const ch::Path& path);
 
 		bool can_advance() const;
 		void advance();

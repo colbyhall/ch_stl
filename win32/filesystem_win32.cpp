@@ -93,7 +93,7 @@ ch::Path ch::get_current_path() {
     ch::Path result;
     GetCurrentDirectory(MAX_PATH, result.data);
     result.count = ch::strlen(result.data);
-	result[result.count] = 0;
+	result.data[result.count] = 0;
     return result;
 }
 
@@ -106,7 +106,7 @@ ch::Path ch::get_os_font_path() {
 
 	GetWindowsDirectory(result.data, MAX_PATH);
 	result.count = ch::strlen(result.data);
-	result[result.count] = 0;
+	result.data[result.count] = 0;
 
 	result.append(CH_TEXT("\\Fonts"));
 	result.data[result.count] = 0;
@@ -125,18 +125,16 @@ ch::Path ch::get_app_path() {
 
 ch::Win32_Directory_Iterator::Win32_Directory_Iterator() : ch::Win32_Directory_Iterator(CH_TEXT(".")) {}
 
-ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const tchar* path) {
-	ch::String actual_path;
-	actual_path.reserve(ch::strlen(path) + 3);
-	actual_path.append(path);
-	actual_path.append(CH_TEXT("\\*\0"));
-	defer(actual_path.free());
+ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
+
+	ch::Path actual_path = path;
+	actual_path.append(CH_TEXT("\\*"));
 
 	file = FindFirstFile(actual_path, &find_data);
 
 	// @NOTE(CHall): Skip . ..
-	advance();
-	advance();
+	// advance();
+	// advance();
 }
 
 bool ch::Win32_Directory_Iterator::can_advance() const {
@@ -172,8 +170,6 @@ ch::Directory_Result ch::Win32_Directory_Iterator::get() const {
 	};
 	
 	ch::mem_copy(result.file_name, find_data.cFileName, ch::max_path);
-
-	DWORD x = GetFinalPathNameByHandle(file, result.file_name, ch::max_path, FILE_NAME_OPENED);
 
 	result.creation_time = FILETIME_to_u64(find_data.ftCreationTime);
 	result.last_access_time = FILETIME_to_u64(find_data.ftLastAccessTime);

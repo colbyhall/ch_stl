@@ -10,13 +10,24 @@ ch::Path::Path(const tchar* in_path) : count(ch::strlen(in_path)) {
 	data[count] = 0;
 }
 
-void ch::Path::append(const tchar* ap) {
+void ch::Path::append(const tchar* ap, bool ensure_proper) {
 	usize ap_count = ch::strlen(ap);
 	if (!ap_count) return;
 
-	const tchar last = data[count - 1];
-	const tchar ap_last = ap[ap_count - 1];
-	if ((last == '\\' || last == '/') && (ap_last == '\\' || ap_last == '/')) ap_count -= 1;
+	if (ensure_proper) {
+		const tchar last = data[count - 1];
+		const tchar ap_first = ap[0];
+
+		if ((last == '\\' || last == '/') && (ap_first == '\\' || ap_first == '/')) {
+			ap += 1;
+			ap_count -= 1;
+		}
+
+		if ((last != '\\' && last != '/') && (ap_first != '\\' && ap_first != '/')) {
+			data[count] = '\\';
+			count += 1;
+		}
+	}
 
 	assert(ap_count + count <= allocated);
 
@@ -38,15 +49,37 @@ void ch::Path::remove_until_directory() {
 	}
 }
 
-ch::String ch::Path::get_extension() {
+const ch::String ch::Path::get_extension() {
 	for (usize i = count - 1; i >= 0; i--) {
 		tchar c = data[i];
-		if (c == '.') {
+		if (c == '.' && i < count - 2) {
 			ch::String result;
-			result.data = data + i;
-			result.count = count - i;
+			result.data = data + i + 1;
+			result.count = count - i - 1;
 			result.allocated = result.count;
 			return result;
+		}
+	}
+
+	return ch::String();
+}
+
+const ch::String ch::Path::get_filename() {
+	ssize extension_loc = -1;
+	for (usize i = count - 1; i >= 0; i--) {
+		tchar c = data[i];
+		if (c == '.' && i < count - 2) {
+			extension_loc = i;
+		}
+
+		if (c == '\\' || c == '/') {
+			if (extension_loc > -1) {
+				ch::String result;
+				result.data = data + i + 1;
+				result.count = extension_loc - i - 1;
+				return result;
+			}
+			break;
 		}
 	}
 
@@ -178,21 +211,16 @@ ch::Stream& ch::Stream::operator<<(f64 d) {
 }
 
 bool ch::load_file_into_memory(const tchar* path, File_Data* fd, ch::Allocator allocator) {
-	FILE* f = fopen(path, "rb");
-	if (!f) return false;
+	ch::File f;
+	defer(f.close());
+	if (!f.open(path, ch::FO_Read | ch::FO_Binary)) return false;
 
-	fseek(f, 0, SEEK_END);
-	const usize size = ftell(f);
-	fseek(f, 0, SEEK_SET);
+	usize fs = f.size();
 
-	u8* buffer = ch_new(allocator) u8[size];
-	fread(buffer, size, 1, f);
-	fclose(f);
-	buffer[size] = 0;
+	fd->data = ch_new(allocator) u8[fs];
+	fd->size = fs;
 
-	fd->data = buffer;
-	fd->size = size;
-	fd->allocator = allocator;
+	f.read(fd->data, fs);
 
 	return true;
 }

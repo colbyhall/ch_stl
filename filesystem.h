@@ -50,9 +50,10 @@ namespace ch {
 			data[0] = 0;
 		}
 
-		void append(const tchar* ap);
+		void append(const tchar* ap, bool ensure_proper = true);
 		void remove_until_directory();
-		ch::String get_extension();
+		const ch::String get_extension();
+		const ch::String get_filename();
 
 		bool is_relative() const;
 		CH_FORCEINLINE bool is_absolute() const { return !is_relative(); }
@@ -80,6 +81,12 @@ namespace ch {
 		Stream& operator<<(s64 slong);
 		Stream& operator<<(f32 f);
 		Stream& operator<<(f64 d);
+
+		template <typename T>
+		Stream& operator<<(ch::Base_String<T> str) {
+			write_raw(str.data, str.count * sizeof(T));
+			return *this;
+		}
 	};
 
     extern Stream std_out;

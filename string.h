@@ -182,6 +182,15 @@ namespace ch {
             allocated = 0;
         }
 
+		ch::Base_String<T> copy(const ch::Allocator& in_alloc = ch::context_allocator) const  {
+			ch::Base_String<T> result;
+			result.allocator = in_alloc;
+			result.reserve(count);
+			ch::mem_copy(result.data, data, count * sizeof(T));
+			result.count = count;
+			return result;
+		}
+
         void advance(usize amount) {
             assert(amount < allocated);
             data += amount;
@@ -293,5 +302,7 @@ namespace ch {
 	};
 
 	using String   = ch::Base_String<tchar>;
+	using String8  = ch::Base_String<u8>;
+	using String16 = ch::Base_String<u16>;
 	using String32 = ch::Base_String<u32>;
 }

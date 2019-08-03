@@ -54,7 +54,7 @@ bool ch::File::close() {
         is_open = false;
     }
 
-    return is_open;
+    return !is_open;
 }
 
 void ch::File::read(void* dest, usize size) {
@@ -74,7 +74,9 @@ void ch::File::seek_bottom() {
 
 void ch::File::seek(ssize amount) {
     assert(is_open);
-    SetFilePointer(os_handle, NULL, (PLONG)amount, FILE_CURRENT);
+	LARGE_INTEGER li;
+	li.QuadPart = amount;
+    SetFilePointer(os_handle, li.LowPart, (PLONG)li.HighPart, FILE_CURRENT);
 }
 
 void ch::File::set_end_of_file() {

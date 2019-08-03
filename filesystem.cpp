@@ -50,9 +50,9 @@ void ch::Path::remove_until_directory() {
 }
 
 const ch::String ch::Path::get_extension() {
-	for (usize i = count - 1; i >= 0; i--) {
+	for (ssize i = count - 1; i >= 0; i--) {
 		tchar c = data[i];
-		if (c == '.' && i < count - 2) {
+		if (c == '.' && i < (ssize)count - 2) {
 			ch::String result;
 			result.data = data + i + 1;
 			result.count = count - i - 1;
@@ -66,9 +66,9 @@ const ch::String ch::Path::get_extension() {
 
 const ch::String ch::Path::get_filename() {
 	ssize extension_loc = -1;
-	for (usize i = count - 1; i >= 0; i--) {
+	for (ssize i = count - 1; i >= 0; i--) {
 		tchar c = data[i];
-		if (c == '.' && i < count - 2) {
+		if (c == '.' && i < (ssize)count - 2) {
 			extension_loc = i;
 		}
 
@@ -83,7 +83,10 @@ const ch::String ch::Path::get_filename() {
 		}
 	}
 
-	return ch::String();
+	ch::String result;
+	result.data = data;
+	result.count = extension_loc;
+	return result;
 }
 
 ch::Stream& ch::Stream::operator<<(bool b) {
@@ -215,12 +218,11 @@ bool ch::load_file_into_memory(const tchar* path, File_Data* fd, ch::Allocator a
 	defer(f.close());
 	if (!f.open(path, ch::FO_Read | ch::FO_Binary)) return false;
 
-	usize fs = f.size();
-
-	fd->data = ch_new(allocator) u8[fs];
-	fd->size = fs;
-
+	const usize fs = f.size();
+	fd->size = fs + 1;
+	fd->data = ch_new(allocator) u8[fd->size];
 	f.read(fd->data, fs);
+	fd->data[fs] = 0;
 
 	return true;
 }

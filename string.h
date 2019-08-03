@@ -20,6 +20,22 @@ namespace ch {
 		return 0;
 	}
 
+	template <typename T>
+	bool streq(const T* a, const T* b) {
+		for (usize i = 0; i < U64_MAX; i++) {
+			const tchar a_c = a[i];
+			const tchar b_c = b[i];
+
+			if (a_c != b_c) return false;
+			if (a_c == 0 || b_c == 0) {
+				if (a_c == b_c) return true;
+				return false;
+			}
+		}
+
+		return true;
+	}
+
     const tchar eol = '\n';
     const tchar eos = 0;
 

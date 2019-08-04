@@ -129,8 +129,9 @@ namespace ch {
 		Scoped_Timer_Manager() {
 			entries.allocator = ch::get_heap_allocator();
 		}
-		static Scoped_Timer_Manager& get();
 
 		CH_FORCEINLINE void reset() { entries.count = 0; }
 	};
+
+	extern ch::Scoped_Timer_Manager scoped_timer_manager;
 }

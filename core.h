@@ -175,6 +175,9 @@ VERSIONS
 #if CH_BUILD_DEBUG
 #define assert(cond) if (!(cond)) ch_debug_trap
 #else
+#pragma warning (disable : 4552)
+#pragma warning (disable : 4553)
+#pragma 
 #define assert(cond) cond
 #endif
 

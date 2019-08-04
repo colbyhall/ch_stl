@@ -76,7 +76,8 @@ void ch::File::seek(ssize amount) {
     assert(is_open);
 	LARGE_INTEGER li;
 	li.QuadPart = amount;
-    SetFilePointer(os_handle, li.LowPart, (PLONG)li.HighPart, FILE_CURRENT);
+	// @NOTE(CHall): Gotta make the compiler happy
+    SetFilePointer(os_handle, li.LowPart, (PLONG)(s64)li.HighPart, FILE_CURRENT);
 }
 
 void ch::File::set_end_of_file() {

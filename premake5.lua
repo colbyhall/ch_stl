@@ -22,6 +22,10 @@ project "ch_stl"
     filter "configurations:Debug"
 		runtime "Debug"
 		symbols "On"
+		defines 
+		{
+			"CH_BUILD_DEBUG#1"
+		}
 
 	filter "configurations:Release"
 		runtime "Release"

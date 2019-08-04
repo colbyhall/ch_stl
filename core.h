@@ -168,8 +168,15 @@ VERSIONS
 #define ch_debug_trap __builtin_trap()
 #endif
 
-// @TODO(CHall): Finish this
+#ifndef CH_BUILD_DEBUG
+#define CH_BUILD_DEBUG 0
+#endif;
+
+#if CH_BUILD_DEBUG
 #define assert(cond) if (!(cond)) ch_debug_trap
+#else
+#define assert(cond) cond
+#endif
 
 #define invalid_code_path ch_debug_trap;
 

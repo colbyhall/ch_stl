@@ -33,8 +33,7 @@ namespace ch {
             Array<T> result;
             result.count = count;
             result.allocator = in_alloc;
-            result.allocated = allocated; 
-            result.data = ch_new(result.allocated) T[allocated];
+			result.reserve(count);
             ch::mem_copy(result.data, data, count * sizeof(T));
             return result;
         }
@@ -42,7 +41,7 @@ namespace ch {
         void free() {
             if (data) {
                 assert(allocator && allocated);
-                operator ch_delete[](data, allocator);
+                allocator.free(data);
                 data = nullptr;
             }
             count = 0;
@@ -97,7 +96,7 @@ namespace ch {
             if (data) {
                 data = (T*)allocator.realloc(data, allocated * sizeof(T));
             } else {
-                data = ch_new(allocator) T[allocated];
+                data = (T*)allocator.alloc(allocated * sizeof(T));
             }
         }
 

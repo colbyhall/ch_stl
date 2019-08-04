@@ -110,7 +110,7 @@ ch::Path ch::get_os_font_path() {
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 
-	result.append(CH_TEXT("\\Fonts"));
+	result.append(CH_TEXT("Fonts\\"));
 	result.data[result.count] = 0;
 
 	return result;

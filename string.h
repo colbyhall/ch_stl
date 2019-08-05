@@ -2,6 +2,7 @@
 
 #include "allocator.h"
 #include "memory.h"
+#include "hash.h"
 
 /* TODO *
  * String pool allocator instead of general heap allocator
@@ -324,11 +325,6 @@ namespace ch {
 
 	template<typename T>
 	u64 hash(const Base_String<T>& s) {
-		u64 result = 0;
-		for (usize i = 0; i < s.count; i++) {
-			result += s[i] + i;
-		}
-
-		return result;
+		return ch::fnv1_hash(s.data, s.count * sizeof(T));
 	}
 }

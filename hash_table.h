@@ -5,6 +5,11 @@
 #include "templates.h"
 
 namespace ch {
+	/**
+	 * Totally fast and efficient hash table
+	 *
+	 * All Key's passed in need a hash function
+	 */
 	template <typename Key, typename Value>
 	struct Hash_Table {
 		struct Pair {
@@ -32,33 +37,29 @@ namespace ch {
 			layout.free();
 		}
 
-		Value* begin() {
+		Pair* begin() {
 			return buckets.data;
 		}
 
-		Value* end() {
+		Pair* end() {
 			return buckets.data + buckets.count;
 		}
 
-		const Value* cbegin() const {
+		const Pair* cbegin() const {
 			return buckets.data;
 		}
 
-		const Value* cend() const {
+		const Pair* cend() const {
 			return buckets.data + buckets.count;
 		}
 
-		// operator bool() const { return buckets && layout; }
-		// Value& operator[](usize index) { return buckets[index].value; }
-		// const Value& operator[](usize index) { return buckets[index].value; }
-		// bool operator==(const ch::Hash_Map<Key, Value>& right) { return right.buckets == buckets; }
-		// bool operator!=(const ch::Hash_Map<Key, Value>& right) { return right.buckets != buckets; }
+		operator bool() const { return buckets && layout; }
+		bool operator==(const ch::Hash_Table<Key, Value>& right) { return right.buckets == buckets; }
+		bool operator!=(const ch::Hash_Table<Key, Value>& right) { return right.buckets != buckets; }
 
 		usize key_to_index(const Key& k) {
 			const u64 hash = ch::hash(k);
-			const usize index = hash % buckets.count;
-
-			return index;
+			return hash % buckets.count;
 		}
 
 		void refresh_layout() {
@@ -76,6 +77,7 @@ namespace ch {
 				Pair** found = &layout.data[index];
 				if (!(*found)) {
 					*found = &it;
+					layout.count += 1;
 				} else {
 					while (*found) {
 						found = &(*found)->next;

@@ -64,7 +64,8 @@ namespace ch {
             return data + count;
         }
 
-        explicit operator bool() const { return data && allocated; }
+        operator bool() const { return data && allocated; }
+
         T& operator[](usize index) {
             assert(index < count);
             return data[index];
@@ -123,7 +124,7 @@ namespace ch {
         }
 
         void pop() {
-            remove(count - 1);
+            count -= 1;
         }
 
         void remove(usize index) {

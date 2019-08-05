@@ -321,4 +321,14 @@ namespace ch {
 	using String8  = ch::Base_String<u8>;
 	using String16 = ch::Base_String<u16>;
 	using String32 = ch::Base_String<u32>;
+
+	template<typename T>
+	u64 hash(const Base_String<T>& s) {
+		u64 result = 0;
+		for (usize i = 0; i < s.count; i++) {
+			result += s[i] + i;
+		}
+
+		return result;
+	}
 }

@@ -38,7 +38,6 @@ TODO
     - file PLATFORM
     - containers
         - fixed_array
-        - hash_map
         - set
     - multithreading
         - thread

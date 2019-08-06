@@ -19,7 +19,7 @@ namespace ch {
 		Path() = default;
 		Path(const tchar* in_path);
 
-		CH_FORCEINLINE operator const tchar* const() { return data; }
+		CH_FORCEINLINE operator const tchar*() const { return data; }
 		CH_FORCEINLINE tchar& operator[](usize index) {
 			assert(index < count);
 			return data[index];

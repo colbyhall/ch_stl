@@ -21,11 +21,11 @@ ch::Stream& ch::Stream::write_raw(const void* ptr, usize size) {
 }
 
 ch::Stream& ch::Stream::operator<<(const tchar* c_str) {
-	return write_raw(c_str, ch::strlen(c_str));
+	return write_raw(c_str, ch::strlen(c_str) * sizeof(tchar));
 }
 
 ch::Stream& ch::Stream::operator<<(const tchar c) {
-    return write_raw(&c, 1);
+    return write_raw(&c, sizeof(c));
 }
 
 bool ch::File::open(const tchar* path, u32 open_flags) {

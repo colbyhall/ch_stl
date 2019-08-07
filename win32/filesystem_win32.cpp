@@ -44,7 +44,7 @@ bool ch::File::open(const tchar* path, u32 open_flags) {
     DWORD creation = OPEN_EXISTING;
     if (create) creation = CREATE_NEW;
 
-    os_handle = CreateFile(path, desired_access, 0, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL);
+    os_handle = CreateFile(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL);
     is_open = os_handle != INVALID_HANDLE_VALUE;
     return is_open;
 }
@@ -55,6 +55,12 @@ bool ch::File::close() {
     }
 
     return !is_open;
+}
+
+bool ch::File::get_full_path(ch::Path* out_path) const {
+	assert(is_open);
+	out_path->count = GetFinalPathNameByHandle(os_handle, out_path->data, (DWORD)out_path->allocated, FILE_NAME_OPENED | VOLUME_NAME_NONE);
+	return  *out_path;
 }
 
 void ch::File::read(void* dest, usize size) {

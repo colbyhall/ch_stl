@@ -80,16 +80,17 @@ bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Win
     WNDCLASSEX window_class = {};
     window_class.cbSize = sizeof(WNDCLASSEX);
     window_class.lpfnWndProc = window_proc;
-    window_class.hInstance = GetModuleHandle(nullptr);
+    window_class.hInstance = GetModuleHandle(NULL);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     window_class.lpszClassName = title;
     window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+	window_class.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 
     if (!RegisterClassEx(&window_class)) {
         return false;
     }
 
-    HWND window_handle = CreateWindow(window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, NULL, NULL, window_class.hInstance, NULL);
+    HWND window_handle = CreateWindowEx(0, window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, NULL, NULL, window_class.hInstance, NULL);
     if (!window_handle) {
         return false;
     }
@@ -178,7 +179,7 @@ void ch::Window::center_in_monitor() {
 	SetWindowPos((HWND)os_handle, 0, pos_x, pos_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
-void ch::Window::destroy() {
+void ch::Window::free() {
     if (os_handle) {
         DestroyWindow((HWND)os_handle);
         os_handle = nullptr;

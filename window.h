@@ -32,7 +32,7 @@ namespace ch {
 
         void set_visibility(bool visibility);
 		void center_in_monitor();
-        void destroy();
+        void free();
 
         using On_Exit_Requested = void(*)(const Window& window);
         On_Exit_Requested on_exit_requested;

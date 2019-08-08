@@ -2,77 +2,56 @@
 
 #include "../thirdparty/wglext.h"
 
-using WGL_Create_Context_Attribs_ARB = HGLRC(WINAPI *)(HDC hdc, HGLRC share_context, const s32* attrib_list);
-using WGL_Choose_Pixel_Format_ARB = bool (WINAPI *)(HDC hdc, const s32 *int_attrib_list, const float *float_attrib_list, u32 max_formats, s32 *int_formats, u32 *num_formats);
-using WGL_Swap_Interval_Ext = bool (WINAPI *)(s32 interval);
-
 WGL_Create_Context_Attribs_ARB wglCreateContextAttribsARB = nullptr;
 WGL_Choose_Pixel_Format_ARB wglChoosePixelFormatARB = nullptr;
 WGL_Swap_Interval_Ext wglSwapIntervalEXT = nullptr;
 
-const s32 win32_opengl_attribs[] = {
-	WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-	WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-	WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-	WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-	0,
-};
-
 bool ch::load_gl() {
-	{
-		WNDCLASSEX window_class = {};
-		window_class.cbSize = sizeof(WNDCLASSEX);
-		window_class.lpfnWndProc = DefWindowProc;
-		window_class.hInstance = GetModuleHandle(NULL);
-		window_class.lpszClassName = TEXT("gl_loader");
+	ch::Window fake_window;
+	if (!ch::create_window(CH_TEXT("fake_window"), 12, 12, 0, &fake_window)) return false;
+	defer(fake_window.free());
 
-		if (RegisterClassEx(&window_class)) {
-			HWND window = CreateWindowEx(0, window_class.lpszClassName, TEXT("gl_loader window"), 0, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, window_class.hInstance, NULL);
+	HDC window_context = GetDC((HWND)fake_window.os_handle);
+	defer(ReleaseDC((HWND)fake_window.os_handle, window_context));
 
-			HDC window_context = GetDC(window);
+	PIXELFORMATDESCRIPTOR dpf;
+	dpf.nSize = sizeof(dpf);
+	dpf.nVersion = 1;
+	dpf.iPixelType = PFD_TYPE_RGBA;
+	dpf.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
+	dpf.cColorBits = 32;
+	dpf.cDepthBits = 24;
+	dpf.cAlphaBits = 8;
+	dpf.iLayerType = PFD_MAIN_PLANE;
 
-			PIXELFORMATDESCRIPTOR dpf;
-			dpf.nSize = sizeof(dpf);
-			dpf.nVersion = 1;
-			dpf.iPixelType = PFD_TYPE_RGBA;
-			dpf.dwFlags = PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER;
-			dpf.cColorBits = 32;
-			dpf.cAlphaBits = 8;
-			dpf.cDepthBits = 24;
-			dpf.iLayerType = PFD_MAIN_PLANE;
+	const s32 suggested_pixel_format_index = ChoosePixelFormat(window_context, &dpf);
 
-			const s32 suggested_pixel_foramat_index = ChoosePixelFormat(window_context, &dpf);
+	DescribePixelFormat(window_context, suggested_pixel_format_index, sizeof(dpf), &dpf);
+	SetPixelFormat(window_context, suggested_pixel_format_index, &dpf);
 
-			DescribePixelFormat(window_context, suggested_pixel_foramat_index, sizeof(dpf), &dpf);
-			SetPixelFormat(window_context, suggested_pixel_foramat_index, &dpf);
+	HGLRC glrc = wglCreateContext(window_context);
+	defer(wglDeleteContext(glrc));
 
-			HGLRC glrc = wglCreateContext(window_context);
-			if (wglMakeCurrent(window_context, glrc)) {
-				wglChoosePixelFormatARB = (WGL_Choose_Pixel_Format_ARB)wglGetProcAddress("wglChoosePixelFormatARB");
-				wglCreateContextAttribsARB = (WGL_Create_Context_Attribs_ARB)wglGetProcAddress("wglCreateContextAttribsARB");
-				wglSwapIntervalEXT = (WGL_Swap_Interval_Ext)wglGetProcAddress("wglSwapIntervalEXT");
+	if (wglMakeCurrent(window_context, glrc)) {
+		wglChoosePixelFormatARB = (WGL_Choose_Pixel_Format_ARB)wglGetProcAddress("wglChoosePixelFormatARB");
+		wglCreateContextAttribsARB = (WGL_Create_Context_Attribs_ARB)wglGetProcAddress("wglCreateContextAttribsARB");
+		wglSwapIntervalEXT = (WGL_Swap_Interval_Ext)wglGetProcAddress("wglSwapIntervalEXT");
 
 #define LOAD_GL_BINDINGS(type, func) func = (type)wglGetProcAddress(#func);
-				GL_BINDINGS(LOAD_GL_BINDINGS);
+		GL_BINDINGS(LOAD_GL_BINDINGS);
 #undef  LOAD_GL_BINDINGS
 
-				wglMakeCurrent(0, 0);
-			}
-
-			wglDeleteContext(glrc);
-			ReleaseDC(window, window_context);
-			DestroyWindow(window);
-		}
+		wglMakeCurrent(window_context, NULL);
 	}
+
 	return ch::is_gl_loaded();
 }
 
 bool ch::is_gl_loaded() {
-	bool result = true;
-#define CHECK_GL_BINDINGS(type, func) result = result && (func != nullptr);
+#define CHECK_GL_BINDINGS(type, func) if (!func) return false;
 	GL_BINDINGS(CHECK_GL_BINDINGS);
 #undef  CHECK_GL_BINDINGS
-	return result;
+	return true;
 }
 
 bool ch::swap_buffers(OS_Window_Handle window_handle) {
@@ -87,40 +66,43 @@ bool ch::create_gl_window(const tchar* title, u32 width, u32 height, u32 style, 
 	}
 
 	HDC window_context = GetDC((HWND)out_window->os_handle);
+	defer(ReleaseDC((HWND)out_window->os_handle, window_context));
+	const s32 attrib_list[] =
+	{
+		WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+		WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+		WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, GL_TRUE,
+		0,
+	};
 
-	if (wglChoosePixelFormatARB) {
-		const s32 attrib_list[] =
-		{
-			WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-			WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-			WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-			WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-			WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-			WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, GL_TRUE,
-			0,
-		};
+	s32 pixel_format = 0;
+	u32 num_formats;
+	wglChoosePixelFormatARB(window_context, attrib_list, NULL, 1, &pixel_format, &num_formats);
 
-		s32 spf_index = 0;
-		u32 num_formats;
-		wglChoosePixelFormatARB(window_context, attrib_list, 0, 1, &spf_index, &num_formats);
+	PIXELFORMATDESCRIPTOR spf;
+	DescribePixelFormat(window_context, pixel_format, sizeof(spf), &spf);
+	SetPixelFormat(window_context, pixel_format, &spf);
 
-		PIXELFORMATDESCRIPTOR spf;
-		DescribePixelFormat(window_context, spf_index, sizeof(spf), &spf);
-		SetPixelFormat(window_context, spf_index, &spf);
-		return true;
-	}
-
-	return false;
+	return true;
 }
 
 bool ch::make_current(OS_Window_Handle window_handle) {
 	HDC window_context = GetDC((HWND)window_handle);
+	defer(ReleaseDC((HWND)window_handle, window_context));
 
-	if (wglCreateContextAttribsARB) {
-		HGLRC glrc = wglCreateContextAttribsARB(window_context, 0, win32_opengl_attribs);
+	const s32 win32_opengl_attribs[] = {
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+		WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+		0,
+	};
 
-		return wglMakeCurrent(window_context, glrc);
-	}
 
-	return false;
+	HGLRC glrc = wglCreateContextAttribsARB(window_context, 0, win32_opengl_attribs);
+
+	return wglMakeCurrent(window_context, glrc);
 }

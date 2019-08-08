@@ -9,11 +9,6 @@ project "ch_stl"
 		"thirdparty/*.h"
     }
 
-	links
-	{
-		"opengl32"
-	}
-
     defines
 	{
 		"_CRT_SECURE_NO_WARNINGS",

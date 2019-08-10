@@ -84,7 +84,7 @@ bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Win
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     window_class.lpszClassName = title;
     window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
-	window_class.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
+	window_class.style = CS_OWNDC;
 
     if (!RegisterClassEx(&window_class)) {
         return false;

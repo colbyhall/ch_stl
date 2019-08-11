@@ -1,8 +1,6 @@
 #pragma once
 
-#include "allocator.h"
-#include "memory.h"
-#include "templates.h"
+#include "array.h"
 
 namespace ch {
 	/**

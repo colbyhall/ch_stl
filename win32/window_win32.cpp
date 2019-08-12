@@ -5,6 +5,11 @@
 #error This should not be compiling on this platform
 #endif
 
+#define WIN32_MEAN_AND_LEAN
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+
 
 #define CALL_WINDOW_EVENT(event, ...) if (window->event) window->event(*window, __VA_ARGS__)
 static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_param) {

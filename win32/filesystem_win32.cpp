@@ -4,7 +4,9 @@
 #error This should not be compiling on this platform
 #endif
 
-
+#define far
+#define near
+#include <shlwapi.h>
 
 bool ch::Path::is_relative() const {
 	return PathIsRelative(data);

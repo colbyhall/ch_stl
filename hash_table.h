@@ -54,6 +54,8 @@ namespace ch {
 		operator bool() const { return buckets && layout; }
 		bool operator==(const ch::Hash_Table<Key, Value>& right) { return right.buckets == buckets; }
 		bool operator!=(const ch::Hash_Table<Key, Value>& right) { return right.buckets != buckets; }
+		CH_FORCEINLINE Value& operator[](usize index) { return buckets[index].value; }
+		CH_FORCEINLINE const Value& operator[](usize index) const { return buckets[index].value; }
 
 		usize key_to_index(const Key& k) {
 			const u64 hash = ch::hash(k);
@@ -97,7 +99,7 @@ namespace ch {
 			r.key = k;
 			r.value = v;
 
-			usize result = buckets.push(r);
+			const usize result = buckets.push(r);
 			layout.reserve(1);
 
 			refresh_layout();

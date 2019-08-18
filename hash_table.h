@@ -1,7 +1,6 @@
 #pragma once
 
 #include "array.h"
-#include "hash.h"
 
 namespace ch {
 	/**
@@ -9,12 +8,12 @@ namespace ch {
 	 *
 	 * All Key's passed in need a hash function
 	 */
-	template <typename Key, typename Value, Hash_Function Hash = ch::fnv1_hash>
+	template <typename Key, typename Value>
 	struct Hash_Table {
 		struct Pair {
 			Key key;
 			Value value;
-			Pair* next = nullptr;
+			ch::Hash_Table<Key, Value>::Pair* next = nullptr;
 
 			Pair() = default;
 		};
@@ -24,7 +23,7 @@ namespace ch {
 
 		Hash_Table(const ch::Allocator& in_alloc = ch::context_allocator) : buckets(in_alloc), layout(in_alloc) {}
 		
-		ch::Hash_Table<Key, Value, Hash> copy(const ch::Allocator& in_alloc = ch::context_allocator) const {
+		ch::Hash_Table<Key, Value> copy(const ch::Allocator& in_alloc = ch::context_allocator) const {
 			ch::Hash_Table result(in_alloc);
 			result.buckets = buckets.copy(in_alloc);
 			result.layout = layout.copy(in_alloc);
@@ -59,7 +58,7 @@ namespace ch {
 		CH_FORCEINLINE const Value& operator[](usize index) const { return buckets[index].value; }
 
 		usize key_to_index(const Key& k) {
-			const u64 the_hash = Hash(&k, sizeof(Key));
+			const u64 the_hash = hash(k);
 			return the_hash % buckets.count;
 		}
 

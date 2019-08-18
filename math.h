@@ -22,8 +22,6 @@ namespace ch {
     f32 atan(f32 s);
     f32 atan2(f32 x, f32 y);
 
-	f32 round(f32 s);
-
 	const f32 pi = 3.1415f;
 	const f32 tau = (pi * 2.f);
 
@@ -57,6 +55,30 @@ namespace ch {
 	T abs(const T& t) {
 		if (t < 0) return -t;
 		return t;
+	}
+
+	template <typename T>
+	T ceil(const T& t) {
+		return t;
+	}
+
+	template<>
+	CH_FORCEINLINE f32 ch::ceil<f32>(const f32& t) {
+		return (f32)((s32)t);
+	}
+
+	template <typename T>
+	T round(const T& t) {
+		return t;
+	}
+
+	template<>
+	CH_FORCEINLINE f32 ch::round<f32>(const f32& t) {
+		if (t > 0.f) {
+			return ch::ceil(t + 0.5f);
+		}
+
+		return ch::ceil(t - 0.5f);
 	}
 
 	template <typename T>
@@ -204,6 +226,22 @@ namespace ch {
 		ch::Vector2 result = t;
 		if (t.x < 0.f) result.x = -t.x;
 		if (t.y < 0.f) result.y = -t.y;
+		return result;
+	}
+
+	template<>
+	CH_FORCEINLINE ch::Vector2 ch::ceil<ch::Vector2>(const ch::Vector2& t) {
+		ch::Vector2 result;
+		result.x = ch::ceil(t.x);
+		result.y = ch::ceil(t.y);
+		return result;
+	}
+
+	template<>
+	CH_FORCEINLINE ch::Vector2 ch::round<ch::Vector2>(const ch::Vector2& t) {
+		ch::Vector2 result;
+		result.x = ch::round(t.x);
+		result.y = ch::round(t.y);
 		return result;
 	}
 
@@ -467,3 +505,5 @@ namespace ch {
 	ch::Matrix4 scale(const Vector3& scale);
 
 }
+
+u64 hash(ch::Vector2 v);

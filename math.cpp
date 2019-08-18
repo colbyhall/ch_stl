@@ -1,4 +1,5 @@
 #include "math.h"
+#include "hash.h"
 
 #include <math.h>
 
@@ -28,17 +29,6 @@ f32 ch::atan(f32 s) {
 
 f32 ch::atan2(f32 x, f32 y) {
     return atan2f(x, y);
-}
-
-f32 ch::round(f32 s) {
-	const s32 ceil = (s32)s;
-	const f32 dec = s - (f32)ceil;
-
-	if (dec >= 0.5f) {
-		return (f32)ceil + 1;	
-	}
-
-	return (f32)ceil;
 }
 
 ch::Matrix4 ch::Matrix4::operator*(const Matrix4& right) const {
@@ -260,4 +250,8 @@ ch::Matrix4 ch::scale(const Vector3& scale) {
 	result[1 + 1 * 4] = scale.y;
 	result[2 + 2 * 4] = scale.z;
 	return result;
+}
+
+u64 hash(ch::Vector2 v) {
+	return ch::fnv1_hash(&v, sizeof(ch::Vector2));
 }

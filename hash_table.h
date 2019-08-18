@@ -58,8 +58,8 @@ namespace ch {
 		CH_FORCEINLINE const Value& operator[](usize index) const { return buckets[index].value; }
 
 		usize key_to_index(const Key& k) {
-			const u64 hash = ch::hash(k);
-			return hash % buckets.count;
+			const u64 the_hash = hash(k);
+			return the_hash % buckets.count;
 		}
 
 		void refresh_layout() {

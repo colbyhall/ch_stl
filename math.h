@@ -58,12 +58,12 @@ namespace ch {
 	}
 
 	template <typename T>
-	T ceil(const T& t) {
+	T floor(const T& t) {
 		return t;
 	}
 
 	template<>
-	CH_FORCEINLINE f32 ch::ceil<f32>(const f32& t) {
+	CH_FORCEINLINE f32 ch::floor<f32>(const f32& t) {
 		return (f32)((s32)t);
 	}
 
@@ -75,10 +75,10 @@ namespace ch {
 	template<>
 	CH_FORCEINLINE f32 ch::round<f32>(const f32& t) {
 		if (t > 0.f) {
-			return ch::ceil(t + 0.5f);
+			return ch::floor(t + 0.5f);
 		}
 
-		return ch::ceil(t - 0.5f);
+		return ch::floor(t - 0.5f);
 	}
 
 	template <typename T>
@@ -230,10 +230,10 @@ namespace ch {
 	}
 
 	template<>
-	CH_FORCEINLINE ch::Vector2 ch::ceil<ch::Vector2>(const ch::Vector2& t) {
+	CH_FORCEINLINE ch::Vector2 ch::floor<ch::Vector2>(const ch::Vector2& t) {
 		ch::Vector2 result;
-		result.x = ch::ceil(t.x);
-		result.y = ch::ceil(t.y);
+		result.x = ch::floor(t.x);
+		result.y = ch::floor(t.y);
 		return result;
 	}
 

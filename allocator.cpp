@@ -67,7 +67,7 @@ ch::Allocator ch::make_arena_allocator(usize size) {
     return { data, arena_alloc };
 }
 
-void ch::destroy_arena_allocator(ch::Allocator* allocator) {
+void ch::free_arena_allocator(ch::Allocator* allocator) {
     ch::Arena_Allocator_Header* header = allocator->get_header<ch::Arena_Allocator_Header>();
     ch::free(allocator->data);
     allocator->data = nullptr;

@@ -82,6 +82,21 @@ namespace ch {
 	}
 
 	template <typename T>
+	T ceil(const T& t) {
+		return t;
+	}
+
+	template<>
+	CH_FORCEINLINE f32 ch::ceil<f32>(const f32& t) {
+		if (t > 0.f) {
+			return ch::round(t + 0.5f);
+		}
+
+		return ch::round(t - 0.5f);
+	}
+
+
+	template <typename T>
 	bool in_range(T value, T min, T max) {
 		return value == ch::clamp(value, min, max);
 	}
@@ -242,6 +257,14 @@ namespace ch {
 		ch::Vector2 result;
 		result.x = ch::round(t.x);
 		result.y = ch::round(t.y);
+		return result;
+	}
+
+	template<>
+	CH_FORCEINLINE ch::Vector2 ch::ceil<ch::Vector2>(const ch::Vector2& t) {
+		ch::Vector2 result;
+		result.x = ch::ceil(t.x);
+		result.y = ch::ceil(t.y);
 		return result;
 	}
 

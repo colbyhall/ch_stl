@@ -38,7 +38,7 @@ namespace ch {
     };
 
     ch::Allocator make_arena_allocator(usize size);
-    void destroy_arena_allocator(ch::Allocator* allocator);
+    void free_arena_allocator(ch::Allocator* allocator);
     void reset_arena_allocator(ch::Allocator* allocator);
 
 	extern Allocator context_allocator;

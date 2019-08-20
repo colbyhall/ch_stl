@@ -43,7 +43,7 @@ static void* arena_alloc(const ch::Allocator& allocator, void* ptr, usize size) 
     if (!ptr || (ptr && size > 0)) {
         // @NOTE(Colby): this will assert if we're trying to free with a nullptr
         assert(size > 0);
-        assert(header->current + size < header->allocated);
+        assert(header->current + size <= header->allocated);
         u8* result = (u8*)header->data + header->current;
 
 		if (ptr) {

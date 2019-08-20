@@ -329,3 +329,7 @@ template<typename T>
 u64 hash(const ch::Base_String<T>& s) {
 	return ch::fnv1_hash(s.data, s.count * sizeof(T));
 }
+
+CH_FORCEINLINE u64 hash(const tchar* c_str) {
+	return ch::fnv1_hash(c_str, ch::strlen(c_str));
+}

@@ -126,3 +126,5 @@
 #define CH_KEY_RCONTROL       0xA3
 #define CH_KEY_LMENU          0xA4
 #define CH_KEY_RMENU          0xA5
+
+#define CH_KEY_TILDE		  0xC0

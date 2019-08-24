@@ -6,6 +6,7 @@
 #define CH_MOUSE_MIDDLE	  0x01
 #define CH_MOUSE_RIGHT    0x02
 
+#define CH_KEY_BACKSPACE	  0x08
 #define CH_KEY_TAB			  0x09
 #define CH_KEY_ENTER		  0x0D
 

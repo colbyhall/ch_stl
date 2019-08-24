@@ -65,6 +65,9 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 		ReleaseCapture();
 		CALL_WINDOW_EVENT(on_mouse_button_up, CH_MOUSE_RIGHT);
 		break;
+	case WM_CHAR:
+		CALL_WINDOW_EVENT(on_char_entered, (u32)w_param);
+		break;
 	} 
 
 

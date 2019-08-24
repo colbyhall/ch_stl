@@ -7,6 +7,7 @@
 #define CH_MOUSE_RIGHT    0x02
 
 #define CH_KEY_TAB			  0x09
+#define CH_KEY_ENTER		  0x0D
 
 #define CH_KEY_0			  0x30
 #define CH_KEY_1			  0x31

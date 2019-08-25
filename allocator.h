@@ -44,15 +44,6 @@ namespace ch {
 	extern Allocator context_allocator;
 }
 
-#define ch_new new
-#define ch_delete delete
-
-void* operator new(usize size);
-void* operator new[](usize size);
-
-void operator delete(void* ptr);
-void operator delete[](void* ptr);
-
 void* operator new(usize size, ch::Allocator allocator);
 void* operator new[](usize size, ch::Allocator allocator);
 

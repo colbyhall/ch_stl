@@ -19,12 +19,12 @@ static void* heap_alloc(const ch::Allocator& allocator, void* ptr, usize size) {
     void* result = nullptr;
     if (size) {
         if (!ptr) {
-            result = ch::malloc(size);
+            result = ch_malloc(size);
         } else {
-            result = ch::realloc(ptr, size);
+            result = ch_realloc(ptr, size);
         }
     } else if (ptr) {
-        ch::free(ptr);
+        ch_free(ptr);
     }
 
     return result;
@@ -58,7 +58,7 @@ static void* arena_alloc(const ch::Allocator& allocator, void* ptr, usize size) 
 }
 
 ch::Allocator ch::make_arena_allocator(usize size) {
-    u8* data = (u8*)ch::malloc(size + sizeof(ch::Arena_Allocator_Header));
+    u8* data = (u8*)ch_malloc(size + sizeof(ch::Arena_Allocator_Header));
     ch::Arena_Allocator_Header* header = (ch::Arena_Allocator_Header*)data;
     *header = {};
     header->data = data + sizeof(ch::Arena_Allocator_Header);
@@ -69,29 +69,13 @@ ch::Allocator ch::make_arena_allocator(usize size) {
 
 void ch::free_arena_allocator(ch::Allocator* allocator) {
     ch::Arena_Allocator_Header* header = allocator->get_header<ch::Arena_Allocator_Header>();
-    ch::free(allocator->data);
+    ch_free(allocator->data);
     allocator->data = nullptr;
 }
 
 void ch::reset_arena_allocator(ch::Allocator* allocator) {
     ch::Arena_Allocator_Header* header = allocator->get_header<ch::Arena_Allocator_Header>();
     header->current = 0;
-}
-
-void* operator new(usize size) {
-    return ch::malloc(size);
-}
-
-void* operator new[](usize size) {
-    return ch::malloc(size);
-}
-
-void operator delete(void* ptr) {
-    ch::free(ptr);
-}
-
-void operator delete[](void* ptr) {
-    ch::free(ptr);
 }
 
 void* operator new(usize size, ch::Allocator allocator) {

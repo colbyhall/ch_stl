@@ -183,7 +183,7 @@ namespace ch {
             allocated += amount;
 
             if (data) {
-                data = (T*)ch::realloc(data, allocated * sizeof(T));
+                data = (T*)ch_realloc(data, allocated * sizeof(T));
             } else {
                 data = ch_new(allocator) T[allocated];
             }
@@ -345,6 +345,9 @@ namespace ch {
 	using String16 = ch::Base_String<u16>;
 	using String32 = ch::Base_String<u32>;
 
+	usize sprintf(tchar* buffer, const tchar* fmt, ...);
+
+	void bytes_to_string(usize bytes, ch::String* out_string);
 }
 
 template<typename T>

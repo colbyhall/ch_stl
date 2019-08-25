@@ -98,7 +98,7 @@ ch::Allocator ch::make_pool_allocator(usize bucket_size, usize num_buckets) {
 	assert(num_buckets);
 
 	using Header = ch::Pool_Allocator_Header;
-	u8* data = (u8*)ch::malloc(sizeof(Header) + (bucket_size * num_buckets));
+	u8* data = (u8*)ch_malloc(sizeof(Header) + (bucket_size * num_buckets));
 
 	Header* header = (Header*)data;
 	*header = {};
@@ -120,7 +120,7 @@ ch::Allocator ch::make_pool_allocator(usize bucket_size, usize num_buckets) {
 void ch::free_pool_allocator(Allocator* allocator) {
 	ch::Pool_Allocator_Header* header = allocator->get_header<ch::Pool_Allocator_Header>();
 	header->buckets.free();
-	ch::free(allocator->data);
+	ch_free(allocator->data);
 	allocator->data = nullptr;
 }
 

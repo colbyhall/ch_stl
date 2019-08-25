@@ -324,6 +324,20 @@ namespace ch {
 
 			return -1;
 		}
+
+		void to_lowercase() {
+			for (usize i = 0; i < count; i++) {
+				const T c = data[i];
+				if (ch::is_letter(c)) data[i] = ch::to_lowercase(c);
+			}
+		}
+
+		void to_uppercase() {
+			for (usize i = 0; i < count; i++) {
+				const T c = data[i];
+				if (ch::is_letter(c)) data[i] = ch::to_uppercase(c);
+			}
+		}
 	};
 
 	using String   = ch::Base_String<tchar>;

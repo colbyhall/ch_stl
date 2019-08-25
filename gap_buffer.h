@@ -81,16 +81,11 @@ namespace ch {
 
 			if (index_ptr < gap) {
 				const usize amount_to_move = gap - index_ptr;
-
 				ch::mem_copy(gap + gap_size - amount_to_move, index_ptr, amount_to_move * sizeof(T));
-
 				gap = index_ptr;
-			}
-			else {
+			} else {
 				const usize amount_to_move = index_ptr - (gap + gap_size);
-
 				ch::mem_copy(gap, gap + gap_size, amount_to_move * sizeof(T));
-
 				gap += amount_to_move;
 			}
 		}

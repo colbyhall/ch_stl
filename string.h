@@ -209,7 +209,7 @@ namespace ch {
 		}
 
         void advance(usize amount) {
-            assert(amount < allocated);
+            assert(amount < count);
             data += amount;
             count -= amount;
             allocated -= amount;
@@ -305,6 +305,14 @@ namespace ch {
 				data[i + count] = ap[i];
 			}
 			count += ap_size;
+		}
+
+		ssize find_from_left(tchar c) const {
+			for (usize i = 0; i < count; i++) {
+				if (data[i] == c) return i;
+			}
+
+			return -1;
 		}
 
 		ssize find_from_right(tchar c) const {

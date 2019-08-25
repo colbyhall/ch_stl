@@ -75,9 +75,10 @@ namespace ch {
 		}
 
 		void move_gap_to_index(usize index) {
-			assert(index < count());
+			assert(index < allocated);
 
-			T* index_ptr = &(*this)[index];
+			T* index_ptr = get_index_as_cursor(index);
+			if (index_ptr == gap) return;
 
 			if (index_ptr < gap) {
 				const usize amount_to_move = gap - index_ptr;
@@ -105,7 +106,7 @@ namespace ch {
 
 			T* cursor = get_index_as_cursor(index);
 
-			if (cursor != gap) move_gap_to_index(index);
+			move_gap_to_index(index);
 
 			*cursor = c;
 			gap += 1;
@@ -116,12 +117,7 @@ namespace ch {
 			const usize buffer_count = count();
 			assert(index < buffer_count);
 
-			T* cursor = get_index_as_cursor(index);
-			if (cursor == data) {
-				return;
-			}
-
-			move_gap_to_index(index);
+			move_gap_to_index(index + 1);
 
 			gap -= 1;
 			gap_size += 1;

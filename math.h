@@ -483,7 +483,7 @@ namespace ch {
 	const ch::Color yellow  = red | green;
 	const ch::Color magenta = blue | red;
 	const ch::Color gray    = 0x808080FF;
-	const ch::Color dark_gray = 0xA9A9A9FF;
+	const ch::Color dark_gray = 0x202020FF;
 
 	struct Quaternion {
 		f32 x, y, z, w;

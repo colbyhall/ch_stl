@@ -111,6 +111,8 @@ namespace ch {
 			const usize index = key_to_index(key);
 
 			Pair* found = layout.data[index];
+			if (!found) return nullptr;
+
 			if (found->key == key) return &found->value;
 
 			while (found) {

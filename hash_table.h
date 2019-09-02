@@ -118,10 +118,10 @@ namespace ch {
 			while (found) {
 				found = found->next;
 
-				if (found->key == key) return &found->value;
+				if (found && found->key == key) return &found->value;
 			}
 
-			return &found->value;
+			return nullptr;
 		}
 
 		bool remove(const Key& key) {
@@ -142,6 +142,10 @@ namespace ch {
 
 			buckets.remove(index);
 			refresh_layout();
+		}
+
+		bool contains(const Key& key) const {
+			return find(key) != nullptr;
 		}
 	};
 }

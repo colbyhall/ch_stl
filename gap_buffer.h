@@ -7,10 +7,10 @@ namespace ch {
 
 	template <typename T>
 	struct Gap_Buffer {
-		T* data;
-		usize allocated;
-		T* gap;
-		usize gap_size;
+		T* data = nullptr;
+		usize allocated = 0;
+		T* gap = nullptr;
+		usize gap_size = 0;
 		ch::Allocator allocator;
 
 

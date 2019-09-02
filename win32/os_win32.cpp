@@ -1,5 +1,6 @@
 #include "../os.h"
 #include "../memory.h"
+#include "../filesystem.h"
 
 #include <windows.h>
 
@@ -47,5 +48,23 @@ bool ch::copy_from_clipboard(ch::OS_Window_Handle window_handle, ch::String* out
 
 	GlobalUnlock(c_data);
 
+	return true;
+}
+
+
+void* ch::Library::get_function(const tchar* function_name) {
+	return GetProcAddress((HMODULE)handle, function_name);
+}
+
+void ch::Library::free() {
+	if (handle) {
+		FreeLibrary((HMODULE)handle);
+	}
+}
+
+bool ch::load_library(const ch::Path& path, ch::Library* lib) {
+	ch::OS_Library_Handle handle = LoadLibrary(path);
+	if (handle == INVALID_HANDLE_VALUE) return false;
+	lib->handle = handle;
 	return true;
 }

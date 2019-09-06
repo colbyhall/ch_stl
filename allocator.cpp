@@ -1,8 +1,6 @@
 #include "allocator.h"
 #include "memory.h"
 
-ch::Allocator ch::context_allocator = ch::get_heap_allocator();
-
 void* ch::Allocator::alloc(usize size) {
     return func(*this, nullptr, size);
 }
@@ -29,6 +27,9 @@ static void* heap_alloc(const ch::Allocator& allocator, void* ptr, usize size) {
 
     return result;
 }
+
+// Use static initializer to avoid the static initialization order fiasco
+ch::Allocator ch::context_allocator = {nullptr, heap_alloc};
 
 ch::Allocator ch::get_heap_allocator() {
     ch::Allocator result;

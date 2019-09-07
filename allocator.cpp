@@ -29,7 +29,7 @@ static void* heap_alloc(const ch::Allocator& allocator, void* ptr, usize size) {
 }
 
 // Use static initializer to avoid the static initialization order fiasco
-ch::Allocator ch::context_allocator = {nullptr, heap_alloc};
+ch::Allocator ch::context_allocator = { nullptr, heap_alloc };
 
 ch::Allocator ch::get_heap_allocator() {
     ch::Allocator result;

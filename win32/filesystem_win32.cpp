@@ -46,6 +46,12 @@ bool ch::File::open(const tchar* path, u32 open_flags) {
 
     os_handle = CreateFile(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL);
     is_open = os_handle != INVALID_HANDLE_VALUE;
+
+	if (!is_open && create) {
+		os_handle = CreateFile(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		is_open = os_handle != INVALID_HANDLE_VALUE;
+	}
+
     return is_open;
 }
 

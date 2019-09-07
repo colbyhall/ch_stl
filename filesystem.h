@@ -124,6 +124,7 @@ namespace ch {
 		ch::Allocator allocator;
 
 		void free();
+		ch::String to_string() const;
 	};
 
 	bool load_file_into_memory(const tchar* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);

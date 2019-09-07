@@ -101,6 +101,18 @@ namespace ch {
 		return value == ch::clamp(value, min, max);
 	}
 
+	// @TODO(Chall): not finished
+	template <typename T>
+	CH_FORCEINLINE u32 get_num_digits(T t) {
+		u32 result = 1;
+		while (t >= (T)10) {
+			result += 1;
+			t /= (T)10;
+		}
+
+		return result;
+	}
+
 	CH_FORCEINLINE f32 interp_to(f32 current, f32 target, f32 delta_time, f32 speed) {
 		if (speed <= 0.f) return target;
 
@@ -473,6 +485,11 @@ namespace ch {
 			*this = *this | right;
 		}
 	};
+
+	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, const ch::Color& color) {
+		stream << color.r << (tchar)' ' << color.g << (tchar)' ' << color.b << (tchar)' ' << color.a;
+		return stream;
+	}
 
 	const ch::Color red     = 0xFF0000FF;
 	const ch::Color green   = 0x00FF00FF;

@@ -104,6 +104,21 @@ usize ch::File::size() const {
     return (usize)file_size;
 }
 
+u64 ch::File::get_last_write_time() const {
+	assert(is_open);
+	FILETIME creation_time;
+	FILETIME access_time;
+	FILETIME write_time;
+
+	GetFileTime((HANDLE)os_handle, &creation_time, &access_time, &write_time);
+	
+	LARGE_INTEGER result;
+	result.LowPart = write_time.dwLowDateTime;
+	result.HighPart = write_time.dwHighDateTime;
+	
+	return result.QuadPart;
+}
+
 ch::Path ch::get_current_path() {
     ch::Path result;
     GetCurrentDirectory(MAX_PATH, result.data);
@@ -145,10 +160,6 @@ ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
 	actual_path.append(CH_TEXT("\\*"));
 
 	file = FindFirstFile(actual_path, &find_data);
-
-	// @NOTE(CHall): Skip . ..
-	// advance();
-	// advance();
 }
 
 ch::Win32_Directory_Iterator::Win32_Directory_Iterator() : ch::Win32_Directory_Iterator(ch::get_current_path()) {}

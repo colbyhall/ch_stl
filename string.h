@@ -208,6 +208,16 @@ namespace ch {
 			return result;
 		}
 
+		CH_FORCEINLINE T* to_tstring(ch::Allocator& in_alloc = ch::context_allocator) const {
+			T* r = (T*)in_alloc.alloc((count + 1) * sizeof(T));
+			for (usize i = 0; i < count; i += 1) {
+				r[i] = data[i];
+			}
+			r[count] = 0;
+
+			return r;
+		}
+
         void advance(usize amount) {
             assert(amount < count);
             data += amount;
@@ -226,7 +236,7 @@ namespace ch {
 
             Base_String<T> result;
             for (usize i = 0; i < count; i++) {
-                if (ch::is_eol(data[i])) {
+                if (ch::eol == data[i]) {
                     result.data = data;
                     result.count = i;
                     result.allocated = i;
@@ -346,8 +356,21 @@ namespace ch {
 	using String32 = ch::Base_String<u32>;
 
 	usize sprintf(tchar* buffer, const tchar* fmt, ...);
-
 	void bytes_to_string(usize bytes, ch::String* out_string);
+
+	bool atof(const tchar* tstr, f32* f);
+	CH_FORCEINLINE bool atof(const ch::String& s, f32* f) {
+		tchar* tstr = s.to_tstring();
+		defer(ch::context_allocator.free(tstr));
+		return atof(tstr, f);
+	}
+
+	bool atoi(const tchar* tstr, s32* i);
+	CH_FORCEINLINE bool atoi(const ch::String& s, s32* i) {
+		tchar* tstr = s.to_tstring();
+		defer(ch::context_allocator.free(tstr));
+		return atoi(tstr, i);
+	}
 }
 
 template<typename T>

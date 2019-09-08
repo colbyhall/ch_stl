@@ -68,6 +68,13 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 	case WM_CHAR:
 		CALL_WINDOW_EVENT(on_char_entered, (u32)w_param);
 		break;
+	case WM_SYSCOMMAND:
+		switch(w_param) {
+		case SC_MAXIMIZE:
+			CALL_WINDOW_EVENT(on_maximized);
+			break;
+		}
+		break;
 	} 
 
 
@@ -166,6 +173,12 @@ bool ch::Window::has_focus() const {
 	return GetFocus() == os_handle;
 }
 
+bool ch::Window::is_maximized() const {
+	WINDOWPLACEMENT wp;
+	GetWindowPlacement((HWND)os_handle, &wp);
+	return (wp.showCmd & SW_MAXIMIZE) == SW_MAXIMIZE;
+}
+
 void ch::Window::set_visibility(bool visibility) {
     ShowWindow((HWND)os_handle, (visibility ? SW_SHOW : SW_HIDE));
 }
@@ -180,6 +193,10 @@ void ch::Window::center_in_monitor() {
 	const u32 pos_y = monitor_height / 2 - size.uy / 2;
 
 	SetWindowPos((HWND)os_handle, 0, pos_x, pos_y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
+void ch::Window::maximize() {
+	ShowWindow((HWND)os_handle, SW_MAXIMIZE);
 }
 
 void ch::Window::free() {

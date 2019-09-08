@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <TCHAR.h>
 
 usize ch::sprintf(tchar* buffer, const tchar* fmt, ...) {
 	va_list args;
@@ -43,4 +45,24 @@ void ch::bytes_to_string(usize bytes, String* out_string) {
 	} else {
 		print_to_out(CH_TEXT("%llub"));
 	}
+}
+
+bool ch::atof(const tchar* tstr, f32* f) {
+	const f32 result = (f32)::_ttof(tstr);
+	if (errno == EINVAL) {
+		return false;
+	}
+
+	*f = result;
+	return true;
+}
+
+bool ch::atoi(const tchar* tstr, s32* i) {
+	const s32 result = ::_ttoi(tstr);
+	if (errno == EINVAL) {
+		return false;
+	}
+
+	*i = result;
+	return true;
 }

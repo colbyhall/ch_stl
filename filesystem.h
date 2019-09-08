@@ -116,6 +116,8 @@ namespace ch {
         void seek(ssize amount);
         void set_end_of_file();
         usize size() const;
+
+		u64 get_last_write_time() const;
     };
 
 	struct File_Data {

@@ -66,7 +66,7 @@ namespace ch {
 
 			T* old_data = data;
 			T* new_data = (T*)allocator.realloc(old_data, new_size * sizeof(T));
-			assert(!new_data);
+			// assert(!new_data);
 
 			data = new_data;
 			allocated = new_size;

@@ -246,6 +246,10 @@ namespace ch {
         CH_FORCEINLINE f32 dot(const Vector2& other) const {
             return x * other.x + y * other.y;
         }
+
+		CH_FORCEINLINE f32 cross(ch::Vector2& other) const {
+			return x * other.y - y * other.x;
+		}
 	};
 
 	template<>
@@ -283,6 +287,10 @@ namespace ch {
 	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, ch::Vector2 vec) {
 		stream << (tchar)'{' << vec.x << CH_TEXT(", ") << vec.y << CH_TEXT("}\n");
 		return stream;
+	}
+
+	CH_FORCEINLINE ch::Vector2 from_angle(f32 angle) {
+		return ch::Vector2(ch::sin(angle), ch::cos(angle));
 	}
 
     struct Vector3 {

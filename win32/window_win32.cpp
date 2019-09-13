@@ -32,9 +32,11 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 	case WM_KILLFOCUS:
 		CALL_WINDOW_EVENT(on_focus_lost);
 		break;
+	case WM_SYSKEYDOWN:
 	case WM_KEYDOWN:
 		CALL_WINDOW_EVENT(on_key_pressed, (u8)w_param);
 		break;
+	case WM_SYSKEYUP:
 	case WM_KEYUP:
 		CALL_WINDOW_EVENT(on_key_released, (u8)w_param);
 		break;

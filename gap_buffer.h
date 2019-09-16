@@ -104,9 +104,9 @@ namespace ch {
 				resize(default_gap_size);
 			}
 
-			T* cursor = get_index_as_cursor(index);
-
 			move_gap_to_index(index);
+
+			T* cursor = get_index_as_cursor(index);
 
 			*cursor = c;
 			gap += 1;

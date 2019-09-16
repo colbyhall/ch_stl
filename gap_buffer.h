@@ -75,18 +75,18 @@ namespace ch {
 		}
 
 		void move_gap_to_index(usize index) {
-			assert(index < allocated);
+			assert(index <= allocated);
 
 			T* index_ptr = get_index_as_cursor(index);
 			if (index_ptr == gap) return;
 
 			if (index_ptr < gap) {
 				const usize amount_to_move = gap - index_ptr;
-				ch::mem_copy(gap + gap_size - amount_to_move, index_ptr, amount_to_move * sizeof(T));
+				ch::mem_move(gap + gap_size - amount_to_move, index_ptr, amount_to_move * sizeof(T));
 				gap = index_ptr;
 			} else {
 				const usize amount_to_move = index_ptr - (gap + gap_size);
-				ch::mem_copy(gap, gap + gap_size, amount_to_move * sizeof(T));
+				ch::mem_move(gap, gap + gap_size, amount_to_move * sizeof(T));
 				gap += amount_to_move;
 			}
 		}

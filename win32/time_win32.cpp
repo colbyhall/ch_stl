@@ -18,7 +18,9 @@ f64 ch::get_time_in_seconds() {
 		LARGE_INTEGER now;
 		QueryPerformanceCounter(&now);
 		return now.QuadPart / freq;
-	} else return GetTickCount();
+	} else {
+        return GetTickCount64() / 1000.0;
+    }
 }
 
 static ch::Date_Time dt_from_win32dt(const SYSTEMTIME& st) {

@@ -92,7 +92,11 @@ namespace ch {
 
         void reserve(usize size) {
             // @TODO(CHall): find the best way to preallocate
-            allocated += size;
+            usize new_count = allocated + size;
+            while (allocated < new_count) {
+                allocated += allocated >> 1;
+                allocated += 1;
+            }
 
             if (data) {
                 data = (T*)allocator.realloc(data, allocated * sizeof(T));

@@ -33,4 +33,13 @@ namespace ch {
 
 	bool load_library(const ch::Path& path, ch::Library* lib);
 
+	enum Cursor_Type {
+		CT_Arrow,
+		CT_Cross,
+		CT_Hand,
+		CT_IBeam,
+	};
+
+	bool set_cursor(ch::Cursor_Type cursor_type);
+
 }

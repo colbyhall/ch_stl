@@ -15,6 +15,10 @@
 static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_param) {
     ch::Window* window = (ch::Window*)GetWindowLongPtr(handle, GWLP_USERDATA);
 
+	if (!window) {
+		return DefWindowProc(handle, message, w_param, l_param);
+	}
+
 	// @TODO(CHall): I still need to do mouse events. and char entered
     switch (message) {
     case WM_DESTROY:
@@ -86,6 +90,10 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 			c += (surrogate_pair_second & 0x03FF);
 		}
 		CALL_WINDOW_EVENT(on_char_entered, c);
+	} break;
+	case WM_GETMINMAXINFO: {
+		LPMINMAXINFO lpMMI = (LPMINMAXINFO)l_param;
+		lpMMI->ptMinTrackSize = { window->min_size.ix, window->min_size.iy };
 	} break;
 	case WM_SYSCOMMAND:
 		switch(w_param) {
@@ -224,3 +232,4 @@ void ch::Window::free() {
         os_handle = nullptr;
     }
 }
+

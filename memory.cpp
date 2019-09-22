@@ -2,7 +2,6 @@
 #include "allocator.h"
 
 #if CH_BUILD_DEBUG
-
 struct Allocation_Header {
 	void* allocation;
 	usize size;

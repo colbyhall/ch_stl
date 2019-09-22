@@ -7,5 +7,12 @@ ch::Scoped_Timer::Scoped_Timer(const tchar* _name) : start(ch::get_time_in_secon
 ch::Scoped_Timer::~Scoped_Timer() {
 	end = ch::get_time_in_seconds();
 
-	ch::scoped_timer_manager.entries.insert(*this, 0);
+	for (ch::Scoped_Timer& it : ch::scoped_timer_manager.entries) {
+		if (ch::streq(it.name, name)) {
+			it = *this;
+			return;			
+		}
+	}
+
+	ch::scoped_timer_manager.entries.push(*this);
 }

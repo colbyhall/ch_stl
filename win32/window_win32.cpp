@@ -67,9 +67,26 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 		ReleaseCapture();
 		CALL_WINDOW_EVENT(on_mouse_button_up, CH_MOUSE_RIGHT);
 		break;
-	case WM_CHAR:
-		CALL_WINDOW_EVENT(on_char_entered, (u32)w_param);
-		break;
+	case WM_CHAR: {
+		// @NOTE(CHall): UTF-8 char support
+		static u16 surrogate_pair_first = 0;
+		u32 c = (u32)w_param;
+		
+		if (c < 32 && c != '\t') break;
+		if (c == 127) break;
+
+		if (c >= 0xD800 && c <= 0xDBFF) {
+			surrogate_pair_first = c;
+			break;
+
+		} else if (c >= 0xDC00 && c <= 0xDFFF) {
+			u32 surrogate_pair_second = c;
+			c = 0x10000;
+			c += (surrogate_pair_first & 0x03FF) << 10;
+			c += (surrogate_pair_second & 0x03FF);
+		}
+		CALL_WINDOW_EVENT(on_char_entered, c);
+	} break;
 	case WM_SYSCOMMAND:
 		switch(w_param) {
 		case SC_MAXIMIZE:

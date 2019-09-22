@@ -117,7 +117,7 @@ namespace ch {
 			if (!data || !gap) {
 				insert(c, 0);
 			} else {
-				insert(c, gap - data);
+				insert(c, allocated - gap_size);
 			}
 		}
 

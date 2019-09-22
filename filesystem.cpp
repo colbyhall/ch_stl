@@ -219,6 +219,7 @@ bool ch::load_file_into_memory(const tchar* path, File_Data* fd, ch::Allocator a
 	if (!f.open(path, ch::FO_Read | ch::FO_Binary)) return false;
 
 	const usize fs = f.size();
+	fd->allocator = allocator;
 	fd->size = fs + 1;
 	fd->data = ch_new(allocator) u8[fd->size];
 	f.read(fd->data, fs);

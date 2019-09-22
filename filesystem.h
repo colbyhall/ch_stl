@@ -125,6 +125,8 @@ namespace ch {
 		usize size = 0;
 		ch::Allocator allocator;
 
+		File_Data() : data(nullptr), size(0), allocator(ch::context_allocator) {}
+
 		void free();
 		ch::String to_string() const;
 	};

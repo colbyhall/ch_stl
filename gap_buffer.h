@@ -113,6 +113,14 @@ namespace ch {
 			gap_size -= 1;
 		}
 
+		void push(T c) {
+			if (!data || !gap) {
+				insert(c, 0);
+			} else {
+				insert(c, gap - data);
+			}
+		}
+
 		void remove_at_index(usize index) {
 			const usize buffer_count = count();
 			assert(index < buffer_count);

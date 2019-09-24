@@ -153,6 +153,12 @@ void ch::poll_events() {
         DispatchMessage(&msg);
     }
 }
+void ch::wait_events() {
+    MSG msg;
+    GetMessage(&msg, 0, 0, 0);
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+}
 
 bool ch::Window::get_mouse_position(ch::Vector2* out_pos) const {
 	POINT p;

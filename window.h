@@ -75,4 +75,5 @@ namespace ch {
 
     bool create_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window);
     void poll_events();
+    void wait_events();
 }

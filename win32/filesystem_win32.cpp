@@ -9,7 +9,7 @@
 #include <shlwapi.h>
 
 bool ch::Path::is_relative() const {
-	return PathIsRelative(data);
+	return PathIsRelativeA(data);
 }
 
 ch::Stream ch::std_out = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -44,11 +44,11 @@ bool ch::File::open(const char* path, u32 open_flags) {
     DWORD creation = OPEN_EXISTING;
     if (create) creation = CREATE_NEW;
 
-    os_handle = CreateFile(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL);
+    os_handle = CreateFileA(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, creation, FILE_ATTRIBUTE_NORMAL, NULL);
     is_open = os_handle != INVALID_HANDLE_VALUE;
 
 	if (!is_open && create) {
-		os_handle = CreateFile(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		os_handle = CreateFileA(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		is_open = os_handle != INVALID_HANDLE_VALUE;
 	}
 
@@ -65,7 +65,7 @@ bool ch::File::close() {
 
 bool ch::File::get_full_path(ch::Path* out_path) const {
 	assert(is_open);
-	out_path->count = GetFinalPathNameByHandle(os_handle, out_path->data, (DWORD)out_path->allocated, FILE_NAME_OPENED | VOLUME_NAME_NONE);
+	out_path->count = GetFinalPathNameByHandleA(os_handle, out_path->data, (DWORD)out_path->allocated, FILE_NAME_OPENED | VOLUME_NAME_NONE);
 	return  *out_path;
 }
 
@@ -121,20 +121,20 @@ u64 ch::File::get_last_write_time() const {
 
 ch::Path ch::get_current_path() {
     ch::Path result;
-    GetCurrentDirectory(MAX_PATH, result.data);
+    GetCurrentDirectoryA(MAX_PATH, result.data);
     result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
     return result;
 }
 
 bool ch::set_current_path(const char* path) {
-	return SetCurrentDirectory(path);
+	return SetCurrentDirectoryA(path);
 }
 
 ch::Path ch::get_os_font_path() {
 	ch::Path result;
 
-	GetWindowsDirectory(result.data, MAX_PATH);
+	GetWindowsDirectoryA(result.data, MAX_PATH);
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 
@@ -146,7 +146,7 @@ ch::Path ch::get_os_font_path() {
 
 ch::Path ch::get_app_path() {
 	ch::Path result;
-	GetModuleFileName(NULL, result.data, MAX_PATH);
+	GetModuleFileNameA(NULL, result.data, MAX_PATH);
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 
@@ -159,7 +159,7 @@ ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
 	ch::Path actual_path = path;
 	actual_path.append("\\*");
 
-	file = FindFirstFile(actual_path, &find_data);
+	file = FindFirstFileA(actual_path, &find_data);
 }
 
 ch::Win32_Directory_Iterator::Win32_Directory_Iterator() : ch::Win32_Directory_Iterator(ch::get_current_path()) {}
@@ -169,7 +169,7 @@ bool ch::Win32_Directory_Iterator::can_advance() const {
 }
 
 void ch::Win32_Directory_Iterator::advance() {
-	if (!FindNextFile(file, &find_data)) {
+	if (!FindNextFileA(file, &find_data)) {
 		file = INVALID_HANDLE_VALUE;
 	}
 }

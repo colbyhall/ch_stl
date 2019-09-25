@@ -63,7 +63,7 @@ void ch::Library::free() {
 }
 
 bool ch::load_library(const ch::Path& path, ch::Library* lib) {
-	ch::OS_Library_Handle handle = LoadLibrary(path);
+	ch::OS_Library_Handle handle = LoadLibraryA(path);
 	if (handle == INVALID_HANDLE_VALUE) return false;
 	lib->handle = handle;
 	return true;

@@ -114,25 +114,25 @@ bool ch::create_window(const char* title, u32 width, u32 height, u32 style, Wind
 
     *out_window = {};
 
-    WNDCLASSEX window_class = {};
-    window_class.cbSize = sizeof(WNDCLASSEX);
+    WNDCLASSEXA window_class = {};
+    window_class.cbSize = sizeof(WNDCLASSEXA);
     window_class.lpfnWndProc = window_proc;
-    window_class.hInstance = GetModuleHandle(NULL);
+    window_class.hInstance = GetModuleHandleA(NULL);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     window_class.lpszClassName = title;
-    window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+    window_class.hCursor = LoadCursorW(NULL, IDC_ARROW);
 	window_class.style = CS_OWNDC;
 
-    if (!RegisterClassEx(&window_class)) {
+    if (!RegisterClassExA(&window_class)) {
         return false;
     }
 
-    HWND window_handle = CreateWindowEx(0, window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, NULL, NULL, window_class.hInstance, NULL);
+    HWND window_handle = CreateWindowExA(0, window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, NULL, NULL, window_class.hInstance, NULL);
     if (!window_handle) {
         return false;
     }
 
-    SetWindowLongPtr(window_handle, GWLP_USERDATA, (LONG_PTR)out_window);
+    SetWindowLongPtrA(window_handle, GWLP_USERDATA, (LONG_PTR)out_window);
 
     out_window->style = style;
     out_window->os_handle = window_handle;
@@ -148,16 +148,17 @@ bool ch::create_window(const char* title, u32 width, u32 height, u32 style, Wind
 
 void ch::poll_events() {
     MSG msg;
-    while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+    while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        DispatchMessageA(&msg);
     }
 }
+
 void ch::wait_events() {
     MSG msg;
-    GetMessage(&msg, 0, 0, 0);
+    GetMessageA(&msg, 0, 0, 0);
     TranslateMessage(&msg);
-    DispatchMessage(&msg);
+    DispatchMessageA(&msg);
 }
 
 bool ch::Window::get_mouse_position(ch::Vector2* out_pos) const {

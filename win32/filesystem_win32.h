@@ -13,7 +13,7 @@ namespace ch {
 	struct Path;
 
 	struct Win32_Directory_Iterator {
-		WIN32_FIND_DATA find_data;
+		WIN32_FIND_DATAA find_data;
 		HANDLE file;
 
 		Win32_Directory_Iterator();

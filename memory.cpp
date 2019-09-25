@@ -6,7 +6,7 @@ struct Allocation_Header {
 	void* allocation;
 	usize size;
 
-	const tchar* file;
+	const char* file;
 	u64 line;
 
 	Allocation_Header* parent;
@@ -17,7 +17,7 @@ Allocation_Header* first_header = nullptr;
 usize total_allocated = 0;
 usize num_allocations = 0;
 
-void* ch::debug_malloc(usize size, const tchar* file, u64 line) {
+void* ch::debug_malloc(usize size, const char* file, u64 line) {
 	const usize orig_size = size;
 	size += sizeof(Allocation_Header);
 	u8* result = (u8*)ch::malloc(size);
@@ -51,7 +51,7 @@ void* ch::debug_malloc(usize size, const tchar* file, u64 line) {
 	return result;
 }
 
-void* ch::debug_realloc(void* ptr, usize size, const tchar* file, u64 line) {
+void* ch::debug_realloc(void* ptr, usize size, const char* file, u64 line) {
 	if (!ptr) return ch::debug_malloc(size, file, line);
 
 	Allocation_Header* old_header = (Allocation_Header*)((u8*)ptr - sizeof(Allocation_Header));

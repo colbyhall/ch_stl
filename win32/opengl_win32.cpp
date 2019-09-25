@@ -8,7 +8,7 @@ WGL_Swap_Interval_Ext wglSwapIntervalEXT = nullptr;
 
 bool ch::load_gl() {
 	ch::Window fake_window;
-	if (!ch::create_window(CH_TEXT("fake_window"), 12, 12, 0, &fake_window)) return false;
+	if (!ch::create_window("fake_window", 12, 12, 0, &fake_window)) return false;
 	defer(fake_window.free());
 
 	HDC window_context = GetDC((HWND)fake_window.os_handle);
@@ -60,7 +60,7 @@ bool ch::swap_buffers(OS_Window_Handle window_handle) {
 	return SwapBuffers(window_context);
 }
 
-bool ch::create_gl_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window) {
+bool ch::create_gl_window(const char* title, u32 width, u32 height, u32 style, ch::Window* out_window) {
 	if (!ch::create_window(title, width, height, style, out_window)) {
 		return false;
 	}

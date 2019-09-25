@@ -3,24 +3,20 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
-#include <TCHAR.h>
+#include <errno.h>
 
-usize ch::sprintf(tchar* buffer, const tchar* fmt, ...) {
+usize ch::sprintf(char* buffer, const char* fmt, ...) {
 	va_list args;
 	va_start(args, fmt);
-#if CH_UNICODE
-	const usize result = (usize)wvsprintf(buffer, fmt, args);
-#else
 	const usize result = (usize)vsprintf(buffer, fmt, args);
-#endif
 	va_end(args);
 	return result;
 }
 
 // @NOTE(Chall): shitty but it works
 void ch::bytes_to_string(usize bytes, String* out_string) {
-	auto print_to_out = [&](const tchar* fmt) {
-		tchar buffer[1024];
+	auto print_to_out = [&](const char* fmt) {
+		char buffer[1024];
 		const usize size = ch::sprintf(buffer, fmt, bytes);
 		out_string->reserve(size);
 		ch::mem_copy(out_string->data, buffer, size);
@@ -34,21 +30,20 @@ void ch::bytes_to_string(usize bytes, String* out_string) {
 			bytes /= 1024;
 			if (bytes / 1024 > 0) {
 				bytes /= 1024;
-				print_to_out(CH_TEXT("%llugb"));
-			}
-			else {
-				print_to_out(CH_TEXT("%llumb"));
+				print_to_out("%llugb");
+			} else {
+				print_to_out("%llumb");
 			}
 		} else {
-			print_to_out(CH_TEXT("%llukb"));
+			print_to_out("%llukb");
 		}
 	} else {
-		print_to_out(CH_TEXT("%llub"));
+		print_to_out("%llub");
 	}
 }
 
-bool ch::atof(const tchar* tstr, f32* f) {
-	const f32 result = (f32)::_ttof(tstr);
+bool ch::atof(const char* tstr, f32* f) {
+	const f32 result = (f32)::atof(tstr);
 	if (errno == EINVAL) {
 		return false;
 	}
@@ -57,8 +52,8 @@ bool ch::atof(const tchar* tstr, f32* f) {
 	return true;
 }
 
-bool ch::atoi(const tchar* tstr, s32* i) {
-	const s32 result = ::_ttoi(tstr);
+bool ch::atoi(const char* tstr, s32* i) {
+	const s32 result = ::atoi(tstr);
 	if (errno == EINVAL) {
 		return false;
 	}

@@ -21,10 +21,10 @@ namespace ch {
 			return handle;
 		}
 		
-		void* get_function(const tchar* function_name);
+		void* get_function(const char* function_name);
 
 		template <typename T>
-		T get_function(const tchar* function_name) {
+		T get_function(const char* function_name) {
 			return (T)get_function(function_name);
 		}
 

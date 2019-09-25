@@ -4,19 +4,19 @@
 #define _CRT_NON_CONFORMING_SWPRINTFS
 #include <stdio.h>
 
-ch::Path::Path(const tchar* in_path) : count(ch::strlen(in_path)) {
+ch::Path::Path(const char* in_path) : count(ch::strlen(in_path)) {
 	assert(ch::strlen(in_path) < ch::max_path);
-	ch::mem_copy(data, in_path, count * sizeof(tchar));
+	ch::mem_copy(data, in_path, count * sizeof(char));
 	data[count] = 0;
 }
 
-void ch::Path::append(const tchar* ap, bool ensure_proper) {
+void ch::Path::append(const char* ap, bool ensure_proper) {
 	usize ap_count = ch::strlen(ap);
 	if (!ap_count) return;
 
 	if (ensure_proper) {
-		const tchar last = data[count - 1];
-		const tchar ap_first = ap[0];
+		const char last = data[count - 1];
+		const char ap_first = ap[0];
 
 		if ((last == '\\' || last == '/') && (ap_first == '\\' || ap_first == '/')) {
 			ap += 1;
@@ -40,7 +40,7 @@ void ch::Path::append(const tchar* ap, bool ensure_proper) {
 
 void ch::Path::remove_until_directory() {
 	for (usize i = count - 1; i >= 0; i--) {
-		tchar c = data[i];
+		char c = data[i];
 		if (c == '\\' || c == '/') {
 			count = i;
 			data[count] = 0;
@@ -51,7 +51,7 @@ void ch::Path::remove_until_directory() {
 
 const ch::String ch::Path::get_extension() {
 	for (ssize i = count - 1; i >= 0; i--) {
-		tchar c = data[i];
+		char c = data[i];
 		if (c == '.' && i < (ssize)count - 2) {
 			ch::String result;
 			result.data = data + i + 1;
@@ -67,7 +67,7 @@ const ch::String ch::Path::get_extension() {
 const ch::String ch::Path::get_filename() {
 	ssize extension_loc = -1;
 	for (ssize i = count - 1; i >= 0; i--) {
-		tchar c = data[i];
+		char c = data[i];
 		if (c == '.' && i < (ssize)count - 2) {
 			extension_loc = i;
 		}
@@ -90,130 +90,91 @@ const ch::String ch::Path::get_filename() {
 }
 
 ch::Stream& ch::Stream::operator<<(bool b) {
-	*this << (b ? CH_TEXT("true") : CH_TEXT("false"));
+	*this << (b ? "true" : "false");
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(u8 b) {
-	tchar buffer[5];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%u"), b);
-#else
-	sprintf(buffer, "%u", b);
-#endif
+	char buffer[5];
+	const usize size = ch::sprintf(buffer, "%u", b);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(s8 b) {
-	tchar buffer[5];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%i"), b);
-#else
-	sprintf(buffer, "%i", b);
-#endif
+	char buffer[5];
+	const usize size = ch::sprintf(buffer, "%i", b);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(u16 s) {
-	tchar buffer[10];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%u"), s);
-#else
-	sprintf(buffer, "%u", s);
-#endif
+	char buffer[10];
+	const usize size = ch::sprintf(buffer, "%u", s);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(s16 s) {
-	tchar buffer[10];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%i"), s);
-#else
-	sprintf(buffer, "%i", s);
-#endif
+	char buffer[10];
+	const usize size = ch::sprintf(buffer, "%i", s);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(u32 uint) {
-	tchar buffer[32];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%u"), uint);
-#else
-	sprintf(buffer, "%u", uint);
-#endif
+	char buffer[32];
+	const usize size = ch::sprintf(buffer, "%u", uint);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(s32 i) {
-	tchar buffer[32];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%i"), i);
-#else
-	sprintf(buffer, "%i", i);
-#endif
+	char buffer[32];
+	const usize size = ch::sprintf(buffer, "%i", i);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(u64 ulong) {
-	tchar buffer[64];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%llu"), ulong);
-#else
-	sprintf(buffer, "%llu", ulong);
-#endif
+	char buffer[64];
+	const usize size = ch::sprintf(buffer, "%llu", ulong);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(s64 slong) {
-	tchar buffer[64];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%lli"), slong);
-#else
-	sprintf(buffer, "%lli", slong);
-#endif
+	char buffer[64];
+	const usize size = ch::sprintf(buffer, "%lli", slong);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(f32 f) {
-	tchar buffer[100];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%f"), f);
-#else
-	sprintf(buffer, "%f", f);
-#endif
-	write_raw(buffer, ch::strlen(buffer));
+	char buffer[100];
+	const usize size = ch::sprintf(buffer, "%f", f);
+	
+	write_raw(buffer, size);
 	return *this;
 }
 
 ch::Stream& ch::Stream::operator<<(f64 d) {
-	tchar buffer[100];
-#if CH_UNICODE
-	swprintf(buffer, CH_TEXT("%f"), d);
-#else
-	sprintf(buffer, "%f", d);
-#endif
+	char buffer[100];
+	const usize size = ch::sprintf(buffer, "%f", d);
 
-	write_raw(buffer, ch::strlen(buffer));
+	write_raw(buffer, size);
 	return *this;
 }
 
-bool ch::load_file_into_memory(const tchar* path, File_Data* fd, ch::Allocator allocator) {
+bool ch::load_file_into_memory(const char* path, File_Data* fd, ch::Allocator allocator) {
 	ch::File f;
 	defer(f.close());
 	if (!f.open(path, ch::FO_Read | ch::FO_Binary)) return false;
@@ -270,7 +231,7 @@ void ch::Recursive_Directory_Iterator::advance() {
 	if (current.can_advance()) {
 		ch::Directory_Result r = current.get();
 		if (r.type == DRT_Directory && r.file_name[0] != '.') {
-			current_path.append(CH_TEXT("\\"));
+			current_path.append("\\");
 			current_path.append(r.file_name);
 			ch::Directory_Iterator iter(current_path);
 			iterators.push(iter);

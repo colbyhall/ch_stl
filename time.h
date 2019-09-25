@@ -30,53 +30,53 @@ namespace ch {
 		DTDOW_Saturday,
 	};
 
-	CH_FORCEINLINE const tchar* get_month_string(u32 month) {
+	CH_FORCEINLINE const char* get_month_string(u32 month) {
 		switch (month) {
 			case DTM_January:
-				return CH_TEXT("January");
+				return "January";
 			case DTM_February:
-				return CH_TEXT("February");
+				return "February";
 			case DTM_March:
-				return CH_TEXT("March");
+				return "March";
 			case DTM_April:
-				return CH_TEXT("April");
+				return "April";
 			case DTM_May:
-				return CH_TEXT("May");
+				return "May";
 			case DTM_June:
-				return CH_TEXT("June");
+				return "June";
 			case DTM_July:
-				return CH_TEXT("July");
+				return "July";
 			case DTM_August:
-				return CH_TEXT("August");
+				return "August";
 			case DTM_September:
-				return CH_TEXT("September");
+				return "September";
 			case DTM_October:
-				return CH_TEXT("October");
+				return "October";
 			case DTM_November:
-				return CH_TEXT("November");
+				return "November";
 			case DTM_December:
-				return CH_TEXT("December");
+				return "December";
 		}
 
 		return nullptr;
 	}
 
-	CH_FORCEINLINE const tchar* get_days_of_week_string(u32 dow) {
+	CH_FORCEINLINE const char* get_days_of_week_string(u32 dow) {
 		switch (dow) {
 		case DTDOW_Sunday:
-			return CH_TEXT("Sunday");
+			return "Sunday";
 		case DTDOW_Monday:
-			return CH_TEXT("Monday");
+			return "Monday";
 		case DTDOW_Tuesday:
-			return CH_TEXT("Tuesday");
+			return "Tuesday";
 		case DTDOW_Wednesday:
-			return CH_TEXT("Wednesday");
+			return "Wednesday";
 		case DTDOW_Thursday:
-			return CH_TEXT("Thursday");
+			return "Thursday";
 		case DTDOW_Friday:
-			return CH_TEXT("Friday");
+			return "Friday";
 		case DTDOW_Saturday:
-			return CH_TEXT("Saturda");
+			return "Saturday";
 		}
 
 		return nullptr;
@@ -96,7 +96,7 @@ namespace ch {
 	};
 
 	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, const ch::Date_Time& dt) {
-		stream << dt.month << '/' << dt.day_of_month << '/' << dt.year << ' ' << dt.hour << ':' << dt.minute << CH_TEXT(" (UTC)");
+		stream << dt.month << '/' << dt.day_of_month << '/' << dt.year << ' ' << dt.hour << ':' << dt.minute << " (UTC)";
 		
 		return stream;
 	}
@@ -111,12 +111,12 @@ namespace ch {
 	struct Scoped_Timer {
 		f64 start;
 		f64 end;
-		const tchar* name;
+		const char* name;
 
 		CH_FORCEINLINE f64 get_gap() const { return end - start; }
 
 		Scoped_Timer() = default;
-		Scoped_Timer(const tchar* _name);
+		Scoped_Timer(const char* _name);
 		~Scoped_Timer();
 	};
 

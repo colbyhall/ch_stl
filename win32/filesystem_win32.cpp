@@ -20,15 +20,15 @@ ch::Stream& ch::Stream::write_raw(const void* ptr, usize size) {
 	return *this;
 }
 
-ch::Stream& ch::Stream::operator<<(const tchar* c_str) {
-	return write_raw(c_str, ch::strlen(c_str) * sizeof(tchar));
+ch::Stream& ch::Stream::operator<<(const char* c_str) {
+	return write_raw(c_str, ch::strlen(c_str) * sizeof(char));
 }
 
-ch::Stream& ch::Stream::operator<<(const tchar c) {
+ch::Stream& ch::Stream::operator<<(const char c) {
     return write_raw(&c, sizeof(c));
 }
 
-bool ch::File::open(const tchar* path, u32 open_flags) {
+bool ch::File::open(const char* path, u32 open_flags) {
     flags = open_flags;
     const bool read = open_flags & FO_Read;
     const bool write = open_flags & FO_Write;
@@ -127,7 +127,7 @@ ch::Path ch::get_current_path() {
     return result;
 }
 
-bool ch::set_current_path(const tchar* path) {
+bool ch::set_current_path(const char* path) {
 	return SetCurrentDirectory(path);
 }
 
@@ -138,7 +138,7 @@ ch::Path ch::get_os_font_path() {
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 
-	result.append(CH_TEXT("Fonts"));
+	result.append("Fonts");
 	result.data[result.count] = 0;
 
 	return result;
@@ -157,7 +157,7 @@ ch::Path ch::get_app_path() {
 ch::Win32_Directory_Iterator::Win32_Directory_Iterator(const ch::Path& path) {
 
 	ch::Path actual_path = path;
-	actual_path.append(CH_TEXT("\\*"));
+	actual_path.append("\\*");
 
 	file = FindFirstFile(actual_path, &find_data);
 }

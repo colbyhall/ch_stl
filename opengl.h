@@ -232,7 +232,7 @@ namespace ch {
     bool is_gl_loaded();
 
     bool swap_buffers(OS_Window_Handle window_handle);
-    bool create_gl_window(const tchar* title, u32 width, u32 height, u32 style, ch::Window* out_window);
+    bool create_gl_window(const char* title, u32 width, u32 height, u32 style, ch::Window* out_window);
     bool make_current(OS_Window_Handle window_handle);
 }
 

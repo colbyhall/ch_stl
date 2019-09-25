@@ -12,19 +12,19 @@
 namespace ch {
 
 	struct Path {
-		tchar data[ch::max_path + 1];
+		char data[ch::max_path + 1];
 		usize count = 0;
 		usize allocated = ch::max_path + 1;
 
 		Path() = default;
-		Path(const tchar* in_path);
+		Path(const char* in_path);
 
-		CH_FORCEINLINE operator const tchar*() const { return data; }
-		CH_FORCEINLINE tchar& operator[](usize index) {
+		CH_FORCEINLINE operator const char*() const { return data; }
+		CH_FORCEINLINE char& operator[](usize index) {
 			assert(index < count);
 			return data[index];
 		}
-		CH_FORCEINLINE tchar operator[](usize index) const {
+		CH_FORCEINLINE char operator[](usize index) const {
 			assert(index < count);
 			return data[index];
 		}
@@ -50,7 +50,7 @@ namespace ch {
 			data[0] = 0;
 		}
 
-		void append(const tchar* ap, bool ensure_proper = true);
+		void append(const char* ap, bool ensure_proper = true);
 		void remove_until_directory();
 		const ch::String get_extension();
 		const ch::String get_filename();
@@ -68,8 +68,8 @@ namespace ch {
 		Stream(OS_Stream_Handle handle) : os_handle(handle) {}
 
         Stream& write_raw(const void* ptr, usize size);
-        Stream& operator<<(const tchar* c_str);
-        Stream& operator<<(const tchar c);
+        Stream& operator<<(const char* c_str);
+        Stream& operator<<(const char c);
 		Stream& operator<<(bool b);
 		Stream& operator<<(u8 b);
 		Stream& operator<<(s8 b);
@@ -105,7 +105,7 @@ namespace ch {
 		u32 flags;
 		bool is_open;
 
-        bool open(const tchar* path, u32 open_flags);
+        bool open(const char* path, u32 open_flags);
         bool close();
 
 		bool get_full_path(ch::Path* out_path) const;
@@ -131,10 +131,10 @@ namespace ch {
 		ch::String to_string() const;
 	};
 
-	bool load_file_into_memory(const tchar* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);
+	bool load_file_into_memory(const char* path, ch::File_Data* fd, ch::Allocator allocator = ch::context_allocator);
 
     ch::Path get_current_path();
-	bool set_current_path(const tchar* path);
+	bool set_current_path(const char* path);
 	ch::Path get_os_font_path();
 	ch::Path get_app_path();
 
@@ -151,7 +151,7 @@ namespace ch {
 		u64 last_access_time;
 		u64 last_write_time;
 
-		tchar file_name[max_path];
+		char file_name[max_path];
 		usize file_size;
 	};
 

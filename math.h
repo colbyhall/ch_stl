@@ -285,7 +285,7 @@ namespace ch {
 	}
 
 	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, ch::Vector2 vec) {
-		stream << (tchar)'{' << vec.x << CH_TEXT(", ") << vec.y << CH_TEXT("}\n");
+		stream << '{' << vec.x << ", " << vec.y << "}\n";
 		return stream;
 	}
 
@@ -495,7 +495,7 @@ namespace ch {
 	};
 
 	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, const ch::Color& color) {
-		stream << color.r << (tchar)' ' << color.g << (tchar)' ' << color.b << (tchar)' ' << color.a;
+		stream << color.r << (char)' ' << color.g << (char)' ' << color.b << (char)' ' << color.a;
 		return stream;
 	}
 

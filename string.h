@@ -24,8 +24,8 @@ namespace ch {
 	template <typename T>
 	bool streq(const T* a, const T* b) {
 		for (usize i = 0; i < U64_MAX; i++) {
-			const tchar a_c = a[i];
-			const tchar b_c = b[i];
+			const char a_c = a[i];
+			const char b_c = b[i];
 
 			if (a_c != b_c) return false;
 			if (a_c == 0 || b_c == 0) {
@@ -37,8 +37,8 @@ namespace ch {
 		return true;
 	}
 
-    const tchar eol = '\n';
-    const tchar eos = 0;
+    const char eol = '\n';
+    const char eos = 0;
 
     CH_FORCEINLINE bool is_whitespace(u32 c) {
         return c >= '\t' && c <= '\r' || c == ' ';
@@ -120,11 +120,11 @@ namespace ch {
 					operator ch_delete[](data, allocator);
 				}
 				allocated = c_str_count + 1;
-				data = ch_new(allocator) tchar[allocated];
+				data = ch_new(allocator) char[allocated];
 			}
 
 			count = c_str_count;
-			ch::mem_copy(data, c_str, count * sizeof(tchar));
+			ch::mem_copy(data, c_str, count * sizeof(char));
 			return *this;
 		}
 
@@ -173,7 +173,7 @@ namespace ch {
 			return true;
 		}
 
-		bool operator!=(const tchar* c_str) const {
+		bool operator!=(const char* c_str) const {
 			return !(*this == c_str);
 		}
         
@@ -306,7 +306,7 @@ namespace ch {
 			return true;			
 		}
 
-		void append(const tchar* ap) {
+		void append(const char* ap) {
 			const usize ap_size = ch::strlen(ap);
 			if (count + ap_size > allocated) {
 				reserve(count + ap_size - allocated);
@@ -317,7 +317,7 @@ namespace ch {
 			count += ap_size;
 		}
 
-		ssize find_from_left(tchar c) const {
+		ssize find_from_left(char c) const {
 			for (usize i = 0; i < count; i++) {
 				if (data[i] == c) return i;
 			}
@@ -325,7 +325,7 @@ namespace ch {
 			return -1;
 		}
 
-		ssize find_from_right(tchar c) const {
+		ssize find_from_right(char c) const {
 			for (usize i = count - 1; i >= 0; i--) {
 				if (data[i] == c) {
 					return i;
@@ -350,24 +350,24 @@ namespace ch {
 		}
 	};
 
-	using String   = ch::Base_String<tchar>;
+	using String   = ch::Base_String<char>;
 	using String8  = ch::Base_String<u8>;
 	using String16 = ch::Base_String<u16>;
 	using String32 = ch::Base_String<u32>;
 
-	usize sprintf(tchar* buffer, const tchar* fmt, ...);
+	usize sprintf(char* buffer, const char* fmt, ...);
 	void bytes_to_string(usize bytes, ch::String* out_string);
 
-	bool atof(const tchar* tstr, f32* f);
+	bool atof(const char* tstr, f32* f);
 	CH_FORCEINLINE bool atof(const ch::String& s, f32* f) {
-		tchar* tstr = s.to_tstring();
+		char* tstr = s.to_tstring();
 		defer(ch::context_allocator.free(tstr));
 		return atof(tstr, f);
 	}
 
-	bool atoi(const tchar* tstr, s32* i);
+	bool atoi(const char* tstr, s32* i);
 	CH_FORCEINLINE bool atoi(const ch::String& s, s32* i) {
-		tchar* tstr = s.to_tstring();
+		char* tstr = s.to_tstring();
 		defer(ch::context_allocator.free(tstr));
 		return atoi(tstr, i);
 	}
@@ -378,6 +378,6 @@ u64 hash(const ch::Base_String<T>& s) {
 	return ch::fnv1_hash(s.data, s.count * sizeof(T));
 }
 
-CH_FORCEINLINE u64 hash(const tchar* c_str) {
+CH_FORCEINLINE u64 hash(const char* c_str) {
 	return ch::fnv1_hash(c_str, ch::strlen(c_str));
 }

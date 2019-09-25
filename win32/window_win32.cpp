@@ -109,7 +109,7 @@ static LRESULT window_proc(HWND handle, UINT message, WPARAM w_param, LPARAM l_p
 }
 #undef CALL_WINDOW_EVENT
 
-bool ch::create_window(const tchar* title, u32 width, u32 height, u32 style, Window* out_window) {
+bool ch::create_window(const char* title, u32 width, u32 height, u32 style, Window* out_window) {
     assert(out_window);
 
     *out_window = {};

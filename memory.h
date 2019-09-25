@@ -8,8 +8,8 @@ namespace ch {
     void free(void* ptr);
 
 #if CH_BUILD_DEBUG
-	void* debug_malloc(usize size, const tchar* file, u64 line);
-	void* debug_realloc(void* ptr, usize size, const tchar* file, u64 line);
+	void* debug_malloc(usize size, const char* file, u64 line);
+	void* debug_realloc(void* ptr, usize size, const char* file, u64 line);
 	void debug_free(void* ptr);
 
 	usize get_total_allocated();

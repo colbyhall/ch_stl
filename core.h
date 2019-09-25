@@ -151,12 +151,6 @@ VERSIONS
 #define CH_UNICODE 0
 #endif
 
-#if CH_UNICODE
-#define CH_TEXT(str) L##str
-#else
-#define CH_TEXT(str) str
-#endif
-
 #if CH_COMPILER_MSVC
 #if _MSC_VER < 1300 
 #define ch_debug_trap __asm int 3

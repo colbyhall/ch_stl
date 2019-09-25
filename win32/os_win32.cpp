@@ -36,13 +36,13 @@ bool ch::copy_from_clipboard(ch::OS_Window_Handle window_handle, ch::String* out
 	HANDLE c_data = GetClipboardData(CF_TEXT);
 	if (!c_data) return false;
 
-	tchar* out_data = (tchar*)GlobalLock(c_data);
+	char* out_data = (char*)GlobalLock(c_data);
 	if (!out_data) return false;
 
 	const usize str_size = strlen(out_data);
 	out_str->reserve(str_size);
 
-	ch::mem_copy(out_str->data, out_data, str_size * sizeof(tchar));
+	ch::mem_copy(out_str->data, out_data, str_size * sizeof(char));
 	out_str->data[str_size] = 0;
 	out_str->count = str_size;
 
@@ -52,7 +52,7 @@ bool ch::copy_from_clipboard(ch::OS_Window_Handle window_handle, ch::String* out
 }
 
 
-void* ch::Library::get_function(const tchar* function_name) {
+void* ch::Library::get_function(const char* function_name) {
 	return GetProcAddress((HMODULE)handle, function_name);
 }
 

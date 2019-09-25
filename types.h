@@ -12,12 +12,6 @@ using s16 = signed short;
 using s32 = signed int;
 using s64 = signed long long;
 
-#if CH_UNICODE
-using tchar = wchar_t;
-#else
-using tchar = char;
-#endif
-
 #define CH_STRINGIZE(x) CH_STRINGIZE2(x)
 #define CH_STRINGIZE2(x) #x
 

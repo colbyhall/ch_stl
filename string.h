@@ -225,18 +225,18 @@ namespace ch {
             allocated -= amount;
         }
 
-        void eat_whitespace() {
+        u32 eat_whitespace() {
+			const usize old_count = count;
             while (count > 0 && is_whitespace(data[0])) {
                 advance(1);
             }
+			return (u32)(old_count - count); 
         }
 
         Base_String<T> eat_line() {
-            eat_whitespace();
-
             Base_String<T> result;
             for (usize i = 0; i < count; i++) {
-                if (ch::eol == data[i]) {
+                if (data[i] == ch::eol) {
                     result.data = data;
                     result.count = i;
                     result.allocated = i;
@@ -244,7 +244,15 @@ namespace ch {
                     advance(i + 1);
 
                     return result;
-                }
+				} else if (data[i] == 0) {
+					result.data = data;
+					result.count = i;
+					result.allocated = i;
+					result.allocator = allocator;
+					
+					count = 0;
+					return result;
+				}
             }
 
             return result;

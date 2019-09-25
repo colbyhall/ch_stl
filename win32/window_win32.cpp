@@ -120,7 +120,7 @@ bool ch::create_window(const char* title, u32 width, u32 height, u32 style, Wind
     window_class.hInstance = GetModuleHandleA(NULL);
     window_class.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
     window_class.lpszClassName = title;
-    window_class.hCursor = LoadCursorW(NULL, IDC_ARROW);
+    window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
 	window_class.style = CS_OWNDC;
 
     if (!RegisterClassExA(&window_class)) {

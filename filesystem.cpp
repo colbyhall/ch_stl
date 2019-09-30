@@ -6,7 +6,15 @@
 
 ch::Path::Path(const char* in_path) : count(ch::strlen(in_path)) {
 	assert(ch::strlen(in_path) < ch::max_path);
-	ch::mem_copy(data, in_path, count * sizeof(char));
+	ch::mem_copy(data, in_path, count);
+	data[count] = 0;
+}
+
+ch::Path::Path(const ch::String& s) {
+	assert(s.count < ch::max_path);
+	ch::mem_copy(data, s.data, s.count);
+
+	count = s.count;
 	data[count] = 0;
 }
 

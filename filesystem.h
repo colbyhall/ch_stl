@@ -18,6 +18,7 @@ namespace ch {
 
 		Path() = default;
 		Path(const char* in_path);
+		Path(const ch::String& s);
 
 		CH_FORCEINLINE operator const char*() const { return data; }
 		CH_FORCEINLINE char& operator[](usize index) {

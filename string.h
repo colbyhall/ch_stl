@@ -128,7 +128,7 @@ namespace ch {
 			return *this;
 		}
 
-        explicit operator bool() const { return data && count; }
+        explicit operator bool() const { return data && count > 0; }
 
         operator const T*() const {
             return data;
@@ -219,7 +219,7 @@ namespace ch {
 		}
 
         void advance(usize amount) {
-            assert(amount < count);
+            assert(amount <= count);
             data += amount;
             count -= amount;
             allocated -= amount;
@@ -236,16 +236,23 @@ namespace ch {
 
             Base_String<T> result;
             for (usize i = 0; i < count; i++) {
-                if (ch::eol == data[i]) {
+                if (data[i] == ch::eol) {
                     result.data = data;
                     result.count = i;
                     result.allocated = i;
                     result.allocator = allocator;
                     advance(i + 1);
 
+					if (result.count > 2 && result[i - 1] == '\r') {
+						result.count -= 1;
+					}
+
                     return result;
                 }
             }
+
+			result = *this;
+			count = 0;
 
             return result;
         }

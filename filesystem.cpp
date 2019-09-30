@@ -207,10 +207,8 @@ void ch::File_Data::free() {
 ch::String ch::File_Data::to_string() const {
 	ch::String result;
 	result.reserve(size);
-	result.count = size;
-	for (usize i = 0; i < size; i++) {
-		result[i] = data[i];
-	}
+	result.count = size - 1;
+	ch::mem_copy(result.data, data, size);
 
 	return result;
 }

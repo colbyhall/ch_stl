@@ -151,7 +151,8 @@ void* ch::mem_move(void* dest, const void* src, usize size) {
     const u8* casted_src = (u8*)src;
     u8* casted_dest = (u8*)dest;
 
-    for (usize i = size - 1; i >= 0; i--) {
+    for (usize i = size; i > 0;) {
+        i--;
         casted_dest[i] = casted_src[i];
     }
     return dest;

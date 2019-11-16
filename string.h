@@ -130,11 +130,11 @@ namespace ch {
 
         explicit operator bool() const { return data && count > 0; }
 
-        operator const T*() const {
+        explicit operator const T*() const {
             return data;
         }
 
-        operator T*() {
+        explicit operator T*() {
             return data;
         }
 

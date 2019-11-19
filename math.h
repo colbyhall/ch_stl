@@ -1,7 +1,6 @@
 #pragma once
 
-#include "filesystem.h"
-
+#include "memory.h"
 // @TODO(CHall): Finish math lib
 // Scalar Math
 // Vector4
@@ -10,6 +9,8 @@
 // Matrix4x4
 
 namespace ch {
+
+	struct Stream;
 
     f32 sqrt(f32 s);
 
@@ -284,10 +285,7 @@ namespace ch {
 		return result;
 	}
 
-	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, ch::Vector2 vec) {
-		stream << '{' << vec.x << ", " << vec.y << "}\n";
-		return stream;
-	}
+	Stream& operator<<(Stream& stream, ch::Vector2 vec);
 
 	CH_FORCEINLINE ch::Vector2 from_angle(f32 angle) {
 		return ch::Vector2(ch::sin(angle), ch::cos(angle));
@@ -494,10 +492,7 @@ namespace ch {
 		}
 	};
 
-	CH_FORCEINLINE ch::Stream& operator<<(ch::Stream& stream, const ch::Color& color) {
-		stream << color.r << (char)' ' << color.g << (char)' ' << color.b << (char)' ' << color.a;
-		return stream;
-	}
+	ch::Stream& operator<<(ch::Stream& stream, const ch::Color& color);
 
 	const ch::Color red     = 0xFF0000FF;
 	const ch::Color green   = 0x00FF00FF;

@@ -6,6 +6,7 @@
 #error This should not be compiling on this platform
 #endif
 
+#include <windows.h>
 #include <gl/GL.h>
 
 using WGL_Create_Context_Attribs_ARB = HGLRC(WINAPI *)(HDC hdc, HGLRC share_context, const s32* attrib_list);

@@ -1,5 +1,6 @@
 #include "math.h"
 #include "hash.h"
+#include "filesystem.h"
 
 #include <math.h>
 
@@ -185,6 +186,16 @@ ch::Matrix4 ch::Matrix4::inverse() {
 
 void ch::Matrix4::operator*=(const Matrix4& right) {
 	*this = *this * right;
+}
+
+ch::Stream& ch::operator<<(ch::Stream &stream, Vector2 vec) {
+	stream << '{' << vec.x << ", " << vec.y << "}\n";
+	return stream;
+}
+
+ch::Stream& ch::operator<<(Stream& stream, const Color& color) {
+	stream << color.r << (char)' ' << color.g << (char)' ' << color.b << (char)' ' << color.a;
+	return stream;
 }
 
 ch::Matrix4 ch::identity() {

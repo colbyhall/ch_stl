@@ -4,10 +4,26 @@
 #error This should not be compiling on this platform
 #endif
 
-#define WIN32_MEAN_AND_LEAN
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
+struct SYSTEMTIME {
+	WORD wYear;
+	WORD wMonth;
+	WORD wDayOfWeek;
+	WORD wDay;
+	WORD wHour;
+	WORD wMinute;
+	WORD wSecond;
+	WORD wMilliseconds;
+};
+using LPSYSTEMTIME = SYSTEMTIME*;
+
+extern "C" {
+	DLL_IMPORT BOOL		 WINAPI QueryPerformanceFrequency(LARGE_INTEGER*);
+	DLL_IMPORT BOOL		 WINAPI QueryPerformanceCounter(LARGE_INTEGER*);
+	DLL_IMPORT ULONGLONG WINAPI GetTickCount64(VOID);
+	DLL_IMPORT BOOL		 WINAPI FileTimeToSystemTime(const FILETIME*, LPSYSTEMTIME);
+	DLL_IMPORT VOID		 WINAPI GetSystemTime(LPSYSTEMTIME);
+	DLL_IMPORT VOID		 WINAPI GetLocalTime(LPSYSTEMTIME);
+}
 
 f64 ch::get_time_in_seconds() {
 	static LARGE_INTEGER qpc_freq;

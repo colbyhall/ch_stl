@@ -137,6 +137,8 @@ VERSIONS
 
 #if CH_COMPILER_MSVC
 #define CH_FORCEINLINE __forceinline
+#define DLL_IMPORT __declspec(dllimport)
+#define DLL_EXPORT __declspec(dllexport)
 #endif
 
 #ifndef CH_FORCEINLINE

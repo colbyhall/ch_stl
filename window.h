@@ -1,7 +1,6 @@
 #pragma once
 
 #include "string.h"
-#include "os.h"
 #include "math.h"
 
 namespace ch {
@@ -14,15 +13,15 @@ namespace ch {
     };
 
     struct Window {
-        OS_Window_Handle os_handle = nullptr;
+        void* os_handle = nullptr;
 		u32 style = 0;
 		ch::Vector2 min_size = (s32)800;
 
 		Window() = default;
 
         explicit operator bool() const { return os_handle; }
-        operator OS_Window_Handle() const { return os_handle; }
-        operator OS_Window_Handle() { return os_handle; }
+        operator void*() const { return os_handle; }
+        operator void*() { return os_handle; }
 
 		bool get_mouse_position(ch::Vector2* out_pos) const;
 		ch::Vector2 get_size() const;

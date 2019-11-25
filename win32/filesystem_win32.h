@@ -1,11 +1,28 @@
 #pragma once
 
-#define WIN32_MEAN_AND_LEAN
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#undef near
-#undef far
+#include "../types.h"
+
+#define MAX_PATH 260
+
+struct FILETIME {
+	DWORD dwLowDateTime;
+	DWORD dwHighDateTime;
+};
+using LPFILETIME = FILETIME*;
+
+struct WIN32_FIND_DATAA {
+	DWORD dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD nFileSizeHigh;
+	DWORD nFileSizeLow;
+	DWORD dwReserved0;
+	DWORD dwReserved1;
+	CHAR   cFileName[MAX_PATH];
+	CHAR   cAlternateFileName[14];
+};
+using LPWIN32_FIND_DATAA = WIN32_FIND_DATAA*;
 
 namespace ch {
 	const usize max_path = MAX_PATH;
@@ -27,3 +44,5 @@ namespace ch {
 
 	using Directory_Iterator = Win32_Directory_Iterator;
 }
+
+#undef MAX_PATH

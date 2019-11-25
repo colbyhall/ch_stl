@@ -4,9 +4,101 @@
 #error This should not be compiling on this platform
 #endif
 
-#define far
-#define near
-#include <shlwapi.h>
+struct OVERLAPPED {
+	ULONG_PTR Internal;
+	ULONG_PTR InternalHigh;
+	union {
+		struct {
+			DWORD Offset;
+			DWORD OffsetHigh;
+		};
+		PVOID Pointer;
+	};
+
+	HANDLE  hEvent;
+};
+
+using LPOVERLAPPED = OVERLAPPED*;
+
+#define STD_INPUT_HANDLE    ((DWORD)-10)
+#define STD_OUTPUT_HANDLE   ((DWORD)-11)
+#define STD_ERROR_HANDLE    ((DWORD)-12)
+
+struct SECURITY_ATTRIBUTES {
+	DWORD nLength;
+	LPVOID lpSecurityDescriptor;
+	BOOL bInheritHandle;
+};
+
+using LPSECURITY_ATTRIBUTES = SECURITY_ATTRIBUTES*;
+
+#define FILE_SHARE_READ                 0x00000001  
+#define FILE_SHARE_WRITE                0x00000002  
+#define FILE_SHARE_DELETE               0x00000004  
+#define FILE_ATTRIBUTE_READONLY             0x00000001  
+#define FILE_ATTRIBUTE_HIDDEN               0x00000002  
+#define FILE_ATTRIBUTE_SYSTEM               0x00000004  
+#define FILE_ATTRIBUTE_DIRECTORY            0x00000010  
+#define FILE_ATTRIBUTE_ARCHIVE              0x00000020  
+#define FILE_ATTRIBUTE_DEVICE               0x00000040  
+#define FILE_ATTRIBUTE_NORMAL               0x00000080  
+#define FILE_ATTRIBUTE_TEMPORARY            0x00000100  
+#define FILE_ATTRIBUTE_SPARSE_FILE          0x00000200  
+#define FILE_ATTRIBUTE_REPARSE_POINT        0x00000400  
+#define FILE_ATTRIBUTE_COMPRESSED           0x00000800  
+#define FILE_ATTRIBUTE_OFFLINE              0x00001000  
+#define FILE_ATTRIBUTE_NOT_CONTENT_INDEXED  0x00002000  
+#define FILE_ATTRIBUTE_ENCRYPTED            0x00004000  
+#define FILE_ATTRIBUTE_INTEGRITY_STREAM     0x00008000  
+#define FILE_ATTRIBUTE_VIRTUAL              0x00010000  
+#define FILE_ATTRIBUTE_NO_SCRUB_DATA        0x00020000  
+#define FILE_ATTRIBUTE_EA                   0x00040000  
+#define FILE_ATTRIBUTE_PINNED               0x00080000  
+#define FILE_ATTRIBUTE_UNPINNED             0x00100000  
+#define FILE_ATTRIBUTE_RECALL_ON_OPEN       0x00040000  
+#define FILE_ATTRIBUTE_RECALL_ON_DATA_ACCESS 0x00400000 
+
+#define GENERIC_READ                     (0x80000000L)
+#define GENERIC_WRITE                    (0x40000000L)
+#define GENERIC_EXECUTE                  (0x20000000L)
+#define GENERIC_ALL                      (0x10000000L)
+
+#define CREATE_NEW          1
+#define CREATE_ALWAYS       2
+#define OPEN_EXISTING       3
+#define OPEN_ALWAYS         4
+#define TRUNCATE_EXISTING   5
+
+#define VOLUME_NAME_DOS  0x0      //default
+#define VOLUME_NAME_GUID 0x1
+#define VOLUME_NAME_NT   0x2
+#define VOLUME_NAME_NONE 0x4
+
+#define FILE_NAME_NORMALIZED 0x0  //default
+#define FILE_NAME_OPENED     0x8
+
+#define FILE_BEGIN           0
+#define FILE_CURRENT         1
+#define FILE_END             2
+
+extern "C" {
+	DLL_IMPORT BOOL   WINAPI PathIsRelativeA(LPCSTR);
+	DLL_IMPORT HANDLE WINAPI GetStdHandle(DWORD);
+	DLL_IMPORT BOOL   WINAPI WriteFile(HANDLE, LPCVOID, DWORD, LPDWORD, LPOVERLAPPED);
+	DLL_IMPORT HANDLE WINAPI CreateFileA(LPCSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
+	DLL_IMPORT DWORD  WINAPI GetFinalPathNameByHandleA(HANDLE, LPSTR, DWORD, DWORD);
+	DLL_IMPORT BOOL   WINAPI ReadFile(HANDLE, LPVOID, DWORD, LPDWORD, LPOVERLAPPED);
+	DLL_IMPORT DWORD  WINAPI SetFilePointer(HANDLE, LONG, PLONG, DWORD);
+	DLL_IMPORT BOOL   WINAPI SetEndOfFile(HANDLE);
+	DLL_IMPORT DWORD  WINAPI GetFileSize(HANDLE, LPDWORD);
+	DLL_IMPORT BOOL   WINAPI GetFileTime(HANDLE, LPFILETIME, LPFILETIME, LPFILETIME);
+	DLL_IMPORT DWORD  WINAPI GetCurrentDirectoryA(DWORD, LPSTR);
+	DLL_IMPORT BOOL   WINAPI SetCurrentDirectoryA(LPCSTR);
+	DLL_IMPORT UINT   WINAPI GetWindowsDirectoryA(LPSTR, UINT);
+	DLL_IMPORT DWORD  WINAPI GetModuleFileNameA(HMODULE, LPSTR, DWORD);
+	DLL_IMPORT HANDLE WINAPI FindFirstFileA(LPCSTR, LPWIN32_FIND_DATAA);
+	DLL_IMPORT BOOL   WINAPI FindNextFileA(HANDLE, LPWIN32_FIND_DATAA);
+}
 
 bool ch::Path::is_relative() const {
 	return PathIsRelativeA(data);
@@ -121,7 +213,7 @@ u64 ch::File::get_last_write_time() const {
 
 ch::Path ch::get_current_path() {
     ch::Path result;
-    GetCurrentDirectoryA(MAX_PATH, result.data);
+    GetCurrentDirectoryA((DWORD)ch::max_path, result.data);
     result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
     return result;
@@ -134,7 +226,7 @@ bool ch::set_current_path(const char* path) {
 ch::Path ch::get_os_font_path() {
 	ch::Path result;
 
-	GetWindowsDirectoryA(result.data, MAX_PATH);
+	GetWindowsDirectoryA(result.data, (DWORD)ch::max_path);
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 
@@ -146,7 +238,7 @@ ch::Path ch::get_os_font_path() {
 
 ch::Path ch::get_app_path() {
 	ch::Path result;
-	GetModuleFileNameA(NULL, result.data, MAX_PATH);
+	GetModuleFileNameA(NULL, result.data, (DWORD)ch::max_path);
 	result.count = ch::strlen(result.data);
 	result.data[result.count] = 0;
 

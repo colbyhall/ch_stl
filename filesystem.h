@@ -2,7 +2,6 @@
 
 #include "string.h"
 #include "os.h"
-#include "types.h"
 #include "array.h"
 
 #if CH_PLATFORM_WINDOWS

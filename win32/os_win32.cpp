@@ -2,7 +2,29 @@
 #include "../memory.h"
 #include "../filesystem.h"
 
-#include <windows.h>
+using HGLOBAL = HANDLE;
+
+#define INFINITE            0xFFFFFFFF
+#define GMEM_MOVEABLE 0x02
+#define CF_TEXT 1
+
+extern "C" {
+	DLL_IMPORT UINT WINAPI GetCaretBlinkTime(VOID);
+	DLL_IMPORT HGLOBAL WINAPI GlobalAlloc(UINT, SIZE_T);
+	DLL_IMPORT LPVOID WINAPI GlobalLock(HGLOBAL);
+	DLL_IMPORT BOOL WINAPI GlobalUnlock(HGLOBAL);
+	DLL_IMPORT HGLOBAL WINAPI GlobalFree(HGLOBAL);
+
+	DLL_IMPORT BOOL WINAPI OpenClipboard(HWND);
+	DLL_IMPORT BOOL WINAPI EmptyClipboard(VOID);
+	DLL_IMPORT HANDLE WINAPI SetClipboardData(UINT, HANDLE);
+	DLL_IMPORT BOOL WINAPI CloseClipboard(VOID);
+	DLL_IMPORT HANDLE WINAPI GetClipboardData(UINT);
+
+	DLL_IMPORT void* WINAPI GetProcAddress(HMODULE, LPCSTR);
+	DLL_IMPORT BOOL WINAPI FreeLibrary(HMODULE);
+	DLL_IMPORT HMODULE WINAPI LoadLibraryA(LPCSTR);
+}
 
 bool ch::get_caret_blink_time(u32* out_ms) {
 	const u32 blink_time = GetCaretBlinkTime();
@@ -39,7 +61,7 @@ bool ch::copy_from_clipboard(ch::OS_Window_Handle window_handle, ch::String* out
 	char* out_data = (char*)GlobalLock(c_data);
 	if (!out_data) return false;
 
-	const usize str_size = strlen(out_data);
+	const usize str_size = ch::strlen(out_data);
 	out_str->reserve(str_size);
 
 	ch::mem_copy(out_str->data, out_data, str_size * sizeof(char));

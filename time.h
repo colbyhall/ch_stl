@@ -105,6 +105,7 @@ namespace ch {
 
 	ch::Date_Time get_system_time();
 	ch::Date_Time get_local_time();
+    void sleep(u32 milliseconds);
 
 	f64 get_time_in_seconds();
 

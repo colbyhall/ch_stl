@@ -23,6 +23,7 @@ extern "C" {
 	DLL_IMPORT BOOL		 WINAPI FileTimeToSystemTime(const FILETIME*, LPSYSTEMTIME);
 	DLL_IMPORT VOID		 WINAPI GetSystemTime(LPSYSTEMTIME);
 	DLL_IMPORT VOID		 WINAPI GetLocalTime(LPSYSTEMTIME);
+    DLL_IMPORT VOID		 WINAPI Sleep(DWORD);
 }
 
 f64 ch::get_time_in_seconds() {
@@ -75,4 +76,8 @@ ch::Date_Time ch::get_local_time() {
 	SYSTEMTIME st;
 	GetLocalTime(&st);
 	return dt_from_win32dt(st);
+}
+
+void ch::sleep(u32 millis) {
+    Sleep(millis);
 }

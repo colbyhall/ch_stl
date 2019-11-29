@@ -24,7 +24,7 @@ namespace ch {
             }
         }
 
-        Array(usize amount, const ch::Allocator& in_alloc = ch::context_allocator)
+        explicit Array(usize amount, const ch::Allocator& in_alloc = ch::context_allocator)
             : data(nullptr), count(0), allocated(0), allocator(in_alloc) {
             reserve(amount);
         }

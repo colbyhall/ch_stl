@@ -42,7 +42,7 @@ namespace ch {
 		Gap_Buffer(usize size, const ch::Allocator& in_alloc = ch::context_allocator) : allocator(in_alloc) {
 			if (size < default_gap_size) size = default_gap_size;
 			allocated = size;
-			data = ch_new(allocator) T[allocated];
+			data = (T*)allocator.alloc(allocated * sizeof(T));
 			assert(data);
 
 			gap = data;
@@ -50,7 +50,7 @@ namespace ch {
 		}
 
 		void free() {
-			if (data) operator ch_delete(allocator, data);
+			if (data) allocator.free(data);
 		}
 
 		void resize(usize new_gap_size) {

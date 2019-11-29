@@ -108,6 +108,8 @@ namespace ch {
 		}
 
 		Value* find(const Key& key) {
+			if (!buckets.count) return nullptr;
+
 			const usize index = key_to_index(key);
 
 			Pair* found = layout.data[index];
@@ -144,7 +146,7 @@ namespace ch {
 			refresh_layout();
 		}
 
-		bool contains(const Key& key) const {
+		bool contains(const Key& key) {
 			return find(key) != nullptr;
 		}
 	};

@@ -1,8 +1,7 @@
 /*
     Colby Hall's standard library
-    Heavily inspired from gb lib and stb libs
-    This lib is under construction
     
+	This library tries to replace the C++ STL without any sense of RAII. The choice for this was simple. RAII in C++ adds a lot of complexity I didn't want to deal with. 
 
 LICENSE
     This is free and unencumbered software released into the public domain.
@@ -34,32 +33,15 @@ CREDIT
     Written by Colby Hall
     
 TODO
-    - hash functions
-    - file PLATFORM
     - containers
-        - fixed_array
         - set
     - multithreading
         - thread
         - mutex
         - semaphore
     - allocators
-        - pool
         - stack
         - free list
-
-
-VERSIONS
-    0.04b array initializer list
-    0.04a memory, array test finished
-    0.04  fixed issues with array and starting to setup testing
-    0.03b finished more parts of the array struct
-    0.03a started on container and new stuff
-    0.03  allocator base
-    0.02a added max and defer
-    0.02  pointer types
-    0.01b project restructure
-    0.01a initial commit
 */
 
 #pragma once

@@ -168,7 +168,7 @@ ch::UTF8_Iterator::UTF8_Iterator(const char* _buffer, usize _size) : buffer(_buf
 }
 
 bool ch::UTF8_Iterator::can_advance() const {
-	return index < size && !found_error;
+	return index < size;
 }
 
 void ch::UTF8_Iterator::advance() {
@@ -183,8 +183,7 @@ u32 ch::UTF8_Iterator::get() {
 		utf8_decode(&decoder_state, &codepoint, c);
 
 		if (decoder_state == ch::utf8_reject) {
-			found_error = true;
-			return 0;
+			return '?';
 		}
 
 		if (decoder_state != ch::utf8_accept) continue;

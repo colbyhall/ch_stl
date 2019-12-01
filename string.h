@@ -454,8 +454,6 @@ namespace ch {
 		u32 codepoint = 0;
 		usize index = 0;
 
-		bool found_error = false;
-
 		UTF8_Iterator(const char* _buffer, usize _size);
 		bool can_advance() const;
 		void advance();

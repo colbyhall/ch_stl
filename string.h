@@ -95,6 +95,9 @@ namespace ch {
 		return c;
 	}
 
+	/**
+	 * Non null terminated String struct
+	 */
 	template <typename T>
 	struct Base_String {
         T* data;
@@ -365,10 +368,84 @@ namespace ch {
 		}
 	};
 
-	using String   = ch::Base_String<char>;
-	using String8  = ch::Base_String<u8>;
-	using String16 = ch::Base_String<u16>;
-	using String32 = ch::Base_String<u32>;
+	using String_ANSI  = ch::Base_String<char>;
+	using String_UTF16 = ch::Base_String<u16>;
+	using String_UTF32 = ch::Base_String<u32>;
+
+	struct String_UTF8 : public ch::Base_String<char> {
+		using Super = ch::Base_String<char>;
+
+		u32 num_errors = 0;
+
+		CH_FORCEINLINE bool has_errors() const { return num_errors > 0; }
+
+		u32 operator[] (usize index) = delete;
+		u32 operator[] (usize index) const = delete;
+
+		bool operator==(const String_UTF8& right) const {
+			return Super::operator==(right) && num_errors == right.num_errors;
+		}
+
+		bool operator==(const char* c_str) const {
+			const usize len = ch::strlen(c_str);
+			if (len != allocated) return false;
+			for (usize i = 0; i < allocated; i += 1) {
+				if (data[i] != c_str[i]) return false;
+			}
+			
+			return true;
+		}
+	};
+
+	using String = ch::String_ANSI;
+
+	/**
+	 * Created by Björn Höhrmann
+	 *
+	 * @see http://bjoern.hoehrmann.de/utf-8/decoder/dfa/
+	 */
+	const u32 utf8_accept = 0;
+	const u32 utf8_reject = 12;
+	u32 utf8_decode(u32* state, u32* code_p, u32 byte);
+
+	/**
+	 * Created by Phillip Trudeau
+	 *
+	 * @see https://github.com/pmttavara/toolgal/blob/master/src/utf8.h
+	 */
+	s32 utf8_encode(u32 c, void* dest, u32* errors);
+	usize utf8_strlen(const char* str);
+
+	/**
+	 * Takes a utf32 string and encodes it into a utf8 string
+	 *
+	 * Created by Phillip Trudeau
+	 *
+	 * @returns num errors
+	 */
+	u32 utf32_to_utf8(const ch::String_UTF32& utf32, ch::String_UTF8* out_utf8);
+	CH_FORCEINLINE u32 utf32_to_utf8(const u32* utf32, ch::String_UTF8* out_utf8) {
+		ch::String_UTF32 final_str;
+		final_str.data = (u32*)utf32; // @NOTE(CHall): Don't tell anyone
+		final_str.count = ch::strlen(utf32);
+		return utf32_to_utf8(final_str, out_utf8);
+	}
+
+	/**
+	 * Takes a utf8 string and decodes it into a utf32 string
+	 *
+	 * Created by Phillip Trudeau
+	 *
+	 * @returns true if no errors were found
+	 */
+	bool utf8_to_utf32(const ch::String_UTF8& utf8, ch::String_UTF32* out_utf32);
+	CH_FORCEINLINE bool utf8_to_utf32(const char* utf8, ch::String_UTF32* out_utf32) {
+		ch::String_UTF8 final_str;
+		final_str.data = (char*)utf8; // @NOTE(CHall): Don't tell anyone
+		final_str.allocated = ch::strlen(utf8);
+		return utf8_to_utf32(final_str, out_utf32);
+	}
+
 
 	usize sprintf(char* buffer, const char* fmt, ...);
 	void bytes_to_string(usize bytes, ch::String* out_string);

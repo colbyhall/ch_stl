@@ -446,6 +446,21 @@ namespace ch {
 		return utf8_to_utf32(final_str, out_utf32);
 	}
 
+	struct UTF8_Iterator {
+		const char* buffer = nullptr;
+		usize size = 0;
+
+		u32 decoder_state = ch::utf8_accept;
+		u32 codepoint = 0;
+		usize index = 0;
+
+		bool found_error = false;
+
+		UTF8_Iterator(const char* _buffer, usize _size);
+		bool can_advance() const;
+		void advance();
+		u32 get();
+	};
 
 	usize sprintf(char* buffer, const char* fmt, ...);
 	void bytes_to_string(usize bytes, ch::String* out_string);

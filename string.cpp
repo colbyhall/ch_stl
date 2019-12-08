@@ -162,33 +162,3 @@ bool ch::utf8_to_utf32(const ch::String_UTF8& utf8, ch::String_UTF32* out_utf32)
 
 	return true;
 }
-
-ch::UTF8_Iterator::UTF8_Iterator(const char* _buffer, usize _size) : buffer(_buffer), size(_size) {
-	assert(buffer && size);
-}
-
-bool ch::UTF8_Iterator::can_advance() const {
-	return index < size;
-}
-
-void ch::UTF8_Iterator::advance() {
-	assert(can_advance());
-
-	index += 1;
-}
-
-u32 ch::UTF8_Iterator::get() {
-	for (; index < size; index += 1) {
-		const u8 c = (u8)buffer[index];
-		utf8_decode(&decoder_state, &codepoint, c);
-
-		if (decoder_state == ch::utf8_reject) {
-			return '?';
-		}
-
-		if (decoder_state != ch::utf8_accept) continue;
-
-		break;
-	}
-	return codepoint;
-}

@@ -13,7 +13,6 @@ namespace ch {
 		usize gap_size = 0;
 		ch::Allocator allocator;
 
-
 		CH_FORCEINLINE usize count() const { return allocated - gap_size; }
 
 		CH_FORCEINLINE T& operator[](usize index) {
@@ -36,6 +35,10 @@ namespace ch {
 			else {
 				return data[index + gap_size];
 			}
+		}
+
+		CH_FORCEINLINE operator bool() const {
+			return data && count();
 		}
 
 		Gap_Buffer(const ch::Allocator& in_alloc = ch::context_allocator) : allocator(in_alloc) {}

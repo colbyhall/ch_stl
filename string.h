@@ -446,19 +446,109 @@ namespace ch {
 		return utf8_to_utf32(final_str, out_utf32);
 	}
 
+	template <typename T>
 	struct UTF8_Iterator {
-		const char* buffer = nullptr;
+		T& buffer;
 		usize size = 0;
 
 		u32 decoder_state = ch::utf8_accept;
 		u32 codepoint = 0;
 		usize index = 0;
 
-		UTF8_Iterator(const char* _buffer, usize _size);
-		bool can_advance() const;
-		void advance();
-		u32 get();
+		UTF8_Iterator(T& _buffer, usize _size, usize starting_index = 0) : buffer(_buffer), size(_size), index(starting_index) {
+			for (; index < size; index += 1) {
+				const u8 c = (u8)buffer[index];
+				utf8_decode(&decoder_state, &codepoint, c);
+
+				if (decoder_state == ch::utf8_reject) {
+					return;
+				}
+
+				if (decoder_state != ch::utf8_accept) continue;
+
+				break;
+			}
+
+			index += 1;
+		}
+
+		bool can_advance() const {
+			return buffer && size && index < size && decoder_state != ch::utf8_reject;
+		}
+
+		void advance() {
+			assert(can_advance());
+
+			for (; index < size; index += 1) {
+				const u8 c = (u8)buffer[index];
+				utf8_decode(&decoder_state, &codepoint, c);
+
+				if (decoder_state == ch::utf8_reject) {
+					return;
+				}
+
+				if (decoder_state != ch::utf8_accept) continue;
+
+				break;
+			}
+
+			index += 1;
+		}
+
+		u32 get() const {
+			return codepoint;
+		}
+
+		u32 peek() const {
+			assert(can_advance());
+
+			usize peek_index = index;
+			u32 peek_state = decoder_state;
+			u32 peek_codepoint = 0;
+
+			for (; peek_index < size; peek_index += 1) {
+				const u8 c = (u8)buffer[peek_index];
+				utf8_decode(&peek_state, &peek_codepoint, c);
+
+				if (peek_state == ch::utf8_reject) {
+					return '?';
+				}
+
+				if (peek_state != ch::utf8_accept) continue;
+
+				break;
+			}
+
+			return peek_codepoint;
+		}
+
+		bool is_on_last() const {
+			if (index >= size - 5) {
+				usize peek_index = index;
+				u32 peek_state = decoder_state;
+				u32 peek_codepoint = 0;
+
+				for (; peek_index < size; peek_index += 1) {
+					const u8 c = (u8)buffer[peek_index];
+					utf8_decode(&peek_state, &peek_codepoint, c);
+
+					if (peek_state == ch::utf8_reject) {
+						return false;
+					}
+
+					if (peek_state != ch::utf8_accept) continue;
+
+					break;
+				}
+
+				return peek_index == size - 1;
+			}
+
+			return false;
+		}
 	};
+
+	const u32 utf8_bom = 0xfeff;
 
 	usize sprintf(char* buffer, const char* fmt, ...);
 	void bytes_to_string(usize bytes, ch::String* out_string);

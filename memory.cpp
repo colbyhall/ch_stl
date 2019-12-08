@@ -143,6 +143,8 @@ void ch::mem_copy(void* dest, const void* src, usize size) {
 
 void* ch::mem_move(void* dest, const void* src, usize size) {
     if (dest == src) return dest;
+
+#if 0
     if (dest > src) { 
         ch::mem_copy(dest, src, size);
         return dest;
@@ -155,6 +157,13 @@ void* ch::mem_move(void* dest, const void* src, usize size) {
         i--;
         casted_dest[i] = casted_src[i];
     }
+#else
+	u8* buffer = ch_new u8[size];
+	defer(ch_delete(buffer));
+
+	ch::mem_copy(buffer, src, size);
+	ch::mem_copy(dest, buffer, size);
+#endif
     return dest;
 }
 

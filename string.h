@@ -455,22 +455,7 @@ namespace ch {
 		u32 codepoint = 0;
 		usize index = 0;
 
-		UTF8_Iterator(T& _buffer, usize _size, usize starting_index = 0) : buffer(_buffer), size(_size), index(starting_index) {
-			for (; index < size; index += 1) {
-				const u8 c = (u8)buffer[index];
-				utf8_decode(&decoder_state, &codepoint, c);
-
-				if (decoder_state == ch::utf8_reject) {
-					return;
-				}
-
-				if (decoder_state != ch::utf8_accept) continue;
-
-				break;
-			}
-
-			index += 1;
-		}
+		UTF8_Iterator(T& _buffer, usize _size, usize starting_index = 0) : buffer(_buffer), size(_size), index(starting_index) { }
 
 		bool can_advance() const {
 			return buffer && size && index < size && decoder_state != ch::utf8_reject;
@@ -496,7 +481,22 @@ namespace ch {
 		}
 
 		u32 get() const {
-			return codepoint;
+			usize get_index = index;
+			u32 get_state = decoder_state;
+			u32 get_codepoint = codepoint;
+			for (; get_index < size; get_index += 1) {
+				const u8 c = (u8)buffer[index];
+				utf8_decode(&get_state, &get_codepoint, c);
+
+				if (get_state == ch::utf8_reject) {
+					return '?';
+				}
+
+				if (get_state != ch::utf8_accept) continue;
+
+				break;
+			}
+			return get_codepoint;
 		}
 
 		u32 peek() const {
@@ -506,6 +506,7 @@ namespace ch {
 			u32 peek_state = decoder_state;
 			u32 peek_codepoint = 0;
 
+			bool found_current = false;
 			for (; peek_index < size; peek_index += 1) {
 				const u8 c = (u8)buffer[peek_index];
 				utf8_decode(&peek_state, &peek_codepoint, c);
@@ -516,7 +517,8 @@ namespace ch {
 
 				if (peek_state != ch::utf8_accept) continue;
 
-				break;
+				if (found_current) break;
+				found_current = true;
 			}
 
 			return peek_codepoint;

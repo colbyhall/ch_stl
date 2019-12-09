@@ -60,7 +60,7 @@ void ch::Path::remove_until_directory() {
 const ch::String ch::Path::get_extension() {
 	for (ssize i = count - 1; i >= 0; i--) {
 		char c = data[i];
-		if (c == '.' && i < (ssize)count - 2) {
+		if (c == '.' && i < (ssize)count - 1) {
 			ch::String result;
 			result.data = data + i + 1;
 			result.count = count - i - 1;
@@ -72,11 +72,11 @@ const ch::String ch::Path::get_extension() {
 	return ch::String();
 }
 
-const ch::String ch::Path::get_filename() {
+const ch::String ch::Path::get_filename(bool with_extension) {
 	ssize extension_loc = -1;
 	for (ssize i = count - 1; i >= 0; i--) {
 		char c = data[i];
-		if (c == '.' && i < (ssize)count - 2) {
+		if (c == '.' && i < (ssize)count - 1) {
 			extension_loc = i;
 		}
 
@@ -84,7 +84,9 @@ const ch::String ch::Path::get_filename() {
 			if (extension_loc > -1) {
 				ch::String result;
 				result.data = data + i + 1;
-				result.count = extension_loc - i - 1;
+				result.count = with_extension ? (count - i) : (extension_loc - i - 1);
+				result.allocated = result.count;
+				result.allocator = ch::get_stack_allocator();
 				return result;
 			}
 			break;
@@ -93,7 +95,9 @@ const ch::String ch::Path::get_filename() {
 
 	ch::String result;
 	result.data = data;
-	result.count = extension_loc;
+	result.count = count;
+	result.allocated = count;
+	result.allocator = ch::get_stack_allocator();
 	return result;
 }
 

@@ -53,7 +53,7 @@ namespace ch {
 		void append(const char* ap, bool ensure_proper = true);
 		void remove_until_directory();
 		const ch::String get_extension();
-		const ch::String get_filename();
+		const ch::String get_filename(bool with_extension = false);
 
 		bool is_relative() const;
 		CH_FORCEINLINE bool is_absolute() const { return !is_relative(); }

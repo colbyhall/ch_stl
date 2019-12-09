@@ -485,11 +485,11 @@ namespace ch {
 			u32 get_state = decoder_state;
 			u32 get_codepoint = codepoint;
 			for (; get_index < size; get_index += 1) {
-				const u8 c = (u8)buffer[index];
+				const u8 c = (u8)buffer[get_index];
 				utf8_decode(&get_state, &get_codepoint, c);
 
 				if (get_state == ch::utf8_reject) {
-					return '?';
+					return 0xfffd;
 				}
 
 				if (get_state != ch::utf8_accept) continue;

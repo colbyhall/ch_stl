@@ -79,6 +79,12 @@ void ch::reset_arena_allocator(ch::Allocator* allocator) {
     header->current = 0;
 }
 
+static void* stack_alloc(const ch::Allocator& allocator, void* ptr, usize size) { return ptr; }
+
+ch::Allocator ch::get_stack_allocator() {
+	return { nullptr, stack_alloc };
+}
+
 void* operator new(usize size, ch::Allocator allocator) {
     return allocator.alloc(size);
 }

@@ -399,6 +399,16 @@ namespace ch {
 
 	using String = ch::String_ANSI;
 
+	CH_FORCEINLINE ch::String make_stack_string(const char* c_str) {
+		ch::String result;
+		result.data = (char*)c_str;
+		result.count = ch::strlen(c_str);
+		result.allocated = result.count;
+		result.allocator = ch::get_stack_allocator();
+
+		return result;
+	}
+
 	/**
 	 * Created by Björn Höhrmann
 	 *

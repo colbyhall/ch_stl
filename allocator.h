@@ -41,6 +41,9 @@ namespace ch {
     void free_arena_allocator(ch::Allocator* allocator);
     void reset_arena_allocator(ch::Allocator* allocator);
 
+	/** Essentially an empty allocator to prevent seg faults. */
+	ch::Allocator get_stack_allocator();
+
 	extern Allocator context_allocator;
 }
 

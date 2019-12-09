@@ -155,7 +155,7 @@ bool ch::File::close() {
     return !is_open;
 }
 
-bool ch::File::get_full_path(ch::Path* out_path) const {
+bool ch::File::get_absolute_path(ch::Path* out_path) const {
 	assert(is_open);
 	out_path->count = GetFinalPathNameByHandleA(os_handle, out_path->data, (DWORD)out_path->allocated, FILE_NAME_OPENED | VOLUME_NAME_NONE);
 	return  *out_path;

@@ -108,7 +108,7 @@ namespace ch {
         bool open(const char* path, u32 open_flags);
         bool close();
 
-		bool get_full_path(ch::Path* out_path) const;
+		bool get_absolute_path(ch::Path* out_path) const;
 
         void read(void* dest, usize size);
         void seek_top();

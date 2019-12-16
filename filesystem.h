@@ -104,6 +104,7 @@ namespace ch {
     struct File : public Stream {
 		u32 flags;
 		bool is_open;
+		bool is_read_only;
 
         bool open(const char* path, u32 open_flags);
         bool close();

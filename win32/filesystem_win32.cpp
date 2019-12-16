@@ -98,6 +98,7 @@ extern "C" {
 	DLL_IMPORT DWORD  WINAPI GetModuleFileNameA(HMODULE, LPSTR, DWORD);
 	DLL_IMPORT HANDLE WINAPI FindFirstFileA(LPCSTR, LPWIN32_FIND_DATAA);
 	DLL_IMPORT BOOL   WINAPI FindNextFileA(HANDLE, LPWIN32_FIND_DATAA);
+	DLL_IMPORT DWORD  WINAPI GetFileAttributesA(LPCSTR);
 }
 
 bool ch::Path::is_relative() const {
@@ -142,6 +143,11 @@ bool ch::File::open(const char* path, u32 open_flags) {
 	if (!is_open && create) {
 		os_handle = CreateFileA(path, desired_access, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		is_open = os_handle != INVALID_HANDLE_VALUE;
+	}
+
+	if (is_open) {
+		const DWORD attrib = GetFileAttributesA(path);
+		is_read_only = attrib & FILE_ATTRIBUTE_READONLY;
 	}
 
     return is_open;
@@ -277,9 +283,8 @@ ch::Directory_Result ch::Win32_Directory_Iterator::get() const {
 		result.type = DRT_Directory;
 		break;
 	case FILE_ATTRIBUTE_NORMAL:
-		result.type = DRT_File;
-		break;
 	case FILE_ATTRIBUTE_ARCHIVE:
+	case FILE_ATTRIBUTE_READONLY:
 		result.type = DRT_File;
 		break;
 	}

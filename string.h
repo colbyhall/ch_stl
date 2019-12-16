@@ -41,7 +41,7 @@ namespace ch {
     const char eos = 0;
 
     CH_FORCEINLINE bool is_whitespace(u32 c) {
-        return c >= '\t' && c <= '\r' || c == ' ';
+        return (c >= '\t' && c <= '\r') || c == ' ';
     }
 
 	CH_FORCEINLINE bool is_letter(u32 c) {

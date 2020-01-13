@@ -255,6 +255,29 @@ ch::Matrix4 ch::translate(const Vector3& pos) {
 	return result;
 }
 
+ch::Matrix4 ch::rotate(f32 angle, const ch::Vector3& axis) {
+    ch::Matrix4 result = ch::identity();
+    const f32 r = angle * ch::to_rad;
+    const f32 c = ch::cos(r);
+    const f32 s = ch::sin(r);
+    const f32 omc = 1 - c;
+
+    const f32 x = axis.x;
+    const f32 y = axis.y;
+    const f32 z = axis.z;
+    result.elems[0 + 0 * 4] = x * omc + c;
+    result.elems[1 + 0 * 4] = y * x * omc + z * s;
+    result.elems[2 + 0 * 4] = x * z * omc - y * s;
+    result.elems[0 + 1 * 4] = x * y * omc - z * s;
+    result.elems[1 + 1 * 4] = y * omc + c;
+    result.elems[2 + 1 * 4] = y * z * omc + x * s;
+    result.elems[0 + 2 * 4] = x * z * omc + y * s;
+    result.elems[1 + 2 * 4] = y * z * omc - x * s;
+    result.elems[2 + 2 * 4] = z * omc + c;
+
+    return result;
+}
+
 ch::Matrix4 ch::scale(const Vector3& scale) {
 	ch::Matrix4 result = ch::identity();
 	result[0 + 0 * 4] = scale.x;

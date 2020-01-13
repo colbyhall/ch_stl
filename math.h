@@ -382,6 +382,10 @@ namespace ch {
             *this = *this / s;
         }
 
+        CH_FORCEINLINE Vector3 operator-() const {
+            return { -x, -y, -z };
+        }
+
         CH_FORCEINLINE f32 length_squared() const {
             return x * x + y * y + z * z;
         }
@@ -545,6 +549,7 @@ namespace ch {
 	ch::Matrix4 ortho(f32 size, f32 aspect_ratio, f32 far, f32 near);
 	ch::Matrix4 perspective(f32 fov, f32 aspect_ratio, f32 far, f32 near);
 	ch::Matrix4 translate(const Vector3& pos);
+    ch::Matrix4 rotate(f32 angle, const ch::Vector3& axis);
 	ch::Matrix4 scale(const Vector3& scale);
 
 }

@@ -149,6 +149,9 @@ bool ch::create_gl_window(const char* title, u32 width, u32 height, u32 style, c
 		WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
 		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
 		WGL_FRAMEBUFFER_SRGB_CAPABLE_ARB, GL_TRUE,
+        WGL_COLOR_BITS_ARB, 32,
+        WGL_DEPTH_BITS_ARB, 24,
+        WGL_STENCIL_BITS_ARB, 8,
 		0,
 	};
 

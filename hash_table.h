@@ -57,7 +57,7 @@ namespace ch {
 		CH_FORCEINLINE Value& operator[](usize index) { return buckets[index].value; }
 		CH_FORCEINLINE const Value& operator[](usize index) const { return buckets[index].value; }
 
-		usize key_to_index(const Key& k) {
+		usize key_to_index(const Key& k) const{
 			const u64 the_hash = hash(k);
 			return the_hash % buckets.count;
 		}
@@ -107,6 +107,16 @@ namespace ch {
 			return result;
 		}
 
+        usize push_zero(const Key& key) {
+            const usize result = buckets.push_empty();
+            buckets[result].key = key;
+            layout.reserve(1);
+
+            refresh_layout();
+
+            return result;
+        }
+
 		Value* find(const Key& key) {
 			if (!buckets.count) return nullptr;
 
@@ -125,6 +135,25 @@ namespace ch {
 
 			return nullptr;
 		}
+
+        const Value* find(const Key& key) const {
+            if (!buckets.count) return nullptr;
+
+            const usize index = key_to_index(key);
+
+            Pair* found = layout.data[index];
+            if (!found) return nullptr;
+
+            if (found->key == key) return &found->value;
+
+            while (found) {
+                found = found->next;
+
+                if (found && found->key == key) return &found->value;
+            }
+
+            return nullptr;
+        }
 
 		bool remove(const Key& key) {
 			for (usize i = 0; i < buckets.count; i++) {

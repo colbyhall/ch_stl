@@ -127,6 +127,12 @@ namespace ch {
             return old_count;
         }
 
+        usize push_empty() {
+            const usize old_count = count;
+            insert_zero(count);
+            return old_count;
+        }
+
         void pop() {
             count -= 1;
         }
@@ -147,6 +153,19 @@ namespace ch {
             }
 
             data[index] = t;
+            count += 1;
+        }
+
+        void insert_zero(usize index) {
+            if (count == allocated) {
+                reserve(1);
+            }
+
+            if (index != count) {
+                ch::mem_move(data + index + 1, data + index, (count - index) * sizeof(T));
+            }
+
+            ch::mem_zero(data + index, sizeof(T));
             count += 1;
         }
 

@@ -95,8 +95,8 @@ const ch::String ch::Path::get_filename(bool with_extension) {
 
 	ch::String result;
 	result.data = data;
-	result.count = count;
-	result.allocated = count;
+	result.count = with_extension ? count : extension_loc;
+	result.allocated = result.count;
 	result.allocator = ch::get_stack_allocator();
 	return result;
 }
